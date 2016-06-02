@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#17ca78"
+     >
+    <TextView 
+        android:id="@+id/fragment_details_mapa_text_info"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FRAGMENT DETAILS MAPA!"
+        />
+    
+    <FrameLayout
+        android:id="@+id/fragment_details_map_mapa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fragment_details_mapa_text_info"
+        />
+    
+
+</RelativeLayout>
+
+<!-- 
+
+<fragment 
+        android:id="@+id/fragment_details_mapa_map"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_below="@id/fragment_details_mapa_text_info"
+    	class="com.google.android.gms.maps.MapFragment" />
+    	
+    	OR
+
+<include layout="@layout/fragment_google_mapa"
+        android:id="@+id/fragment_details_map_mapa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fragment_details_mapa_text_info"
+        />
+        
+        OR
+
+<fragment 
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_below="@id/fragment_details_mapa_text_info"
+    	android:id="@+id/fragment_details_mapa_map"
+    	android:name="com.google.android.gms.maps.SupportMapFragment" />
+ -->

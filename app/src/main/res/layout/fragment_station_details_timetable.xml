@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#bd00e5"
+     >
+    
+	<TextView 
+        android:id="@+id/fragment_details_timetable_text_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FRAGMENT DETAILS TIMETABLE!"
+        />
+	<LinearLayout 
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal" >
+    
+
+        <TextView 
+        	android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:textStyle="bold"
+        	android:text="TYPE"
+        />
+        <TextView 
+        	android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:textStyle="bold"
+        	android:text="DESTINATION"
+        />
+        <TextView 
+        	android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:textStyle="bold"
+        	android:text="EXPECTED IN"
+        />
+ 
+
+</LinearLayout>
+
+	<ListView 
+    	android:id="@+id/fragment_details_timetable_listview"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	
+    ></ListView>
+	
+</LinearLayout>
+
+<!-- 
+
+<ListView 
+    	android:id="@+id/fragment_details_timetable_listview"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:divider="@android:color/transparent"
+  		android:dividerHeight="5.0sp"
+    ></ListView>
+ -->
