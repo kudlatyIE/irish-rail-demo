@@ -18,6 +18,9 @@
 # Java class files
 *.class
 
+# Android res
+developer_storage.xml
+
 # Generated files
 bin/
 gen/
