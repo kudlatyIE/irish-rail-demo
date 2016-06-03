@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 *.iml
 .gradle
 /local.properties
@@ -7,7 +6,7 @@
 .DS_Store
 /build
 /captures
-=======
+
 # Built application files
 *.apk
 *.ap_
@@ -17,9 +16,6 @@
 
 # Java class files
 *.class
-
-# Android res
-/app/src/main/res/values/developer_storage.xml
 
 # Generated files
 bin/
@@ -43,4 +39,6 @@ proguard/
 
 # Android Studio captures folder
 captures/
->>>>>>> origin/master
+
+# Android res
+developer_storage.xml
