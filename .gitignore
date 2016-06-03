@@ -41,4 +41,4 @@ proguard/
 captures/
 
 # Android res
-values/developer_storage.xml
+app/src/main/res/values/developer_storage.xml
