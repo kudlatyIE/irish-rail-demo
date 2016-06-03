@@ -2,11 +2,11 @@ package ie.droidfactory.fragstations;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvInfo;
     private String errMsg = "";
     private boolean isPermissionGranted=false;
-    private Activity suomi;
+    public Activity suomi;
 
     private Button btnStation, btnTrain, btnMap;
 
@@ -91,17 +91,19 @@ public class MainActivity extends AppCompatActivity {
                 (grantedResults.length>0 ? grantedResults[0] : "empty") );
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener(){
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
+
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(suomi);
+        builder.create();
         builder.setTitle("This App o_O");
         builder.setMessage("required "+str+" permission not granted. This app will be close");
         builder.setPositiveButton("OK", listener);
+
         builder.show();
     }
 

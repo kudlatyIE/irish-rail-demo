@@ -3,18 +3,15 @@ package ie.droidfactory.fragstations.utils;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-
-import java.util.ArrayList;
 /**
  * Created by kudlaty on 02/06/2016.
  */
 public class PermissionUtils {
 	
 	private final static String TAG = PermissionUtils.class.getSimpleName(); 
-	private final static ArrayList<PermEnum> list = new ArrayList<PermEnum>();
+//	private final static ArrayList<PermEnum> list = new ArrayList<PermEnum>();
 	public static  PermEnum permEnum;
 	
 	
@@ -27,13 +24,15 @@ public class PermissionUtils {
 			perm  = e.getPermissionName();
 			code = e.getRequestCode();
 			Log.d(TAG, "Pemission name: "+perm+" code: "+code);
-			permRes = ContextCompat.checkSelfPermission(ac, perm);
+			permRes = ActivityCompat.checkSelfPermission(ac, perm);
 			if(permRes!=ok){
+				Log.d(TAG, e.getRequest());
 				result=false;
 				if(!ActivityCompat.shouldShowRequestPermissionRationale(ac, perm)){
-					list.add(e);
+//					list.add(e);
 					ActivityCompat.requestPermissions(ac, new String[]{perm}, code);
 					click(ac, perm, code, e);
+					return false;
 				}
 			}
 		}
