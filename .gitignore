@@ -19,7 +19,7 @@
 *.class
 
 # Android res
-src/main/res/values/developer_storage.xml
+
 
 # Generated files
 bin/
