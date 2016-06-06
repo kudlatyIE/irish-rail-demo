@@ -1,0 +1,31 @@
+<!-- not used now -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                tools:context=".DrawerActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/drawer_toolbar_unused"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        tools:ignore="UnusedAttribute" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/drawer_toolbar_unused">
+
+        <TextView
+            android:id="@+id/drawer_text_content_unused"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/test_drawer_main_text"
+            android:textSize="16sp" />
+    </FrameLayout>
+</RelativeLayout>

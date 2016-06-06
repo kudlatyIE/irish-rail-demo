@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_category_station"
+        android:title="@string/category_stations"
+        android:checked="true">
+
+        <menu>
+            <item
+                android:id="@+id/item_station_list"
+                android:title="@string/navigation_item_list"
+                android:checked="true"
+            />
+            <item
+                android:id="@+id/item_station_map"
+                android:title="@string/navigation_item_map"
+                android:checked="true"
+                />
+            <item
+                android:id="@+id/item_station_search"
+                android:title="@string/navigation_item_search"
+                android:checked="true"
+                />
+        </menu>
+
+
+    </item>
+
+    <item
+        android:id="@+id/navigation_category_train"
+        android:title="@string/category_trains"
+        android:checked="true">
+
+        <menu>
+            <item
+                android:id="@+id/item_train_list"
+                android:title="@string/navigation_item_list"
+                android:checked="true"
+                />
+            <item
+                android:id="@+id/item_train_map"
+                android:title="@string/navigation_item_map"
+                android:checked="true"
+                />
+            <item
+                android:id="@+id/item_rain_search"
+                android:title="@string/navigation_item_search"
+                android:checked="true"
+                />
+        </menu>
+
+    </item>
+
+    <item
+    android:id="@+id/item_settings"
+    android:title="@string/navigation_item_settings"
+    android:checked="true"
+    />
+    <item
+        android:id="@+id/item_about"
+        android:title="@string/navigation_item_about"
+        android:checked="true"
+        />
+</menu>

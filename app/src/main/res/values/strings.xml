@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">EireRail</string>
+    <string name="category_stations">stations</string>
+    <string name="category_trains">trains</string>
+    <string name="navigation_item_list">list</string>
+    <string name="navigation_item_map">map</string>
+    <string name="navigation_item_other">other</string>
+    <string name="navigation_item_search">search</string>
+    <string name="navigation_item_settings">settings</string>
+    <string name="navigation_item_about">about</string>
+    <string name="drawer_header_info">HEADER INFO</string>
+    <string name="test_drawer_main_text">test drawer main text</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

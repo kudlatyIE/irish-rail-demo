@@ -3,4 +3,5 @@
     <item name="main_layout" type="layout">@layout/single_pane</item>
     <bool name="has_two_panes">false</bool>
     <bool name="is_tablet">true</bool>
+    <bool name="mini_drawer_visible">true</bool>
 </resources>

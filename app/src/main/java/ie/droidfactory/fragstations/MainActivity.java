@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.AsyncStationsList;
@@ -187,9 +186,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 if(v.getId()==R.id.main_btn_train){
-//					intent = new Intent(suomi, StationMainActivity.class);
-//					startActivity(intent);
-                    Toast.makeText(suomi, "not yet...", Toast.LENGTH_SHORT).show();
+					intent = new Intent(suomi, StationMainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_INFO);
+					startActivity(intent);
+//                    Toast.makeText(suomi, "not yet...", Toast.LENGTH_SHORT).show();
                 }
             }
 

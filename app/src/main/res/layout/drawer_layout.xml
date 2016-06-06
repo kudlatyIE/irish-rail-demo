@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:id="@+id/drawer_layout"
+                                        android:fitsSystemWindows="true"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include android:id="@+id/main_toolbar"
+                 layout="@layout/main_toolbar"/>
+
+        <LinearLayout
+            android:id="@+id/main_in_drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.NavigationView
+    android:id="@+id/main_navigation_view"
+    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_gravity="start"
+    app:headerLayout="@layout/drawer_header"
+    app:menu="@menu/drawer_items_list"/>
+
+</android.support.v4.widget.DrawerLayout>
+
+<!--
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include android:id="@+id/main_toolbar"
+                 layout="@layout/main_toolbar"/>
+
+        <include android:id="@+id/main_content"
+                 layout="@layout/main_layout"/>
+    </LinearLayout>
+    -->

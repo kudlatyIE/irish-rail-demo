@@ -85,7 +85,8 @@ public class StationListFragment extends MainFragment {
         try{
             stationCallback = (StationInterface) activity;
         }catch(ClassCastException e){
-            throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not imolemented...");
+            throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
+                    "implemented...");
         }
         Log.d(TAG, "onAttach end...");
     }

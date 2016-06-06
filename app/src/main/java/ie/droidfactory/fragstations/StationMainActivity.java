@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationInterface;
@@ -27,7 +29,8 @@ public class StationMainActivity extends FragmentActivity implements StationInte
     private String mId = null;
     private String stationCode=null;
     private boolean isDualPane, isTablet;
-    private View detailsView;
+    private View detailsView, fragmentContainer;
+    private LinearLayout mainContainer;
     private FragmentTransaction ft;
     private String mainFragmentId;
 
@@ -35,10 +38,17 @@ public class StationMainActivity extends FragmentActivity implements StationInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
+//        setContentView(R.layout.main_layout);
+        setContentView(R.layout.drawer_layout); //TODO: try layout wit drawer and toolbar
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
+
+
+        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+        fragmentContainer = inflater.inflate(R.layout.main_layout, null, false);
+        mainContainer = (LinearLayout) findViewById(R.id.main_in_drawer_container);
+        mainContainer.addView(fragmentContainer);
 
         detailsView = findViewById(R.id.fragment_station_details_container);
         Bundle extras = getIntent().getExtras();
@@ -229,6 +239,12 @@ public class StationMainActivity extends FragmentActivity implements StationInte
                 break;
             case FragmentUtils.FRAGMENT_MAP:
                 frag = new AllStationsMapFragment();
+                break;
+            case FragmentUtils.FRAGMENT_INFO:
+//                frag = new InfoFragment();
+                Bundle arg = new Bundle();
+                arg.putString(FragmentUtils.FRAGMENT_INFO, "njus, njus, HOT njus!");
+                frag = InfoFragment.newInstance(arg);
                 break;
             default: frag = new StationListFragment();
         }

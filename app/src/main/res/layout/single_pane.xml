@@ -1,7 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_station_list_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
-    
-</FrameLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:baselineAligned="false"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:id="@+id/fragment_station_list_container"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent" >
+
+    </FrameLayout>
+
+
+</LinearLayout>
+

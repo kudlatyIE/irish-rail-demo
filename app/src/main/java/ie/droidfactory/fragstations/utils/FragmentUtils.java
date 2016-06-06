@@ -14,5 +14,6 @@ public class FragmentUtils {
 	public final static String FRAGMENT = "fragment";
 	public final static String FRAGMENT_LIST = "list";
 	public final static String FRAGMENT_MAP = "map";
+	public final static String FRAGMENT_INFO = "info";
 
 }
