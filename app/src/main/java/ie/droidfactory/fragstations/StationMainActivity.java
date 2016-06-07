@@ -1,14 +1,19 @@
 package ie.droidfactory.fragstations;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationInterface;
@@ -18,7 +23,7 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class StationMainActivity extends FragmentActivity implements StationInterface {
+public class StationMainActivity extends AppCompatActivity implements StationInterface {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
     public final static String FRAG_DETAILS = "frag_details", FRAG_STATIONS="frag_stations";
@@ -30,32 +35,81 @@ public class StationMainActivity extends FragmentActivity implements StationInte
     private String stationCode=null;
     private boolean isDualPane, isTablet;
     private View detailsView, fragmentContainer;
-    private LinearLayout mainContainer;
+    private LinearLayout maineContainer;
     private FragmentTransaction ft;
-    private String mainFragmentId;
+    private static String mainFragmentId = FragmentUtils.FRAGMENT_INFO;
+
+    private boolean isDrawerVisible=false;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.main_layout);
-        setContentView(R.layout.drawer_layout); //TODO: try layout wit drawer and toolbar
+        //TODO: try layout with drawer and toolbar
+        setContentView(R.layout.drawer_layout);
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
 
-
-        LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-        fragmentContainer = inflater.inflate(R.layout.main_layout, null, false);
-        mainContainer = (LinearLayout) findViewById(R.id.main_in_drawer_container);
-        mainContainer.addView(fragmentContainer);
-
         detailsView = findViewById(R.id.fragment_station_details_container);
-        Bundle extras = getIntent().getExtras();
-        if(extras!=null) mainFragmentId = extras.getString(FragmentUtils.FRAGMENT);
-        else mainFragmentId = FragmentUtils.FRAGMENT_LIST;
-
         detailsFragment = (StationDetailsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+
+
+        /*
+        add toolbar and drawer... and make them work!
+        1. initialization drawer....
+         */
+        isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.test_drawer_main_text);
+    //1.
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar,R.string.open_drawer, R.string.close_drawer){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                boolean res=false;
+                if(item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+                drawerLayout.closeDrawers();
+                res = setFragmentFromDrawer(item.getItemId());
+                //TODO: create selected fragment and replace view...
+                createFragment(mainFragmentId);
+                return res;
+            }
+        });
+        /*
+        this will be handle by drawer menu
+         */
+//        Bundle extras = getIntent().getExtras();
+//        if(extras!=null) mainFragmentId = extras.getString(FragmentUtils.FRAGMENT);
+//        else mainFragmentId = FragmentUtils.FRAGMENT_LIST;
+
+        //handle fragments....
+
         //SINGLE PANE - PORTRAIT
         if(!isDualPane){
             Log.d(TAG, "onCreate, PORT, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
@@ -84,7 +138,7 @@ public class StationMainActivity extends FragmentActivity implements StationInte
 
             //DUAL PANE - LANDSCAPE
         }else{
-            updateViews(detailsView);
+            if(detailsView!=null) updateViews(detailsView);
             Log.d(TAG, "onCreate, LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
             Log.d(TAG, "onCreate, LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
             if(findViewById(R.id.fragment_station_list_container)!=null){
@@ -218,9 +272,11 @@ public class StationMainActivity extends FragmentActivity implements StationInte
 
     private void updateViews(View detail){
         if(isDualPane){
-            if(getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS)==null){
-                detail.setVisibility(View.GONE);
-            }else detail.setVisibility(View.VISIBLE);
+            if(detailsView!=null){
+                if(getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS)==null){
+                    detail.setVisibility(View.GONE);
+                }else detail.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -230,6 +286,40 @@ public class StationMainActivity extends FragmentActivity implements StationInte
         super.onSaveInstanceState(arg0);
         arg0.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
     }
+
+   private void createFragment(String key){
+       //clean fragment containers
+       if( detailsFragment!=null){
+           Log.d(TAG, "details fragment is not null!");
+           ft = getSupportFragmentManager().beginTransaction();
+           getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+           ft.remove(detailsFragment);
+           ft.commit();
+           getSupportFragmentManager().executePendingTransactions();
+           detailsFragment=null;
+//           updateViews(detailsView);
+
+       }else{
+           Log.d(TAG, "details fragment is NULL!");
+           }
+           //and clean main fragment
+       if(mainFragment!=null){
+           ft = getSupportFragmentManager().beginTransaction();
+           getSupportFragmentManager().popBackStackImmediate(null, FragmentManager
+                   .POP_BACK_STACK_INCLUSIVE);
+           ft.remove(mainFragment);
+           ft.commit();
+           getSupportFragmentManager().executePendingTransactions();
+           mainFragment=null;
+       }else{
+              Log.d(TAG, "main fragment is NULL!");
+          }
+       //display new main fragment in empty view
+       ft = getSupportFragmentManager().beginTransaction();
+       mainFragment = (MainFragment) setMainFragment(key);
+       mainFragment.setStationSelectedListener(this);
+       ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+   }
 
     private Fragment setMainFragment(String key){
         Fragment frag;
@@ -249,6 +339,40 @@ public class StationMainActivity extends FragmentActivity implements StationInte
             default: frag = new StationListFragment();
         }
         return frag;
+    }
+
+    private boolean setFragmentFromDrawer(int index){
+
+        switch (index){
+            case R.id.item_station_list:
+                mainFragmentId = FragmentUtils.FRAGMENT_LIST;
+                return true;
+            case R.id.item_station_map:
+                mainFragmentId = FragmentUtils.FRAGMENT_MAP;
+                return true;
+            case R.id.item_station_search:
+                Toast.makeText(getApplicationContext(),"click at search station..", Toast
+                        .LENGTH_SHORT).show();
+                return true;
+            case R.id.item_train_map:
+                Toast.makeText(getApplicationContext(),"click at train map..", Toast
+                        .LENGTH_SHORT).show();
+                return true;
+            case R.id.item_train_search:
+                Toast.makeText(getApplicationContext(),"click at train station..", Toast
+                        .LENGTH_SHORT).show();
+                return true;
+            case R.id.item_about:
+                Toast.makeText(getApplicationContext(),"click at about..", Toast
+                        .LENGTH_SHORT).show();
+                return true;
+            case R.id.item_settings:
+                Toast.makeText(getApplicationContext(),"click at settings..", Toast
+                        .LENGTH_SHORT).show();
+                return true;
+        }
+        return false;
+
     }
 
 }

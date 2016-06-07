@@ -1,4 +1,4 @@
-package ie.droidfactory.fragstations.model;
+package ie.droidfactory.fragstations.httputils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import ie.droidfactory.fragstations.httputils.HttpConnect;
 import ie.droidfactory.fragstations.httputils.Parser;
+import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 /**

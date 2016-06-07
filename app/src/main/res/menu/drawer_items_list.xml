@@ -34,18 +34,14 @@
         android:checked="true">
 
         <menu>
-            <item
-                android:id="@+id/item_train_list"
-                android:title="@string/navigation_item_list"
-                android:checked="true"
-                />
+
             <item
                 android:id="@+id/item_train_map"
                 android:title="@string/navigation_item_map"
                 android:checked="true"
                 />
             <item
-                android:id="@+id/item_rain_search"
+                android:id="@+id/item_train_search"
                 android:title="@string/navigation_item_search"
                 android:checked="true"
                 />

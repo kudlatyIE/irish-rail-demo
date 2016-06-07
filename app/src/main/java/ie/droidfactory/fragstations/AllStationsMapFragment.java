@@ -27,6 +27,7 @@ import java.util.HashMap;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationInterface;
 import ie.droidfactory.fragstations.utils.MyLocationListener;
+import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -84,7 +85,12 @@ public class AllStationsMapFragment extends MainFragment{
     }
 
     private void setMap(HashMap<String, Station> list){
-        getLocation();
+        try{
+            getLocation();
+        }catch(NullPointerException e){
+            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLocation();
+            else this.myLocation = MyShared.getMyLastLocation(getActivity());
+        }
         map.getUiSettings().setAllGesturesEnabled(true);
         if(list==null || list.size()==1){
 
@@ -147,7 +153,7 @@ public class AllStationsMapFragment extends MainFragment{
     }
 
 
-    private void getLocation() throws SecurityException{
+    private void getLocation() throws SecurityException, NullPointerException{
         Location l= null;
         LocationManager lm = null;
         MyLocationListener listener = new MyLocationListener();
@@ -167,6 +173,8 @@ public class AllStationsMapFragment extends MainFragment{
             this.myLo = l.getLongitude();
             this.myLat = l.getLatitude();
             this.myLocation = new LatLng(this.myLat, this.myLo);
+            RailSingleton.setMyLocation(myLocation);
+            MyShared.setMyLastLocation(getActivity(), myLocation);
         }
         Log.d(TAG, "current lat, long: "+this.myLat+", "+this.myLo);
 

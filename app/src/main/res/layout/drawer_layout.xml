@@ -14,13 +14,9 @@
         <include android:id="@+id/main_toolbar"
                  layout="@layout/main_toolbar"/>
 
-        <LinearLayout
-            android:id="@+id/main_in_drawer_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <include android:id="@+id/main_content"
+                 layout="@layout/main_layout"/>
 
-        </LinearLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
@@ -45,4 +41,13 @@
         <include android:id="@+id/main_content"
                  layout="@layout/main_layout"/>
     </LinearLayout>
+
+    ____________
+    <LinearLayout
+            android:id="@+id/main_in_drawer_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
     -->

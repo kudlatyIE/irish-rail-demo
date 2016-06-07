@@ -1,5 +1,7 @@
 package ie.droidfactory.fragstations.utils;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,6 +16,7 @@ public class RailSingleton {
 	private static HashMap<String, Station> stationMap=null;
 	private static ArrayList<StationDetails> timetable=null;
 	public static String currentStationCode="unknown";
+	private static LatLng myLocation=null;
 
 //	public static ArrayList<Station> getStationList() {
 ////		if(stationList==null) stationList = new ArrayList<Station>();
@@ -45,4 +48,11 @@ public class RailSingleton {
 		timetable = null;
 	}
 
+	public static LatLng getMyLocation() {
+		return myLocation;
+	}
+
+	public static void setMyLocation(LatLng myLocation) {
+		RailSingleton.myLocation = myLocation;
+	}
 }

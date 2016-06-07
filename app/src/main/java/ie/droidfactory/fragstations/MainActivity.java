@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import ie.droidfactory.fragstations.httputils.Links;
-import ie.droidfactory.fragstations.model.AsyncStationsList;
+import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.PermEnum;
@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
         btnStation.setOnClickListener(button);
         btnMap.setOnClickListener(button);
         btnTrain.setOnClickListener(button);
+
+        Intent in = new Intent(getApplicationContext(), StationMainActivity.class);
+        in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        in.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_INFO);
+        startActivity(in);
 
     }
 
