@@ -23,10 +23,11 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class StationMainActivity extends AppCompatActivity implements StationInterface {
+public class StationMainActivity extends AppCompatActivity implements StationInterface,
+        AllStationsMapFragment.RestartCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
-    public final static String FRAG_DETAILS = "frag_details", FRAG_STATIONS="frag_stations";
+    public final static String FRAG_DETAILS = "frag_details";//, FRAG_STATIONS="frag_stations";
     public final static String FRAG_MAIN="frag_main";
     private StationDetailsFragment detailsFragment;
     private MainFragment mainFragment;
@@ -48,6 +49,7 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        setContentView(R.layout.main_layout);
         //TODO: try layout with drawer and toolbar
         setContentView(R.layout.drawer_layout);
@@ -95,10 +97,10 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
                 if(item.isChecked()) item.setChecked(false);
                 else item.setChecked(true);
                 drawerLayout.closeDrawers();
-                res = setFragmentFromDrawer(item.getItemId());
+                setFragmentFromDrawer(item.getItemId());
                 //TODO: create selected fragment and replace view...
-                createFragment(mainFragmentId);
-                return res;
+//                createFragment(mainFragmentId);
+                return true;
             }
         });
         /*
@@ -129,10 +131,12 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
             }else{
                 if(findViewById(R.id.fragment_station_list_container)!=null) {
                     if(savedInstanceState!=null) return; // TODO: check is fragment is savedInstanceState
-                    ft = getSupportFragmentManager().beginTransaction();
-                    mainFragment = (MainFragment) setMainFragment(mainFragmentId);
-                    mainFragment.setStationSelectedListener(this);
-                    ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+                    if(mainFragment==null){
+                        ft = getSupportFragmentManager().beginTransaction();
+                        mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                        mainFragment.setStationSelectedListener(this);
+                        ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                    }
                 }
             }
 
@@ -154,7 +158,8 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
                     ft.commit();
                     if(mainFragment!=null){
                         ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+                        ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
+                                .commit();
                     }
                 }else {
                     if(mainFragment==null){
@@ -162,14 +167,14 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
 //						listFragment = new StationListFragment();
                         mainFragment = (MainFragment) setMainFragment(mainFragmentId);
                         mainFragment.setStationSelectedListener(this);
-                        ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+                        ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
                     }else return;
                 }
             }else{
                 ft = getSupportFragmentManager().beginTransaction();
                 mainFragment = (MainFragment) setMainFragment(mainFragmentId);
                 mainFragment.setStationSelectedListener(this);
-                ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+                ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
             }
         }
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -287,7 +292,14 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
         arg0.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
     }
 
+
+    /**
+     * for drawer only
+     * remove all views and create new fragment
+     * @param key
+     */
    private void createFragment(String key){
+       if(key == null) return;
        //clean fragment containers
        if( detailsFragment!=null){
            Log.d(TAG, "details fragment is not null!");
@@ -314,65 +326,116 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
        }else{
               Log.d(TAG, "main fragment is NULL!");
           }
-       //display new main fragment in empty view
+       //create new fragment and display in empty main view
+       Log.d(TAG, "createFragment::::key: "+key);
        ft = getSupportFragmentManager().beginTransaction();
        mainFragment = (MainFragment) setMainFragment(key);
        mainFragment.setStationSelectedListener(this);
-       ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_STATIONS).commit();
+       ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
    }
 
     private Fragment setMainFragment(String key){
         Fragment frag;
+        Bundle arg;
         switch(key){
             case FragmentUtils.FRAGMENT_LIST:
                 frag = new StationListFragment();
                 break;
-            case FragmentUtils.FRAGMENT_MAP:
-                frag = new AllStationsMapFragment();
+            case FragmentUtils.FRAGMENT_ALL_MAP:
+                arg = new Bundle();
+                frag = AllStationsMapFragment.newInstance(arg);
                 break;
             case FragmentUtils.FRAGMENT_INFO:
 //                frag = new InfoFragment();
-                Bundle arg = new Bundle();
+                arg = new Bundle();
                 arg.putString(FragmentUtils.FRAGMENT_INFO, "njus, njus, HOT njus!");
                 frag = InfoFragment.newInstance(arg);
+                break;
+            case FragmentUtils.FRAGMENT_ABOUT:
+//                frag = new InfoFragment();
+                arg = new Bundle();
+                arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that ia about everything!");
+                frag = AboutFragment.newInstance(arg);
+                break;
+            case FragmentUtils.FRAGMENT_SETTINGS:
+//                frag = new InfoFragment();
+                arg = new Bundle();
+                arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little settings here!");
+                frag = SettingsFragment.newInstance(arg);
                 break;
             default: frag = new StationListFragment();
         }
         return frag;
     }
 
-    private boolean setFragmentFromDrawer(int index){
-
+    private void setFragmentFromDrawer(int index){
+        boolean create = false;
         switch (index){
             case R.id.item_station_list:
-                mainFragmentId = FragmentUtils.FRAGMENT_LIST;
-                return true;
+                if(mainFragmentId != FragmentUtils.FRAGMENT_LIST) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_LIST;
+                    create = true;
+                }
+                break;
+
             case R.id.item_station_map:
-                mainFragmentId = FragmentUtils.FRAGMENT_MAP;
-                return true;
+                if(mainFragmentId != FragmentUtils.FRAGMENT_ALL_MAP) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_ALL_MAP;
+                    create=true;
+                }
+                break;
             case R.id.item_station_search:
                 Toast.makeText(getApplicationContext(),"click at search station..", Toast
                         .LENGTH_SHORT).show();
-                return true;
+                break;
             case R.id.item_train_map:
                 Toast.makeText(getApplicationContext(),"click at train map..", Toast
                         .LENGTH_SHORT).show();
-                return true;
+                break;
+
             case R.id.item_train_search:
-                Toast.makeText(getApplicationContext(),"click at train station..", Toast
-                        .LENGTH_SHORT).show();
-                return true;
+//                Toast.makeText(getApplicationContext(),"click at train station..", Toast
+//                        .LENGTH_SHORT).show();
+                break;
+            case R.id.item_info:
+                if(mainFragmentId != FragmentUtils.FRAGMENT_INFO) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_INFO;
+                    create = true;
+                }
+                break;
             case R.id.item_about:
-                Toast.makeText(getApplicationContext(),"click at about..", Toast
-                        .LENGTH_SHORT).show();
-                return true;
+                if(mainFragmentId != FragmentUtils.FRAGMENT_ABOUT) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_ABOUT;
+                    create = true;
+                }
+                break;
             case R.id.item_settings:
-                Toast.makeText(getApplicationContext(),"click at settings..", Toast
-                        .LENGTH_SHORT).show();
-                return true;
+                if(mainFragmentId != FragmentUtils.FRAGMENT_SETTINGS) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_SETTINGS;
+                    create = true;
+                }
+                break;
         }
-        return false;
+        if(create) createFragment(mainFragmentId);
 
     }
 
+    @Override
+    public void onRestartButtonClicked(boolean isClicked, String fragmentName) {
+        Log.d(TAG, "restart callback!");
+        if(isClicked) createFragment(fragmentName);
+    }
 }
+
+//    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        }
+//        if (!viewIsAtHome) { //if the current view is not the News fragment
+//            displayView(R.id.nav_news); //display the News fragment
+//        } else {
+//            moveTaskToBack(true);  //If view is in News fragment, exit application
+//        }
+//    }
