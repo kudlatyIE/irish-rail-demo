@@ -64,15 +64,15 @@ public class HttpConnect {
 			result = errorXml(responseCode,ex.getMessage());
 			ex.printStackTrace();
 		}
-		
 		return result;
 	}
 	
 	
 	private static String errorXml(int code, String msg){
-		return "<"+Parser.OBJECT_ERROR+">\n<"+Parser.ERR_CODE+">"+code+"</"+Parser.ERR_CODE+">\n"+
-				"<"+Parser.ERR_MESSAGE+">"+msg+"</"+Parser.ERR_MESSAGE+">\n"+
-				"</"+Parser.OBJECT_ERROR+">";
+		XmlKeyHolder h = new XmlKeyHolder();
+		return "<"+h.OBJECT_ERROR+">\n<"+h.ERR_CODE+">"+code+"</"+h.ERR_CODE+">\n"+
+				"<"+h.ERR_MESSAGE+">"+msg+"</"+h.ERR_MESSAGE+">\n"+
+				"</"+h.OBJECT_ERROR+">";
 	}
 
 }

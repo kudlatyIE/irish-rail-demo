@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-import ie.droidfactory.fragstations.httputils.HttpConnect;
-import ie.droidfactory.fragstations.httputils.Parser;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
@@ -16,6 +14,11 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
  * Created by kudlaty on 02/06/2016.
  */
 public class AsyncStationsList extends AsyncTask<String, Void, String>{
+
+	public interface AsyncDoneCallback{
+		void onAsyncDone(boolean done);
+	}
+	private AsyncDoneCallback restartCallback;
 
 	@Override
 	protected void onCancelled() {

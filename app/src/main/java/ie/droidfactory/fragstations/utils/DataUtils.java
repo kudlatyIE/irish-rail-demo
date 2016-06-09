@@ -1,6 +1,9 @@
 package ie.droidfactory.fragstations.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationDetails;
@@ -36,6 +39,28 @@ public class DataUtils {
 		ArrayList<Station> result = new ArrayList<Station>();
 		
 		return result;
+	}
+
+	/**
+	 *
+	 * provide date in Rail accepted format: dd_MM_yyyy
+	 * @param date (dd_MM_yyyy), if null then default date = current day
+	 * @return rail format date
+	 * @throws ParseException
+     */
+	@SuppressWarnings(">>UnusedAssignment<< - used to throw exception")
+	public static String getFormatedDate(String date) throws ParseException {
+		Date d;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd_MMM_yyyy");
+		if(date==null) {
+			date = new Date().toString();
+			d = sdf.parse(date);
+			date = sdf.format(d);
+		}else{
+			//check input format
+			d = sdf.parse(date);
+		}
+		return date;
 	}
 
 }
