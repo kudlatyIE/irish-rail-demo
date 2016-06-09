@@ -329,9 +329,11 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
        //create new fragment and display in empty main view
        Log.d(TAG, "createFragment::::key: "+key);
        ft = getSupportFragmentManager().beginTransaction();
+       ft.disallowAddToBackStack();
+       ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
        mainFragment = (MainFragment) setMainFragment(key);
        mainFragment.setStationSelectedListener(this);
-       ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+       ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
    }
 
     private Fragment setMainFragment(String key){
@@ -394,8 +396,8 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
                 break;
 
             case R.id.item_train_search:
-//                Toast.makeText(getApplicationContext(),"click at train station..", Toast
-//                        .LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"click at train station..", Toast
+                        .LENGTH_SHORT).show();
                 break;
             case R.id.item_info:
                 if(mainFragmentId != FragmentUtils.FRAGMENT_INFO) {
