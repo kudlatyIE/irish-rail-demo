@@ -59,7 +59,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         Log.d(TAG, "id landscape layout: "+isDualPane);
 
         detailsView = findViewById(R.id.fragment_station_details_container);
-        detailsFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
 
 
         /*
@@ -210,7 +210,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     @Override
     public void onStationSelected(String id) {
-        View detailsView = findViewById(R.id.fragment_station_details_container);
         // TODO Auto-generated method stub
         RailSingleton.resetTimetable();
         Station station = RailSingleton.getStationMap().get(id);
@@ -244,6 +243,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 //			}
             //LANDSCAPE - DUAL PANE MODE
         }else{
+            detailsView = findViewById(R.id.fragment_station_details_container);
             Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
                     .fragment_station_list_container)==null));
             Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
@@ -263,12 +263,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
                 if(id==mId) return;
-                else {
-                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-                    mId=id;
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+//                else {
+//                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+//                    mId=id;
+//                    ft.addToBackStack(null);
+//                    ft.commit();
+//                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=id;
@@ -282,7 +282,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     @Override
     public void onTrainSelected(String trainId) {
         //TODO: implement train selected...
-        View detailsView = findViewById(R.id.fragment_station_details_container);
+
         // TODO Auto-generated method stub
         RailSingleton.resetTimetable();
         Train train = RailSingleton.getTrainMap().get(trainId);
@@ -292,8 +292,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         double lo = train.getTrainLongitude();
 
         Log.d(TAG, "train selected on list: "+trainCode+" code: "+trainId);
-        detailsFragment = (TrainDetailsFragment) getSupportFragmentManager().findFragmentByTag
-                (FRAG_DETAILS);
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
         FragmentTransaction ft;
 
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
@@ -319,6 +318,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 //			}
             //LANDSCAPE - DUAL PANE MODE
         }else{
+            detailsView = findViewById(R.id.fragment_station_details_container);
             Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
                     .fragment_station_list_container)==null));
             Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
@@ -327,7 +327,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 Log.w(TAG, "details view is GONE, restore view....");
                 detailsView.setVisibility(View.VISIBLE);
             }
-            detailsFragment = new StationDetailsFragment();
+            detailsFragment = new TrainDetailsFragment();
             Bundle args = new Bundle();
             args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
             args.putString(FragmentUtils.STATION_CODE, stationCode);
@@ -339,12 +339,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
                 if(trainId==mId) return;
-                else {
-                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-                    mId=trainId;
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+//                else {
+//                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+//                    mId=trainId;
+//                    ft.addToBackStack(null);
+//                    ft.commit();
+//                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=trainId;

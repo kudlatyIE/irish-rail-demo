@@ -52,7 +52,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
         public void onAsyncDone(boolean done) {
             if (done) {
                 Log.d(TAG, "onAsyncDone(), create map");
-                createMap();
+                createMapFragment(FRAGMENT.CREATE);
             }
         }
     };
@@ -82,15 +82,18 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
         //TODO get async train list and create map fragment
         Log.d(TAG, "try download a list of current trains...");
         String link = Links.GET_ALL_TRAINS.getRailLink();
-        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS,
-                asyncDone, tvInfo);
-        rail.execute(link);
+        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
+        if(mapFragment==null){
+            AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS,
+                    asyncDone, tvInfo);
+            rail.execute(link);
+        }
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "restart map!");
-                createMap();
+                createMapFragment(FRAGMENT.REFRESH);
             }
         });
     }
@@ -104,49 +107,75 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
 
 
-    private void createMap(){
-        if(mapFragment==null){
-            Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
-            FragmentManager fm = getFragmentManager();
-            mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
-                    TAG_FULL_TRAINS_MAP)
-                    .commit();
-            mapFragment.getMapAsync(new OnMapReadyCallback(){
+    private void createMapFragment(FRAGMENT todo){
+        if(todo==FRAGMENT.CREATE){
+            if(mapFragment==null){
+                Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
+                FragmentManager fm = getFragmentManager();
+                mapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
+                        TAG_FULL_TRAINS_MAP).commit();
+                mapFragment.getMapAsync(new OnMapReadyCallback(){
 
-                @Override
-                public void onMapReady(GoogleMap arg0) {
-                    if(arg0!=null){
-                        map=arg0;
-                        setMap(RailSingleton.getTrainMap());
+                    @Override
+                    public void onMapReady(GoogleMap arg0) {
+                        if(arg0!=null){
+                            map=arg0;
+                            setMap(RailSingleton.getTrainMap());
+                        }
+                        Log.d(TAG, "FRAGMENT.CREATE::onMapReady arg0 is null: "+(arg0==null));
+
                     }
-                    Log.d(TAG, "FRAGMENT.CREATE::onMapReady arg0 is null: "+(arg0==null));
 
-                }
+                });
+            }else{
+                Log.d(TAG, "FRAGMENT.CREATE, mapFragment is not null...");
 
-            });
-        }else{
-            Log.d(TAG, "FRAGMENT.CREATE, mapFragment is not null...");
-            FragmentManager fm = getFragmentManager();
-            fm.beginTransaction().remove(mapFragment).commit();
-            fm.executePendingTransactions();
-            fm = getFragmentManager();
-            mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_TRAINS_MAP)
-                    .commit();
-            mapFragment.getMapAsync(new OnMapReadyCallback(){
+            }
+        }
+        if(todo==FRAGMENT.REFRESH){
+            if (mapFragment != null) {
+                Log.d(TAG, "FRAGMENT.REFRESH, mapFragment is NOT NULL, kill and create new!");
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().remove(mapFragment).commit();
+                fm.executePendingTransactions();
+                fm = getFragmentManager();
+                mapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
+                        TAG_FULL_TRAINS_MAP).commit();
+                mapFragment.getMapAsync(new OnMapReadyCallback(){
 
-                @Override
-                public void onMapReady(GoogleMap arg0) {
-                    if(arg0!=null){
-                        map=arg0;
-                        setMap(RailSingleton.getTrainMap());
+                    @Override
+                    public void onMapReady(GoogleMap arg0) {
+                        if(arg0!=null){
+                            map=arg0;
+                            setMap(RailSingleton.getTrainMap());
+                        }
+                        Log.d(TAG, "FRAGMENT.REFRESH::onMapReady arg0 is null: "+(arg0==null));
+
                     }
-                    Log.d(TAG, "FRAGMENT.CREATE::onMapReady arg0 is null: "+(arg0==null));
 
-                }
+                });
+            }else{
+                Log.d(TAG, "FRAGMENT.REFRESH, mapFragment is NULL, create new!");
+                FragmentManager fm = getFragmentManager();
+                mapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
+                        TAG_FULL_TRAINS_MAP).commit();
+                mapFragment.getMapAsync(new OnMapReadyCallback(){
 
-            });
+                    @Override
+                    public void onMapReady(GoogleMap arg0) {
+                        if(arg0!=null){
+                            map=arg0;
+                            setMap(RailSingleton.getTrainMap());
+                        }
+                        Log.d(TAG, "FRAGMENT.REFRESH::onMapReady arg0 is null: "+(arg0==null));
+
+                    }
+
+                });
+            }
         }
     }
 
