@@ -8,6 +8,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
+import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
@@ -16,9 +17,9 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 public class AsyncStationsList extends AsyncTask<String, Void, String>{
 
 	public interface AsyncDoneCallback{
-		void onAsyncDone(boolean done);
+		public void onAsyncDone(boolean done);
 	}
-	private AsyncDoneCallback restartCallback;
+	private AsyncDoneCallback asyncDoneCallback;
 
 	@Override
 	protected void onCancelled() {
@@ -30,10 +31,11 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 	private TextView tvResult;
 	private ProgressDialog dialog;
 	private String result="";
-	
-	public AsyncStationsList(Context context, TextView tvResult){
+	private AsyncMode mode;
+	public AsyncStationsList(Context context, AsyncMode mode, TextView tvResult){
 		this.context=context;
 		this.tvResult=tvResult;
+		this.mode=mode;
 	}
 	
 	@Override
@@ -59,18 +61,28 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 		// TODO Auto-generated method stub
 		super.onPostExecute(res);
 		try{
-			HashMap<String, Station> list = new HashMap<>();
+
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
+			if (mode == AsyncMode.GET_ALL_STATIONS) {
+				HashMap<String, Station> list;
+				list = Parser.parseAllStationsMap(res);
+				RailSingleton.setStationMap(list);
+				MyShared.setStationsMap(context, res);
+				result = "stations number: "+list.size();
+			}
+			if (mode == AsyncMode.GET_ALL_TRAINS) {
+				HashMap<String, Train> list;
+				list = Parser.parseRunningTrains(res);
+				RailSingleton.setTrainMap(list);
+				result = "trains number: "+list.size();
+			}
 
-			list = Parser.parseAllStationsMap(res);
-			RailSingleton.setStationMap(list);
 
-			result = "stations number: "+list.size();
-			MyShared.setStationsMap(context, res);
 		}catch(Exception ex){
 			ex.printStackTrace();
 			result = ex.getMessage();
 		}
+        asyncDoneCallback.onAsyncDone(true);
 		tvResult.setText(result);
 	}
 	

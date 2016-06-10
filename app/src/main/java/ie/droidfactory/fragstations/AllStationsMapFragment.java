@@ -91,14 +91,8 @@ public class AllStationsMapFragment extends MainFragment{
             else this.myLocation = MyShared.getMyLastLocation(getActivity());
         }
         map.getUiSettings().setAllGesturesEnabled(true);
-        if(list==null || list.size()==1){
-
-            map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
-            map.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
-            return;
-        }else{
+        if(list!=null && list.size()!=1){
             for(String i: list.keySet()){
-
                 addStationsMarker(i, new LatLng(list.get(i).getStationLatitude(),
                                 list.get(i).getStationLongitude()),
                         list.get(i).getStationDesc(),//title
@@ -106,9 +100,11 @@ public class AllStationsMapFragment extends MainFragment{
                         BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));//icon
             }
         }
+        //add user location as default marker
+        map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
         map.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
-        Log.d(TAG, "setMap map is null: "+(map==null));
+        Log.d(TAG, "setMap() map is null: "+(map==null));
     }
 
     private void addStationsMarker(String id, LatLng stationLatLng, String stationTitle, String code, BitmapDescriptor ic){

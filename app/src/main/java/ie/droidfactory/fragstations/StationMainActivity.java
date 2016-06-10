@@ -15,21 +15,22 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
-import ie.droidfactory.fragstations.model.StationInterface;
+import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class StationMainActivity extends AppCompatActivity implements StationInterface,
+public class StationMainActivity extends AppCompatActivity implements RailInterface,
         AllStationsMapFragment.RestartCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
     public final static String FRAG_DETAILS = "frag_details";//, FRAG_STATIONS="frag_stations";
     public final static String FRAG_MAIN="frag_main";
-    private StationDetailsFragment detailsFragment;
+    private Fragment detailsFragment;
     private MainFragment mainFragment;
     private int mPosition = -1;
     private String mId = null;
@@ -58,7 +59,7 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
         Log.d(TAG, "id landscape layout: "+isDualPane);
 
         detailsView = findViewById(R.id.fragment_station_details_container);
-        detailsFragment = (StationDetailsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+        detailsFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
 
 
         /*
@@ -219,13 +220,15 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
         double lo = station.getStationLongitude();
 
         Log.d(TAG, "station selected on list: "+id+" code: "+stationCode);
-        detailsFragment = (StationDetailsFragment) getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
         FragmentTransaction ft;
 
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
             this.mId=id;
-            Log.d(TAG, "click PORT, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-            Log.d(TAG, "click PORT, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
+            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
 
             detailsFragment = new StationDetailsFragment();
             Bundle args = new Bundle();
@@ -242,8 +245,10 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
 //			}
             //LANDSCAPE - DUAL PANE MODE
         }else{
-            Log.d(TAG, "click LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-            Log.d(TAG, "LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
+            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
             if(!detailsView.isShown()){
                 Log.w(TAG, "details view is GONE, restore view....");
                 detailsView.setVisibility(View.VISIBLE);
@@ -274,6 +279,84 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
 
         }
     }
+
+    @Override
+    public void onTrainSelected(String trainId) {
+        //TODO: implement train selected...
+        View detailsView = findViewById(R.id.fragment_station_details_container);
+        // TODO Auto-generated method stub
+        RailSingleton.resetTimetable();
+        Train train = RailSingleton.getTrainMap().get(trainId);
+        String trainCode = train.getTrainCode();
+        String direction = train.getDirection();
+        double lat = train.getTrainLatitude();
+        double lo = train.getTrainLongitude();
+
+        Log.d(TAG, "train selected on list: "+trainCode+" code: "+stationCode);
+        detailsFragment = (TrainDetailsFragment) getSupportFragmentManager().findFragmentByTag
+                (FRAG_DETAILS);
+        FragmentTransaction ft;
+
+        if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
+            this.mId=trainId;
+            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
+
+            detailsFragment = new TrainDetailsFragment();
+            Bundle args = new Bundle();
+            args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
+            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putDouble(FragmentUtils.STATION_LAT, lat);
+            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
+            detailsFragment.setArguments(args);
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
+            ft.addToBackStack(null);
+            ft.commit();
+
+//			}
+            //LANDSCAPE - DUAL PANE MODE
+        }else{
+            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
+            if(!detailsView.isShown()){
+                Log.w(TAG, "details view is GONE, restore view....");
+                detailsView.setVisibility(View.VISIBLE);
+            }
+            detailsFragment = new StationDetailsFragment();
+            Bundle args = new Bundle();
+            args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
+            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putDouble(FragmentUtils.STATION_LAT, lat);
+            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
+            detailsFragment.setArguments(args);
+            ft = getSupportFragmentManager().beginTransaction();
+            if(detailsFragment!=null) {
+                //TODO: dont reload the same details fragment if exist
+                if(trainId==mId) return;
+                else {
+                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    mId=trainId;
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+            }else {
+                ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                mId=trainId;
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+
+        }
+    }
+
+
 
     private void updateViews(View detail){
         if(isDualPane){
@@ -347,6 +430,10 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
                 arg = new Bundle();
                 frag = AllStationsMapFragment.newInstance(arg);
                 break;
+            case FragmentUtils.FRAGMENT_ALL_TRAINS_MAP:
+                arg = new Bundle();
+                frag = AllTrainsMapFragment.newInstance(arg);
+                break;
             case FragmentUtils.FRAGMENT_INFO:
 //                frag = new InfoFragment();
                 arg = new Bundle();
@@ -391,8 +478,9 @@ public class StationMainActivity extends AppCompatActivity implements StationInt
                         .LENGTH_SHORT).show();
                 break;
             case R.id.item_train_map:
-                Toast.makeText(getApplicationContext(),"click at train map..", Toast
-                        .LENGTH_SHORT).show();
+                mainFragmentId = FragmentUtils.FRAGMENT_ALL_TRAINS_MAP;
+//                Toast.makeText(getApplicationContext(),"click at train map..", Toast
+//                        .LENGTH_SHORT).show();
                 break;
 
             case R.id.item_train_search:

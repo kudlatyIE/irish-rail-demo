@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
@@ -47,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             link = Links.ALL_STATIONS.getRailLink();
 //			AsyncRail rail = new AsyncRail();
-            AsyncStationsList rail = new AsyncStationsList(this, tvInfo);
+            AsyncStationsList rail = new AsyncStationsList(this, AsyncMode.GET_ALL_STATIONS,
+                    tvInfo);
             if(RailSingleton.getStationMap()==null || RailSingleton.getStationMap().size()==1) {
                 Log.d(TAG, "try download a list of stations...");
                 rail.execute(link);
