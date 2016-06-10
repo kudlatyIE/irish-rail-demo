@@ -49,13 +49,16 @@ public class TrainDetailsFragment extends Fragment {
             lat = extras.getDouble(FragmentUtils.STATION_LAT);
             lng = extras.getDouble(FragmentUtils.STATION_LONG);
             trainDirection = extras.getString(FragmentUtils.TRAIN_DESCRIPTION);
-            Log.d(TAG, "from bundle: direction: "+trainDirection+"\nLAT: "+lat+" LNG: "+lng);
+            Log.d(TAG, "from bundle: trainCode: "+trainCode+", direction: "+trainDirection+"\nLAT:"
+            +lat+" LNG:" + lng);
         }
         if(trainCode!= null) updateDetails(trainCode);
     }
 
     private void updateDetails(String id){
+        Log.d(TAG, "updateDetails arg: "+id);
         this.train = RailSingleton.getTrainMap().get(id);
+        Log.d(TAG, "train is NULL: "+(train==null));
         tvInfo.setText(TAG+" update details for: "+
                 "\ntrainCode ID: "+trainCode+
                 "\nLAT: "+train.getTrainLatitude()+" LNG: "+train.getTrainLongitude()+

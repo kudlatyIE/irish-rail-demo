@@ -22,8 +22,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
-import ie.droidfactory.fragstations.model.StationInterface;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
@@ -32,15 +32,17 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class AllStationsMapFragment extends MainFragment{
+public class AllStationsMapFragment extends MainFragment {//implements AsyncStationsList.AsyncDoneCallback{
 
 
-    StationInterface stationCallback;
-    public void setStationSelectedListener(StationInterface listener){
+    RailInterface stationCallback;
+    public void setStationSelectedListener(RailInterface listener){
         stationCallback = listener;
     }
+
+
     public interface RestartCallback{
-        public void onRestartButtonClicked(boolean isClicked, String fragmentName);
+        void onRestartButtonClicked(boolean isClicked, String fragmentName);
     }
     private RestartCallback restartCallback;
 
@@ -81,6 +83,11 @@ public class AllStationsMapFragment extends MainFragment{
             }
         });
     }
+//    @Override
+//    public void onAsyncDone(boolean done) {
+//        Log.d(TAG, "onAcyncDone() - create map fragment....");
+//        createMapFragment(FRAGMENT.CREATE);
+//    }
 
     private void setMap(HashMap<String, Station> list){
         Log.d(TAG, "setMap beginning...");
@@ -203,7 +210,7 @@ public class AllStationsMapFragment extends MainFragment{
         // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
-            stationCallback = (StationInterface) activity;
+            stationCallback = (RailInterface) activity;
             restartCallback = (RestartCallback) activity;
         }catch(ClassCastException e){
             throw new ClassCastException(activity.toString()+ e.getMessage()+" is not " +

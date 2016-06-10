@@ -26,7 +26,7 @@ import java.util.HashMap;
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
-import ie.droidfactory.fragstations.model.StationInterface;
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
@@ -35,23 +35,27 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 09/06/2016.
  */
-public class AllTrainsMapFragment extends MainFragment implements AsyncStationsList.AsyncDoneCallback{
+public class AllTrainsMapFragment extends MainFragment {//implements AsyncStationsList.AsyncDoneCallback{
 
-    StationInterface stationCallback;
-    public void setStationSelectedListener(StationInterface listener){
-        stationCallback = listener;
+    RailInterface trainCallback;
+    public void setTrainSelectedListener(RailInterface listener){
+        trainCallback = listener;
     }
     public static AllTrainsMapFragment newInstance(Bundle args){
         AllTrainsMapFragment fragment = new AllTrainsMapFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Override
-    public void onAsyncDone(boolean done) {
-        //TODO: if done load map with markers
-    }
-
+    private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            if (done) {
+                Log.d(TAG, "onAsyncDone(), create map");
+                createMap();
+            }
+        }
+    };
 
     private final static String TAG = AllTrainsMapFragment.class.getSimpleName();
     private final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
@@ -79,7 +83,7 @@ public class AllTrainsMapFragment extends MainFragment implements AsyncStationsL
         Log.d(TAG, "try download a list of current trains...");
         String link = Links.GET_ALL_TRAINS.getRailLink();
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS,
-                tvInfo);
+                asyncDone, tvInfo);
         rail.execute(link);
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
@@ -90,13 +94,23 @@ public class AllTrainsMapFragment extends MainFragment implements AsyncStationsL
             }
         });
     }
+//    @Override
+//    public void onAsyncDone(boolean done) {
+//        //TODO: if done load map with markers
+//        Log.d(TAG, "onAsyncDone(), create map");
+//        createMap();
+//    }
+
+
+
 
     private void createMap(){
         if(mapFragment==null){
             Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
             FragmentManager fm = getFragmentManager();
             mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().add(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_TRAINS_MAP)
+            fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
+                    TAG_FULL_TRAINS_MAP)
                     .commit();
             mapFragment.getMapAsync(new OnMapReadyCallback(){
 
@@ -169,10 +183,11 @@ public class AllTrainsMapFragment extends MainFragment implements AsyncStationsL
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()+":\n"+RailSingleton.getStationMap().
-                        get(arg0.getSnippet()).getStationDesc(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()
+                        +":\n"+RailSingleton.getTrainMap().
+                        get(arg0.getSnippet()).getPublicMessage(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
-                stationCallback.onStationSelected(arg0.getSnippet());
+                trainCallback.onTrainSelected(arg0.getSnippet());
                 return false;
             }
 
@@ -186,7 +201,7 @@ public class AllTrainsMapFragment extends MainFragment implements AsyncStationsL
         // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
-            stationCallback = (StationInterface) activity;
+            trainCallback = (RailInterface) activity;
         }catch(ClassCastException e){
             throw new ClassCastException(activity.toString()+ e.getMessage()+" is not " +
                     "implemented...");

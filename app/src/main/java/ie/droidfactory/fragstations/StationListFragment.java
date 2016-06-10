@@ -15,8 +15,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
-import ie.droidfactory.fragstations.model.StationInterface;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -30,8 +30,8 @@ public class StationListFragment extends MainFragment {
     private ArrayList<String> mlist;
 
 
-    StationInterface stationCallback;
-    public void setStationSelectedListener(StationInterface listener){
+    RailInterface stationCallback;
+    public void setStationSelectedListener(RailInterface listener){
         stationCallback = listener;
     }
 
@@ -83,7 +83,7 @@ public class StationListFragment extends MainFragment {
         // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
-            stationCallback = (StationInterface) activity;
+            stationCallback = (RailInterface) activity;
         }catch(ClassCastException e){
             throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
                     "implemented...");

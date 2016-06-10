@@ -3,6 +3,7 @@ package ie.droidfactory.fragstations.httputils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 public class AsyncStationsList extends AsyncTask<String, Void, String>{
 
 	public interface AsyncDoneCallback{
-		public void onAsyncDone(boolean done);
+		void onAsyncDone(boolean done);
 	}
 	private AsyncDoneCallback asyncDoneCallback;
 
@@ -26,17 +27,20 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 		super.onCancelled();
 		if(dialog!=null && dialog.isShowing()) dialog.dismiss();
 	}
-
+    private final static String TAG = AsyncStationsList.class.getSimpleName();
 	private Context context;
 	private TextView tvResult;
 	private ProgressDialog dialog;
 	private String result="";
 	private AsyncMode mode;
-	public AsyncStationsList(Context context, AsyncMode mode, TextView tvResult){
+	public AsyncStationsList(Context context, AsyncMode mode, AsyncDoneCallback callback, TextView
+            tvResult){
 		this.context=context;
 		this.tvResult=tvResult;
 		this.mode=mode;
-	}
+        this.asyncDoneCallback = callback;
+        Log.d(TAG, "async constructor:: MODE: "+mode.toString());
+    }
 	
 	@Override
 	protected String doInBackground(String... params) {
@@ -85,6 +89,8 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
         asyncDoneCallback.onAsyncDone(true);
 		tvResult.setText(result);
 	}
+
+
 	
 	
 }

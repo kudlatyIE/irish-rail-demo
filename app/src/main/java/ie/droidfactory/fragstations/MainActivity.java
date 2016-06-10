@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             link = Links.ALL_STATIONS.getRailLink();
 //			AsyncRail rail = new AsyncRail();
             AsyncStationsList rail = new AsyncStationsList(this, AsyncMode.GET_ALL_STATIONS,
-                    tvInfo);
+                    null, tvInfo);
             if(RailSingleton.getStationMap()==null || RailSingleton.getStationMap().size()==1) {
                 Log.d(TAG, "try download a list of stations...");
                 rail.execute(link);

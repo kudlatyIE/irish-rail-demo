@@ -94,7 +94,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                boolean res=false;
                 if(item.isChecked()) item.setChecked(false);
                 else item.setChecked(true);
                 drawerLayout.closeDrawers();
@@ -292,7 +291,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         double lat = train.getTrainLatitude();
         double lo = train.getTrainLongitude();
 
-        Log.d(TAG, "train selected on list: "+trainCode+" code: "+stationCode);
+        Log.d(TAG, "train selected on list: "+trainCode+" code: "+trainId);
         detailsFragment = (TrainDetailsFragment) getSupportFragmentManager().findFragmentByTag
                 (FRAG_DETAILS);
         FragmentTransaction ft;
@@ -307,7 +306,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             detailsFragment = new TrainDetailsFragment();
             Bundle args = new Bundle();
             args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
-            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putString(FragmentUtils.STATION_CODE, trainId);
             args.putDouble(FragmentUtils.STATION_LAT, lat);
             args.putDouble(FragmentUtils.STATION_LONG, lo);
             args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
@@ -465,6 +464,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_LIST;
                     create = true;
                 }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
             case R.id.item_station_map:
@@ -472,15 +472,20 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_ALL_MAP;
                     create=true;
                 }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
             case R.id.item_station_search:
                 Toast.makeText(getApplicationContext(),"click at search station..", Toast
                         .LENGTH_SHORT).show();
                 break;
             case R.id.item_train_map:
-                mainFragmentId = FragmentUtils.FRAGMENT_ALL_TRAINS_MAP;
-//                Toast.makeText(getApplicationContext(),"click at train map..", Toast
-//                        .LENGTH_SHORT).show();
+                if(mainFragmentId != FragmentUtils.FRAGMENT_ALL_TRAINS_MAP) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_ALL_TRAINS_MAP;
+                    create=true;
+                }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
+                Toast.makeText(getApplicationContext(),"click at train map..", Toast
+                        .LENGTH_SHORT).show();
                 break;
 
             case R.id.item_train_search:
@@ -492,18 +497,21 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_INFO;
                     create = true;
                 }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
             case R.id.item_about:
                 if(mainFragmentId != FragmentUtils.FRAGMENT_ABOUT) {
                     mainFragmentId = FragmentUtils.FRAGMENT_ABOUT;
                     create = true;
                 }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
             case R.id.item_settings:
                 if(mainFragmentId != FragmentUtils.FRAGMENT_SETTINGS) {
                     mainFragmentId = FragmentUtils.FRAGMENT_SETTINGS;
                     create = true;
                 }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
         }
         if(create) createFragment(mainFragmentId);

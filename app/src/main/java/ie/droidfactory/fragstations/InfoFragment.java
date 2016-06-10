@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ie.droidfactory.fragstations.model.StationInterface;
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 
 /**
@@ -22,8 +22,8 @@ public class InfoFragment extends MainFragment {
     private TextView tvInfo;
 
 
-    StationInterface stationCallback;
-    public void setStationSelectedListener(StationInterface listener){
+    RailInterface stationCallback;
+    public void setStationSelectedListener(RailInterface listener){
         stationCallback = listener;
     }
 
@@ -71,7 +71,7 @@ public class InfoFragment extends MainFragment {
         // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
-            stationCallback = (StationInterface) activity;
+            stationCallback = (RailInterface) activity;
         }catch(ClassCastException e){
             throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
                     "implemented...");
