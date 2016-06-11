@@ -188,8 +188,7 @@ public class StationDetailsTimetableFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-//			Log.d(TAG, "adapter getView...");
-            View v=null;
+            View v;
             if(convertView==null) {
                 v = inflater.inflate(R.layout.adapter_station_timetable, parent, false);
                 h = new Holder();

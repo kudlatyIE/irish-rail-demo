@@ -51,7 +51,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
         @Override
         public void onAsyncDone(boolean done) {
             if (done) {
-                Log.d(TAG, "onAsyncDone(), create map");
+                Log.d(TAG, "onAsyncDone() callback, create map");
                 createMapFragment(FRAGMENT.CREATE);
             }
         }
@@ -59,6 +59,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
     private final static String TAG = AllTrainsMapFragment.class.getSimpleName();
     private final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
+    private final static String TAG_USER = "My Location";
     private enum FRAGMENT{CREATE, REFRESH};
     private Button btnRefresh;
     private TextView tvInfo;
@@ -79,15 +80,18 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
         Log.d(TAG, "onViewCreated map is null: "+(map==null));
         btnRefresh = (Button) view.findViewById(R.id.fragment_all_trains_mapa_btn_refresh);
         tvInfo = (TextView) view.findViewById(R.id.fragment_all_trains_mapa_text_info);
-        //TODO get async train list and create map fragment
-        Log.d(TAG, "try download a list of current trains...");
+
         String link = Links.GET_ALL_TRAINS.getRailLink();
-        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
-        if(mapFragment==null){
+    //TODO: recreate map view when back from details!!!!!!!
+
+//        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
+        if(RailSingleton.getTrainMap()==null){
             AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS,
                     asyncDone, tvInfo);
             rail.execute(link);
-        }
+        }else createMapFragment(FRAGMENT.CREATE);
+
+
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +112,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
 
     private void createMapFragment(FRAGMENT todo){
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
         if(todo==FRAGMENT.CREATE){
             if(mapFragment==null){
                 Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
@@ -198,7 +203,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             }
         }
         //add user location as default marker
-        map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
+        map.addMarker(new MarkerOptions().position(this.myLocation).title(TAG_USER).snippet(TAG_USER));
         map.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
         Log.d(TAG, "setMap() map is null: "+(map==null));
@@ -212,11 +217,12 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()
-                        +":\n"+RailSingleton.getTrainMap().
-                        get(arg0.getSnippet()).getPublicMessage(), Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
-                trainCallback.onTrainSelected(arg0.getSnippet());
+
+                if(!arg0.getSnippet().equals(TAG_USER)) trainCallback.onTrainSelected(arg0.getSnippet());
+                else{
+                    Toast.makeText(getActivity(), "click station"+arg0.getSnippet(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
+                }
                 return false;
             }
 
@@ -242,11 +248,12 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
     public void onDestroyView(){
         super.onDestroyView();
         Log.d(TAG, "onDestroyView, beginning...");
-        if(map!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove
-                    (getFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP)).commit();
-            map=null;
-        }
+//        if(map!=null){
+//            getActivity().getSupportFragmentManager().beginTransaction().remove
+//                    (getFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP)).commit();
+//
+//            map=null;
+//        }
     }
 
 

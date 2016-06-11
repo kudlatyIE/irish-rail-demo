@@ -281,13 +281,13 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     @Override
     public void onTrainSelected(String trainId) {
-        //TODO: implement train selected...
-
-        // TODO Auto-generated method stub
         RailSingleton.resetTimetable();
         Train train = RailSingleton.getTrainMap().get(trainId);
         String trainCode = train.getTrainCode();
         String direction = train.getDirection();
+        //TODO: fix break line char from XML
+        String msg = train.getPublicMessage().replaceAll("\\n", "\n");
+//        String msg = train.getPublicMessage().replaceAll("\n", "\\n");
         double lat = train.getTrainLatitude();
         double lo = train.getTrainLongitude();
 
@@ -309,6 +309,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             args.putDouble(FragmentUtils.STATION_LAT, lat);
             args.putDouble(FragmentUtils.STATION_LONG, lo);
             args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
+            args.putString(FragmentUtils.TRAIN_MSG, msg);
             detailsFragment.setArguments(args);
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);

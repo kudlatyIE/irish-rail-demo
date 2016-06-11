@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationDetails;
@@ -50,11 +51,10 @@ public class DataUtils {
      */
 	@SuppressWarnings(">>UnusedAssignment<< - used to throw exception")
 	public static String getFormatedDate(String date) throws ParseException {
-		Date d;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd_MMM_yyyy");
+		Date d = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd_MMM_yyyy", Locale.ENGLISH);
 		if(date==null) {
-			date = new Date().toString();
-			d = sdf.parse(date);
+
 			date = sdf.format(d);
 		}else{
 			//check input format

@@ -54,7 +54,7 @@ public class StationListFragment extends MainFragment {
         for(String key: RailSingleton.getStationMap().keySet()){
             mlist.add(key);
         }
-        MyAdapter adapter = null;
+        MyAdapter adapter;
         try {
             adapter = new MyAdapter(getActivity(), mlist, RailSingleton.getStationMap());
             lv.setAdapter(adapter);
@@ -126,8 +126,7 @@ public class StationListFragment extends MainFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-//			Log.d(TAG, "adapter getView...");
-            View v=null;
+            View v;
             if(convertView==null) {
                 v = inflater.inflate(R.layout.adapter_stations, parent, false);
                 h = new Holder();

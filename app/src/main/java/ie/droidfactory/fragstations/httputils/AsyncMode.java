@@ -5,5 +5,6 @@ package ie.droidfactory.fragstations.httputils;
  */
 public enum AsyncMode {
     GET_ALL_TRAINS,
-    GET_ALL_STATIONS;
+    GET_ALL_STATIONS,
+    GET_TRAIN_DETAILS;
 }

@@ -4,10 +4,11 @@ package ie.droidfactory.fragstations.model;
  * Created by kudlaty on 09/06/2016.
  */
 public class TrainDetails {
-
-    private String trainCode, trainDate, locationCode, locationFullName, locationOrder,
+    private Integer locationOrder;
+    private String trainCode, trainDate, locationCode, locationFullName,
             locationType, trainOrigin, trainDestination, scheduledArrival, scheduledDeparture,
-            arrival, departure, autoArrival, autoDepart, stopType;
+            expectedArrival, expectedDeparture, arrival, departure, autoArrival, autoDepart,
+            stopType;
     private String error="unknown error";
 
     public TrainDetails(String trainCode, String error){
@@ -27,6 +28,8 @@ public class TrainDetails {
      * @param trainDestination
      * @param scheduledArrival
      * @param scheduledDeparture
+     * @param expectedArrival
+     * @param expectedDeparture
      * @param arrival actual
      * @param departure actual
      * @param autoArrival was information automatically generated
@@ -34,8 +37,9 @@ public class TrainDetails {
      * @param stopType C= Current N = Next
      */
     public TrainDetails(String trainCode, String trainDate, String locationCode, String locationFullName,
-                        String locationOrder, String locationType, String trainOrigin,
+                        Integer locationOrder, String locationType, String trainOrigin,
                         String trainDestination, String scheduledArrival, String scheduledDeparture,
+                        String expectedArrival, String expectedDeparture,
                         String arrival, String departure, String autoArrival, String autoDepart, String stopType) {
         this.trainCode = trainCode;
         this.trainDate = trainDate;
@@ -47,6 +51,8 @@ public class TrainDetails {
         this.trainDestination = trainDestination;
         this.scheduledArrival = scheduledArrival;
         this.scheduledDeparture = scheduledDeparture;
+        this.expectedArrival=expectedArrival;
+        this.expectedDeparture=expectedDeparture;
         this.arrival = arrival;
         this.departure = departure;
         this.autoArrival = autoArrival;
@@ -56,14 +62,38 @@ public class TrainDetails {
     public static TrainDetails makeTrainDetails(String trainCode, String error){
         return new TrainDetails(trainCode, error);
     }
+
+    @Override
+    public String toString() {
+        return "TrainDetails{" +
+                "trainCode='" + trainCode + '\'' +
+                ", trainDate='" + trainDate + '\'' +
+                ", locationCode='" + locationCode + '\'' +
+                ", locationFullName='" + locationFullName + '\'' +
+                ", locationOrder='" + locationOrder + '\'' +
+                ", locationType='" + locationType + '\'' +
+                ", trainOrigin='" + trainOrigin + '\'' +
+                ", trainDestination='" + trainDestination + '\'' +
+                ", scheduledArrival='" + scheduledArrival + '\'' +
+                ", scheduledDeparture='" + scheduledDeparture + '\'' +
+                ", arrival='" + arrival + '\'' +
+                ", departure='" + departure + '\'' +
+                ", autoArrival='" + autoArrival + '\'' +
+                ", autoDepart='" + autoDepart + '\'' +
+                ", stopType='" + stopType + '\'' +
+                ", error='" + error + '\'' +
+                '}';
+    }
+
     public static TrainDetails makeTrainDetails(String trainCode, String trainDate, String locationCode, String locationFullName,
-                               String locationOrder, String locationType, String trainOrigin,
-                               String trainDestination, String scheduledArrival, String scheduledDeparture,
-                               String arrival, String departure, String autoArrival, String autoDepart, String stopType){
+                  Integer locationOrder, String locationType, String trainOrigin, String
+                                                        trainDestination, String scheduledArrival,
+                  String scheduledDeparture, String expectedArrival, String expectedDeparture,
+                  String arrival, String departure, String autoArrival, String autoDepart, String stopType){
 
         return new TrainDetails(trainCode, trainDate, locationCode, locationFullName, locationOrder,
                 locationType, trainOrigin, trainDestination, scheduledArrival, scheduledDeparture,
-                arrival, departure, autoArrival, autoDepart, stopType);
+                expectedArrival, expectedDeparture,arrival, departure, autoArrival, autoDepart, stopType);
     }
     public String getTrainCode() {
         return trainCode;
@@ -97,11 +127,11 @@ public class TrainDetails {
         this.locationFullName = locationFullName;
     }
 
-    public String getLocationOrder() {
+    public Integer getLocationOrder() {
         return locationOrder;
     }
 
-    public void setLocationOrder(String locationOrder) {
+    public void setLocationOrder(Integer locationOrder) {
         this.locationOrder = locationOrder;
     }
 
@@ -187,5 +217,21 @@ public class TrainDetails {
 
     public String getError() {
         return error;
+    }
+
+    public String getExpectedArrival() {
+        return expectedArrival;
+    }
+
+    public void setExpectedArrival(String expectedArrival) {
+        this.expectedArrival = expectedArrival;
+    }
+
+    public String getExpectedDeparture() {
+        return expectedDeparture;
+    }
+
+    public void setExpectedDeparture(String expectedDeparture) {
+        this.expectedDeparture = expectedDeparture;
     }
 }

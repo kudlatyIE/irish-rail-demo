@@ -228,15 +228,21 @@ public class Parser {
         return trains;
 	}
 
-    public static HashMap<String, TrainDetails> parseTrainDetails(String myXml) throws Exception {
-        HashMap<String, TrainDetails> trainRoute  = new HashMap<>();
+	/**
+	 *
+	 * @param myXml
+	 * @return hashmap location order is a key
+	 * @throws Exception
+     */
+    public static HashMap<Integer, TrainDetails> parseTrainDetails(String myXml) throws Exception {
+        HashMap<Integer, TrainDetails> trainRoute  = new HashMap<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         h= new XmlKeyHolder();
         try{
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new ByteArrayInputStream(myXml.getBytes()));
             doc.getDocumentElement().normalize();
-            NodeList list = doc.getElementsByTagName(h.OBJECT_TRAIN_POSITION);
+            NodeList list = doc.getElementsByTagName(h.OBJECT_TRAIN_MOVEMENTS);
 
             if(list.getLength()>0){
                 for(int i=0;i<list.getLength();i++){
@@ -252,8 +258,8 @@ public class Parser {
                                 .getTextContent();
                         String locationName = e.getElementsByTagName(h.TD_LOCATION_FULL_NAME).item(0)
                                 .getTextContent();
-                        String order = e.getElementsByTagName(h.TD_LOCATION_ORDER).item(0)
-                                .getTextContent();
+                        Integer order = Integer.parseInt(e.getElementsByTagName(h.TD_LOCATION_ORDER).item(0)
+                                .getTextContent());
                         String locationType = e.getElementsByTagName(h.TD_LOCATION_TYPE).item(0)
                                 .getTextContent();
                         String origin = e.getElementsByTagName(h.TD_TRAIN_ORIGIN).item(0)
@@ -295,12 +301,14 @@ public class Parser {
                         String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
                                 .getTextContent();
 
-
-                        trainRoute.put(code, TrainDetails.makeTrainDetails(code,date,locationCode,
+                        trainRoute.put(order, TrainDetails.makeTrainDetails(code,date,locationCode,
                                 locationName,order,locationType,origin,destination,schArrival,
-                                schDepart,arrival,depart,autoArrival,autoDepart,stopType));
+                                schDepart,expArrival, expDepart, arrival,depart,autoArrival,
+                                autoDepart, stopType));
+//                        Log.w(TAG,trainRoute.get(order).toString());
                     }
                 }
+//                Log.d(TAG, "map size: "+trainRoute.size());
             }else{
 //                trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData));
                 throw new Exception(h.errNoData);

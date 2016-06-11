@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.Train;
+import ie.droidfactory.fragstations.model.TrainDetails;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
@@ -80,14 +81,20 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 				RailSingleton.setTrainMap(list);
 				result = "trains number: "+list.size();
 			}
-
+			if (mode == AsyncMode.GET_TRAIN_DETAILS) {
+				HashMap<Integer, TrainDetails> list;
+				list = Parser.parseTrainDetails(res);
+				RailSingleton.setTrainDetailsMap(list);
+				result = "on route stations number: "+list.size();
+			}
+            asyncDoneCallback.onAsyncDone(true);
 
 		}catch(Exception ex){
 			ex.printStackTrace();
 			result = ex.getMessage();
 		}
-        asyncDoneCallback.onAsyncDone(true);
-		tvResult.setText(result);
+
+		if(tvResult!=null) tvResult.setText(result);
 	}
 
 

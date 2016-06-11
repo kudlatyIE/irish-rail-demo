@@ -20,6 +20,7 @@ public class FragmentUtils {
 	public final static String FRAGMENT_INFO = "info";
 
 	public final static String FRAGMENT_TRAIN = "train";
+	public final static String TRAIN_MSG = "train_msg";
 
 
 

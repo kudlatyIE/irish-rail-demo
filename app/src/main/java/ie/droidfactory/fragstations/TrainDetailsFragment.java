@@ -1,14 +1,30 @@
 package ie.droidfactory.fragstations;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
+
+import ie.droidfactory.fragstations.httputils.AsyncMode;
+import ie.droidfactory.fragstations.httputils.AsyncStationsList;
+import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.Train;
+import ie.droidfactory.fragstations.model.TrainDetails;
+import ie.droidfactory.fragstations.utils.DataUtils;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
@@ -17,12 +33,29 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
  */
 public class TrainDetailsFragment extends Fragment {
 
-    private final static String TAG = TrainDetailsFragment.class.getSimpleName();
+    private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            if (done) {
+                if(trainCode!= null) updateDetails(trainCode, msg);
+                Log.d(TAG, "onAsyncDone() callback, create map");
+                Log.d(TAG, "onAsyncDone() callback, map size: "+RailSingleton.getTrainDetailsMap
+                        ().size());
+                createDetailsList(FRAGMENT.CREATE);
+            }
+        }
+    };
 
-    private String trainCode, trainName, trainDirection;
+    private final static String TAG = TrainDetailsFragment.class.getSimpleName();
+    private enum FRAGMENT{CREATE, REFRESH};
+    private String trainCode, trainName, trainDirection, link, msg="";
     private double lat, lng;
     private TextView tvInfo;
+    private ListView lv;
     private Train train;
+    private ArrayList<Integer> mlist;
+    private MyAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,6 +69,7 @@ public class TrainDetailsFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfo = (TextView) view.findViewById(R.id.fragment_train_details_info);
+        lv = (ListView) view.findViewById(R.id.fragment_train_details_listview);
     }
 
     @Override
@@ -43,26 +77,119 @@ public class TrainDetailsFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onStart();
         Bundle extras = getArguments();
-
         if(extras!=null) {
             trainCode = extras.getString(FragmentUtils.STATION_CODE);
             lat = extras.getDouble(FragmentUtils.STATION_LAT);
             lng = extras.getDouble(FragmentUtils.STATION_LONG);
             trainDirection = extras.getString(FragmentUtils.TRAIN_DESCRIPTION);
+            msg = extras.getString(FragmentUtils.TRAIN_MSG);
             Log.d(TAG, "from bundle: trainCode: "+trainCode+", direction: "+trainDirection+"\nLAT:"
             +lat+" LNG:" + lng);
         }
-        if(trainCode!= null) updateDetails(trainCode);
+        try {
+            link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
+                    .getFormatedDate(null));// return train route details for today
+            AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode
+                    .GET_TRAIN_DETAILS, asyncDone, null);
+            async.execute(link);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
     }
 
-    private void updateDetails(String id){
-        Log.d(TAG, "updateDetails arg: "+id);
+    private void updateDetails(String id, String msg){
+        Log.d(TAG, "updateDetails arg: "+msg);
         this.train = RailSingleton.getTrainMap().get(id);
         Log.d(TAG, "train is NULL: "+(train==null));
-        tvInfo.setText(TAG+" update details for: "+
-                "\ntrainCode ID: "+trainCode+
-                "\nLAT: "+train.getTrainLatitude()+" LNG: "+train.getTrainLongitude()+
-                "\nDirection: "+train.getDirection());
+//        tvInfo.setText(train.getTrainCode()+":\n"+train.getPublicMessage());
+        tvInfo.setText(msg);
+    }
+
+    private void createDetailsList(FRAGMENT todo){
+//        updateDetails(trainCode, msg);
+        if(lv==null) return;
+        if(todo==FRAGMENT.CREATE){
+            if(RailSingleton.getTrainDetailsMap()!=null){
+                try {
+                    adapter = new MyAdapter(getActivity(), RailSingleton.getTrainDetailsMap());
+                    lv.setAdapter(adapter);
+                    lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getActivity(),"click on:\n"+RailSingleton.getTrainDetailsMap()
+                                    .get(mlist.get(position)).getLocationFullName(), Toast.LENGTH_SHORT ).show();
+                            return false;
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class MyAdapter extends BaseAdapter{
+
+        Holder h;
+        ArrayList<Integer> list;
+        HashMap<Integer, TrainDetails> mMap;
+        private LayoutInflater inflater;
+
+        MyAdapter(Context c, HashMap<Integer, TrainDetails> map) throws Exception {
+            if(map==null){
+                throw new Exception("station list is NULL!");
+            }
+            this.mMap=map;
+            this.list = new ArrayList<>();
+            for(Integer key: new TreeSet<>(map.keySet())){
+                list.add(key);
+            }
+            if(list!=null) mlist = list;
+            Log.d(TAG, "for this route stations number: "+list.size());
+            this.inflater = LayoutInflater.from(c);
+
+        }
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mMap.get(list.get(position));
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v;
+            if(convertView==null){
+                v = inflater.inflate(R.layout.adapter_train_details, parent, false);
+                h = new Holder();
+                h.tvArrival = (TextView) v.findViewById(R.id.adapter_train_details_arrival);
+                h.tvLocation = (TextView) v.findViewById(R.id.adapter_train_details_location);
+                h.tvDeparture = (TextView) v.findViewById(R.id.adapter_train_details_depart);
+                v.setTag(h);
+            }else {
+                v = convertView;
+                h = (Holder) v.getTag();
+            }
+            h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
+            h.tvLocation.setText(mMap.get(list.get(position)).getLocationFullName());
+            h.tvDeparture.setText(mMap.get(list.get(position)).getDeparture());
+            return v;
+        }
+    }
+    private class Holder{
+        TextView tvArrival, tvLocation, tvDeparture;
     }
 
 }

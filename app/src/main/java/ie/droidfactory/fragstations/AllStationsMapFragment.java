@@ -83,6 +83,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             }
         });
     }
+    //TODO: will use this way.. maybe..
 //    @Override
 //    public void onAsyncDone(boolean done) {
 //        Log.d(TAG, "onAcyncDone() - create map fragment....");
@@ -161,7 +162,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             if(mapFragment!=null){
                 Log.d(TAG, "FRAGMENT.REFRESH, mapFragment exist, kill and create new!");
                 FragmentManager fm = getFragmentManager();
-
                 fm.beginTransaction().remove( mapFragment).commit();
                 fm.executePendingTransactions();
                 fm = getFragmentManager();
@@ -224,11 +224,11 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     public void onDestroyView(){
         super.onDestroyView();
         Log.d(TAG, "onDestroyView, beginning...");
-        if(map!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove
-                    (getFragmentManager().findFragmentByTag(TAG_FULL_MAP)).commit();
-            map=null;
-        }
+//        if(map!=null){
+//            getActivity().getSupportFragmentManager().beginTransaction().remove
+//                    (getFragmentManager().findFragmentByTag(TAG_FULL_MAP)).commit();
+//            map=null;
+//        }
     }
 
 
