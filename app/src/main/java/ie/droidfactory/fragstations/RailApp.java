@@ -15,10 +15,10 @@ import org.acra.sender.HttpSender;
  */
 
 @ReportsCrashes(
-        formUri = "https://irerail.cloudant.com/acra-irerail/_design/acra-storage/_update/report",
+        formUri = "https://kudlatyie.cloudant.com/acra-irerail/_design/acra-storage/_update/report",
         reportType = HttpSender.Type.JSON,
         httpMethod = HttpSender.Method.POST,
-        formUriBasicAuthLogin = "fortyloughtnescordelisai",
+        formUriBasicAuthLogin = "fortyloughtnescordelisai" ,
         formUriBasicAuthPassword = "ea3e3b25b79d6baa2f6b3c4dfa0be4d9e9909495",
 //        formKey = "", // This is required for backward compatibility but not used
         customReportContent = {
@@ -38,6 +38,8 @@ public class RailApp extends Application{
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+//        ACRAConfiguration conf = new ConfigurationBuilder();
+//        conf.
     }
 
     @Override
@@ -45,4 +47,16 @@ public class RailApp extends Application{
         super.onCreate();
         ACRA.init(this);
     }
+    
+    public String getAcraUser(){
+        return getResources().getString(R.string.acra_user);
+    }
+
 }
+/* send report to email
+
+@ReportsCrashes(formKey = "", // will not be used
+        mailTo = "reports@yourdomain.com", // my email here
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.crash_toast_text)
+*/

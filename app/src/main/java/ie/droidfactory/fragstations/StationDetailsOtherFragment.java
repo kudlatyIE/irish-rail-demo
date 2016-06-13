@@ -2,9 +2,11 @@ package ie.droidfactory.fragstations;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import ie.droidfactory.fragstations.model.Station;
@@ -22,6 +24,7 @@ public class StationDetailsOtherFragment extends Fragment {
     private int childPosition = -1;
     private TextView tvInfo;
     private Station station;
+    private Button btnBum;
 
     public static StationDetailsOtherFragment newInstance(Bundle args){
         StationDetailsOtherFragment fragment = new StationDetailsOtherFragment();
@@ -42,6 +45,7 @@ public class StationDetailsOtherFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfo = (TextView) view.findViewById(R.id.fragment_details_other_text_info);
+        btnBum = (Button) view.findViewById(R.id.fragment_detais_other_btn_bum);
     }
 
 
@@ -58,6 +62,19 @@ public class StationDetailsOtherFragment extends Fragment {
         if(stationId!= null) updateDetails(stationId);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated....");
+        btnBum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bum();
+            }
+        });
+    }
+
     private void updateDetails(String id){
         this.station = RailSingleton.getStationMap().get(id);
         tvInfo.setText(TAG+" update details for: "+
@@ -70,6 +87,11 @@ public class StationDetailsOtherFragment extends Fragment {
     public void setStationDetails(String id){
         stationId = id;
         updateDetails(id);
+    }
+
+    private void bum(){
+        Log.i(TAG, "ACRA testing...");
+        throw new RuntimeException(TAG+" - BADA BUM!");
     }
 
 }

@@ -50,6 +50,7 @@ public class StationListFragment extends MainFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+
         this.mlist = new ArrayList<>();
         for(String key: RailSingleton.getStationMap().keySet()){
             mlist.add(key);

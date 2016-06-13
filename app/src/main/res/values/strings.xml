@@ -17,5 +17,6 @@
     <string name="close_drawer">Navigation View</string>
     <string name="open_drawer">Navigation View Closed</string>
     <string name="toast_crash">app crash</string>
+    <string name="btn_bada_bum">Bada bum</string>
 
 </resources>
