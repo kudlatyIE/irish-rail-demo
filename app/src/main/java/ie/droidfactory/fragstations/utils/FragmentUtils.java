@@ -22,7 +22,7 @@ public class FragmentUtils {
 	public final static String FRAGMENT_TRAIN = "train";
 	public final static String TRAIN_MSG = "train_msg";
 
-
+	public final static String TAG_USER = "My Location";
 
 	public static final String FRAGMENT_SETTINGS = "settings";
 	public static final String FRAGMENT_ABOUT = "about";
