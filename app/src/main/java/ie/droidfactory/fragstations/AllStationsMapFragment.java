@@ -74,6 +74,19 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         Log.d(TAG, "onViewCreated map is null: "+(map==null));
         btnRefresh = (Button) view.findViewById(R.id.fragment_all_mapa_btn_refresh);
         //TODO create map fragment
+
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
         createMapFragment(FRAGMENT.CREATE);
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,12 +147,16 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
     private void createMapFragment(FRAGMENT todo){
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_MAP);
+        View view = getActivity().findViewById(R.id.fragment_all_map_mapa);
+//        if()
+        Log.d(TAG, "fragment_all_mapa_map getVisiblity: "+(view.getVisibility()));
+
         if(todo==FRAGMENT.CREATE){
             if(mapFragment==null){
                 Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
                 FragmentManager fm = getFragmentManager();
                 mapFragment = SupportMapFragment.newInstance();
-                fm.beginTransaction().add(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_MAP)
+                fm.beginTransaction().replace(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_MAP)
                         .commit();
                 mapFragment.getMapAsync(new OnMapReadyCallback(){
 
@@ -224,11 +241,20 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     public void onDestroyView(){
         super.onDestroyView();
         Log.d(TAG, "onDestroyView, beginning...");
-//        if(map!=null){
+
+//        if(mapFragment!=null){
 //            getActivity().getSupportFragmentManager().beginTransaction().remove
-//                    (getFragmentManager().findFragmentByTag(TAG_FULL_MAP)).commit();
-//            map=null;
+//                    (getFragmentManager().findFragmentByTag(TAG_FULL_MAP)).commitAllowingStateLoss();
+//            mapFragment=null;
 //        }
+    }
+    @Override
+    public void onDestroy(){
+        SupportMapFragment mf = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id
+                .fragment_all_map_mapa);
+        if(mf.isResumed()) getFragmentManager().beginTransaction().remove(mf)
+                .commitAllowingStateLoss();
+        super.onDestroy();
     }
 
 

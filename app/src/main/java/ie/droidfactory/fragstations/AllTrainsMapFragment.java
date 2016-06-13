@@ -13,10 +13,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,29 +62,52 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
     private final static String TAG = AllTrainsMapFragment.class.getSimpleName();
     private final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
     private final static String TAG_USER = "My Location";
-    private enum FRAGMENT{CREATE, REFRESH};
+    private enum FRAGMENT{CREATE, REFRESH, RECREATE_MARKS};
     private Button btnRefresh;
     private TextView tvInfo;
     private SupportMapFragment mapFragment;
-    private GoogleMap map;
-    private LatLng myLocation=null;
+    private GoogleMap googleMap;
+    private LatLng myLocation=null, lastLocation=null;
+    private static View rootView;
+    private CameraPosition cameraPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ){
-        View v = inflater.inflate(R.layout.fragment_map_all_trains, container, false);
-        return v;
+
+//        rootView = inflater.inflate(R.layout.fragment_map_all_trains, container, false);
+//        return rootView;
+        return inflater.inflate(R.layout.fragment_map_all_trains, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated beginning...");
-        Log.d(TAG, "onViewCreated map is null: "+(map==null));
+        Log.d(TAG, "onViewCreated map is null: "+(googleMap==null));
         btnRefresh = (Button) view.findViewById(R.id.fragment_all_trains_mapa_btn_refresh);
         tvInfo = (TextView) view.findViewById(R.id.fragment_all_trains_mapa_text_info);
+    }
+//    @Override
+//    public void onAsyncDone(boolean done) {
+//        //TODO: if done load map with markers
+//        Log.d(TAG, "onAsyncDone(), create map");
+//        createMap();
+//    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
 
         String link = Links.GET_ALL_TRAINS.getRailLink();
-    //TODO: recreate map view when back from details!!!!!!!
+        //TODO: recreate map view when back from details!!!!!!!
 
 //        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
         if(RailSingleton.getTrainMap()==null){
@@ -91,7 +116,12 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             rail.execute(link);
         }else createMapFragment(FRAGMENT.CREATE);
 
-
+        //recreate markers
+        if(savedInstanceState!=null && savedInstanceState.containsKey(FRAGMENT.RECREATE_MARKS.name())){
+            if(googleMap!=null){
+                setMap(RailSingleton.getTrainMap(), FRAGMENT.RECREATE_MARKS);
+            }
+        }
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,38 +131,26 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             }
         });
     }
-//    @Override
-//    public void onAsyncDone(boolean done) {
-//        //TODO: if done load map with markers
-//        Log.d(TAG, "onAsyncDone(), create map");
-//        createMap();
-//    }
-
-
-
+    private void restoreMarks(){
+        GoogleMapOptions options = new GoogleMapOptions();
+        if(cameraPosition!=null) options.camera(cameraPosition);
+        if(googleMap!=null){
+            setMap(RailSingleton.getTrainMap(), FRAGMENT.RECREATE_MARKS);
+        }
+    }
 
     private void createMapFragment(FRAGMENT todo){
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
+        FragmentManager fm = getChildFragmentManager();
+        mapFragment = (SupportMapFragment) fm.findFragmentByTag(TAG_FULL_TRAINS_MAP);
         if(todo==FRAGMENT.CREATE){
             if(mapFragment==null){
                 Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
-                FragmentManager fm = getFragmentManager();
+//                FragmentManager fm = getFragmentManager();
                 mapFragment = SupportMapFragment.newInstance();
-                fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
+                fm.beginTransaction().replace(R.id.fragment_all_trains_map_mapa, mapFragment,
                         TAG_FULL_TRAINS_MAP).commit();
-                mapFragment.getMapAsync(new OnMapReadyCallback(){
-
-                    @Override
-                    public void onMapReady(GoogleMap arg0) {
-                        if(arg0!=null){
-                            map=arg0;
-                            setMap(RailSingleton.getTrainMap());
-                        }
-                        Log.d(TAG, "FRAGMENT.CREATE::onMapReady arg0 is null: "+(arg0==null));
-
-                    }
-
-                });
+                fm.executePendingTransactions();
+                initializeMap(mapFragment, todo);
             }else{
                 Log.d(TAG, "FRAGMENT.CREATE, mapFragment is not null...");
 
@@ -141,58 +159,61 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
         if(todo==FRAGMENT.REFRESH){
             if (mapFragment != null) {
                 Log.d(TAG, "FRAGMENT.REFRESH, mapFragment is NOT NULL, kill and create new!");
-                FragmentManager fm = getFragmentManager();
+                fm = getChildFragmentManager();
                 fm.beginTransaction().remove(mapFragment).commit();
                 fm.executePendingTransactions();
-                fm = getFragmentManager();
+                fm = getChildFragmentManager();
                 mapFragment = SupportMapFragment.newInstance();
                 fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
                         TAG_FULL_TRAINS_MAP).commit();
-                mapFragment.getMapAsync(new OnMapReadyCallback(){
+                fm.executePendingTransactions();
+                initializeMap(mapFragment, todo);
 
-                    @Override
-                    public void onMapReady(GoogleMap arg0) {
-                        if(arg0!=null){
-                            map=arg0;
-                            setMap(RailSingleton.getTrainMap());
-                        }
-                        Log.d(TAG, "FRAGMENT.REFRESH::onMapReady arg0 is null: "+(arg0==null));
-
-                    }
-
-                });
             }else{
                 Log.d(TAG, "FRAGMENT.REFRESH, mapFragment is NULL, create new!");
-                FragmentManager fm = getFragmentManager();
+                fm = getChildFragmentManager();
                 mapFragment = SupportMapFragment.newInstance();
                 fm.beginTransaction().add(R.id.fragment_all_trains_map_mapa, mapFragment,
                         TAG_FULL_TRAINS_MAP).commit();
-                mapFragment.getMapAsync(new OnMapReadyCallback(){
-
-                    @Override
-                    public void onMapReady(GoogleMap arg0) {
-                        if(arg0!=null){
-                            map=arg0;
-                            setMap(RailSingleton.getTrainMap());
-                        }
-                        Log.d(TAG, "FRAGMENT.REFRESH::onMapReady arg0 is null: "+(arg0==null));
-
-                    }
-
-                });
+                fm.executePendingTransactions();
+                initializeMap(mapFragment, todo);
             }
         }
     }
+    private void initializeMap(SupportMapFragment fragment, final FRAGMENT todo){
+        if(fragment!=null){
+            fragment.getMapAsync(new OnMapReadyCallback(){
 
-    private void setMap(HashMap<String, Train> list){
-        Log.d(TAG, "setMap beginning...");
-        try{
-            myLocation = LocationUtils.getLocation(getActivity());
-        }catch(NullPointerException e){
-            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLocation();
-            else this.myLocation = MyShared.getMyLastLocation(getActivity());
+                @Override
+                public void onMapReady(GoogleMap arg0) {
+                    if(arg0!=null){
+                        googleMap=arg0;
+                        setMap(RailSingleton.getTrainMap(), todo);
+                    }
+                    Log.d(TAG, "FRAGMENT.REFRESH::onMapReady arg0 is null: "+(arg0==null));
+
+                }
+
+            });
+        }else{
+            Log.e(TAG, "unable initalize map, mapFragment is null");
         }
-        map.getUiSettings().setAllGesturesEnabled(true);
+    }
+
+    private void setMap(HashMap<String, Train> list, FRAGMENT todo){
+        Log.d(TAG, "setMap beginning...");
+        LatLng location = this.myLocation;
+        if(todo!=FRAGMENT.RECREATE_MARKS){
+            try{
+                myLocation = LocationUtils.getLocation(getActivity());
+            }catch(NullPointerException e){
+                if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLocation();
+                else this.myLocation = MyShared.getMyLastLocation(getActivity());
+            }
+        }else{
+            location = lastLocation;
+        }
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
         if(list!=null && list.size()!=1){
             for(String i: list.keySet()){
                 addTrainMarker(i, new LatLng(list.get(i).getTrainLatitude(),
@@ -203,17 +224,17 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             }
         }
         //add user location as default marker
-        map.addMarker(new MarkerOptions().position(this.myLocation).title(TAG_USER).snippet(TAG_USER));
-        map.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
-        Log.d(TAG, "setMap() map is null: "+(map==null));
+        googleMap.addMarker(new MarkerOptions().position(this.myLocation).title(TAG_USER).snippet(TAG_USER));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
+        Log.d(TAG, "setMap() map is null: "+(googleMap==null));
     }
 
     private void addTrainMarker(String id, LatLng trainLatLng, String trainTitle, String code,
                             BitmapDescriptor ic){
-        map.addMarker(new MarkerOptions().position(trainLatLng).title(trainTitle).snippet(code)
+        googleMap.addMarker(new MarkerOptions().position(trainLatLng).title(trainTitle).snippet(code)
                 .icon(ic));
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
@@ -227,6 +248,10 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             }
 
         });
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(FRAGMENT.RECREATE_MARKS.name(), "doIt");//recreate markers
     }
 
 
@@ -248,12 +273,27 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
     public void onDestroyView(){
         super.onDestroyView();
         Log.d(TAG, "onDestroyView, beginning...");
-//        if(map!=null){
-//            getActivity().getSupportFragmentManager().beginTransaction().remove
-//                    (getFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP)).commit();
-//
-//            map=null;
+        if(googleMap!=null)  cameraPosition = googleMap.getCameraPosition();
+        lastLocation = cameraPosition.target;
+//            if(map!=null){
+//                Fragment fr =  getFragmentManager().findFragmentById(R.id
+//                        .fragment_all_trains_map_mapa);
+//                FragmentManager fm = getFragmentManager();
+//                fm.beginTransaction().remove(fr).commitAllowingStateLoss();
+//                map=null;
 //        }
+    }
+
+
+    @Override
+    public void onDestroy(){
+//        SupportMapFragment mf = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id
+//                .fragment_all_trains_map_mapa);
+        SupportMapFragment mf = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id
+                .fragment_all_trains_map_mapa);
+        if(mf.isResumed()) getFragmentManager().beginTransaction().remove(mf)
+                .commitAllowingStateLoss();
+        super.onDestroy();
     }
 
 

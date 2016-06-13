@@ -58,10 +58,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
 
-        detailsView = findViewById(R.id.fragment_station_details_container);
-        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
-
-
         /*
         add toolbar and drawer... and make them work!
         1. initialization drawer....
@@ -111,6 +107,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 //        else mainFragmentId = FragmentUtils.FRAGMENT_LIST;
 
         //handle fragments....
+        //        detailsView = findViewById(R.id.fragment_station_details_container); //kick
+        // this away, can throw nullpointerexception
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
 
         //SINGLE PANE - PORTRAIT
         if(!isDualPane){
@@ -118,6 +117,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             Log.d(TAG, "onCreate, PORT, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
             if(detailsFragment!=null){
                 if(isTablet){
+
                     ft = getSupportFragmentManager().beginTransaction();
                     getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     ft.remove(detailsFragment).commit();
@@ -142,6 +142,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
             //DUAL PANE - LANDSCAPE
         }else{
+            detailsView = findViewById(R.id.fragment_station_details_container);
             if(detailsView!=null) updateViews(detailsView);
             Log.d(TAG, "onCreate, LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
             Log.d(TAG, "onCreate, LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
@@ -205,7 +206,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 super.onBackPressed();
             }
         }else super.onBackPressed();
-
     }
 
     @Override
@@ -263,12 +263,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
                 if(id==mId) return;
-//                else {
-//                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-//                    mId=id;
-//                    ft.addToBackStack(null);
-//                    ft.commit();
-//                }
+                else {
+                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    mId=id;
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=id;
@@ -286,7 +286,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         String trainCode = train.getTrainCode();
         String direction = train.getDirection();
         //TODO: fix break line char from XML
-        String msg = train.getPublicMessage().replaceAll("\\n", "\n");
+        String msg = train.getPublicMessage().replaceAll("\\n", "\\n");
 //        String msg = train.getPublicMessage().replaceAll("\n", "\\n");
         double lat = train.getTrainLatitude();
         double lo = train.getTrainLongitude();
@@ -305,7 +305,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             detailsFragment = new TrainDetailsFragment();
             Bundle args = new Bundle();
             args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
-            args.putString(FragmentUtils.STATION_CODE, trainId);
+            args.putString(FragmentUtils.STATION_CODE, trainCode);
             args.putDouble(FragmentUtils.STATION_LAT, lat);
             args.putDouble(FragmentUtils.STATION_LONG, lo);
             args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
@@ -331,7 +331,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             detailsFragment = new TrainDetailsFragment();
             Bundle args = new Bundle();
             args.putString(FragmentUtils.PARENT_POSITION_KEY, trainId);
-            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putString(FragmentUtils.STATION_CODE, trainCode);
             args.putDouble(FragmentUtils.STATION_LAT, lat);
             args.putDouble(FragmentUtils.STATION_LONG, lo);
             args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
@@ -340,12 +340,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
                 if(trainId==mId) return;
-//                else {
-//                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-//                    mId=trainId;
-//                    ft.addToBackStack(null);
-//                    ft.commit();
-//                }
+                else {
+                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    mId=trainId;
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=trainId;
