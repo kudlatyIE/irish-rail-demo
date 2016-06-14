@@ -33,6 +33,8 @@
             android:label="">
         </activity>
         <activity android:name=".DrawerActivity">
+    </activity>
+        <activity android:name=".utils.ACRACrashReportDialog">
         </activity>
     </application>
 

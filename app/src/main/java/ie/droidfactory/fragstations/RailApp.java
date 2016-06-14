@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import org.acra.ACRA;
+import org.acra.config.ACRAConfigurationException;
 
 import ie.droidfactory.fragstations.utils.ACRAReporter;
 
@@ -40,7 +41,11 @@ public class RailApp extends Application{
 //        ACRAConfiguration conf = build.build();
 
 
-        ACRA.init(this, ACRAReporter.acraConfig(this));
+        try {
+            ACRA.init(this, ACRAReporter.acraConfig(this));
+        } catch (ACRAConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -18,5 +18,11 @@
     <string name="open_drawer">Navigation View Closed</string>
     <string name="toast_crash">ACRA crash report is sending</string>
     <string name="btn_bada_bum">Bada bum</string>
+    <string name="crash_dialog_title">Sensi App crash</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the application to
+        stop. Would you like to send the details to help fix the issue?</string>
+    <string name="crash_dialog_comment_prompt">You can add extra information and comments here:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 
 </resources>
