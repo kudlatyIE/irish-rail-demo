@@ -17,6 +17,7 @@ import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
+import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.PermEnum;
 import ie.droidfactory.fragstations.utils.PermissionUtils;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         suomi = this;
         tvInfo = (TextView)findViewById(R.id.main_text_info);
 //		TestUtils.makeList();
+        LocationUtils.getLocation(this);
         if(MyShared.isStationMap(getApplicationContext())){
             RailSingleton.setStationMap(MyShared.getStationsMap(getApplicationContext()));
             Log.d(TAG, "get stations list from cache...");

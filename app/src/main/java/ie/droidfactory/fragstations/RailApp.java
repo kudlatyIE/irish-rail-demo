@@ -20,27 +20,6 @@ public class RailApp extends Application{
         super.attachBaseContext(base);
         MultiDex.install(this);
 
-//        ReportField[] fields = {ReportField.APP_VERSION_CODE,
-//                ReportField.APP_VERSION_NAME,
-//                ReportField.ANDROID_VERSION,
-//                ReportField.PACKAGE_NAME,
-//                ReportField.PHONE_MODEL,
-//                ReportField.BUILD,
-//                ReportField.STACK_TRACE};
-//
-//        ConfigurationBuilder build = new ConfigurationBuilder(this).
-//                setFormUri("https://kudlatyie.cloudant.com/acra-irerail/_design/acra-storage/_update/report").
-//                setHttpMethod(HttpSender.Method.POST).
-//                setReportType(HttpSender.Type.JSON).
-//                setFormUriBasicAuthLogin(getAcraUser()).
-//                setFormUriBasicAuthPassword(getAcraPass()).
-//                setCustomReportContent(fields).
-//                setResDialogOkToast(R.string.toast_crash).
-//                setMailTo("kudlaty.ie@gmail.com");
-//
-//        ACRAConfiguration conf = build.build();
-
-
         try {
             ACRA.init(this, ACRAReporter.acraConfig(this));
         } catch (ACRAConfigurationException e) {
