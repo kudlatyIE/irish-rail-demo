@@ -28,6 +28,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         AllStationsMapFragment.RestartCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
+    public final static String FRAG_SUBDETAILS = "frag_subdetails";
     public final static String FRAG_DETAILS = "frag_details";//, FRAG_STATIONS="frag_stations";
     public final static String FRAG_MAIN="frag_main";
     private Fragment detailsFragment;
@@ -210,7 +211,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     @Override
     public void onStationSelected(String id) {
-        // TODO Auto-generated method stub
         RailSingleton.resetTimetable();
         Station station = RailSingleton.getStationMap().get(id);
         stationCode = station.getStationCode();
@@ -356,6 +356,82 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         }
     }
 
+    @Override
+    public void onStationSelectedFromTrain(String stationId) {
+        RailSingleton.resetTimetable();
+        Station station = RailSingleton.getStationMap().get(stationId);
+        try{
+            stationCode = station.getStationCode();
+        }catch(NullPointerException e){
+            //TODO: load extra data for this station, now just return null
+            Toast.makeText(getApplicationContext(), "it is just a technical station",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        double lat = station.getStationLatitude();
+        double lo = station.getStationLongitude();
+
+        Log.d(TAG, "station selected on list: "+stationId+" code: "+stationCode);
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+        FragmentTransaction ft;
+
+        if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
+            this.mId=stationId;
+            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
+
+            detailsFragment = new StationDetailsFragment();
+            Bundle args = new Bundle();
+            args.putString(FragmentUtils.PARENT_POSITION_KEY, stationId);
+            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putDouble(FragmentUtils.STATION_LAT, lat);
+            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            detailsFragment.setArguments(args);
+            ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
+            ft.addToBackStack(null);
+            ft.commit();
+
+//			}
+            //LANDSCAPE - DUAL PANE MODE
+        }else{
+            detailsView = findViewById(R.id.fragment_station_details_container);
+            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
+                    .fragment_station_list_container)==null));
+            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
+                    .fragment_station_details_container)==null));
+            if(!detailsView.isShown()){
+                Log.w(TAG, "details view is GONE, restore view....");
+                detailsView.setVisibility(View.VISIBLE);
+            }
+            detailsFragment = new StationDetailsFragment();
+            Bundle args = new Bundle();
+            args.putString(FragmentUtils.PARENT_POSITION_KEY, stationId);
+            args.putString(FragmentUtils.STATION_CODE, stationCode);
+            args.putDouble(FragmentUtils.STATION_LAT, lat);
+            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            detailsFragment.setArguments(args);
+            ft = getSupportFragmentManager().beginTransaction();
+            if(detailsFragment!=null) {
+                //TODO: dont reload the same details fragment if exist
+                if(stationId==mId) return;
+                else {
+                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    mId=stationId;
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+            }else {
+                ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                mId=stationId;
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+
+        }
+    }
 
 
     private void updateViews(View detail){

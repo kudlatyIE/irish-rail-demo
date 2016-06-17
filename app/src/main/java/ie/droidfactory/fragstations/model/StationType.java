@@ -4,10 +4,10 @@ package ie.droidfactory.fragstations.model;
  */
 public enum StationType {
 
-	TYPE_A ("A", "All"),
-	TYPE_M ("M","Mainline"),
-	TYPE_S ("S","suburban"),
-	TYPE_D ("D","DART");
+	TYPE_O ("O", "Origin"),
+	TYPE_T ("T","TimingPoint"),
+	TYPE_S ("S","Stop"),
+	TYPE_D ("D","Destination");
 	
 	private String type, name;
 	

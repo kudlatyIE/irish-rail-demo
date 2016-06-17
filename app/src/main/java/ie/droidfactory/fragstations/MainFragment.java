@@ -12,13 +12,16 @@ public class MainFragment extends Fragment implements RailInterface {
     @Override
     public void onStationSelected(String stationId) {
         // TODO Auto-generated method stub
-
     }
     @Override
     public void onTrainSelected(String trainId) {
-
     }
-    RailInterface stationCallback, trainCallback;
+
+    @Override
+    public void onStationSelectedFromTrain(String stationId) {
+    }
+
+    RailInterface stationCallback, trainCallback, stationFromTrainCallback;
 
     public void setStationSelectedListener(RailInterface listener){
         stationCallback = listener;
@@ -26,5 +29,7 @@ public class MainFragment extends Fragment implements RailInterface {
     public void setTrainSelectedListener(RailInterface listener){
         trainCallback = listener;
     }
+    public void setStationFromTrainListener(RailInterface listener){ stationFromTrainCallback =
+            listener;}
 
 }

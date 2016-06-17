@@ -54,7 +54,27 @@ public class Sortownia {
         return sortedList;
     }
 
-    public ArrayList<SortedObject> getSorteDListByName() throws Exception {
+    public ArrayList<SortedObject> getSorteDueTime() throws Exception {
+        this.sortedList = new ArrayList<>();
+        HashMap<String, StationDetails> insert = RailSingleton.getTimetable();
+        if(insert==null) throw new Exception("empty input, stations list is null");
+        ArrayList<SortedObject> unsortedList = new ArrayList<>();
+        for(String key: insert.keySet()){
+//            Log.d(TAG, key+" due in: "+insert.get(key).getDueIn());
+            unsortedList.add(new SortedObject(key, Integer.parseInt(insert.get(key).getDueIn())));
+        }
+        SortedObject[] myObjects = unsortedList.toArray(new SortedObject[unsortedList.size()]);
+
+        CompareObjects sorted = new CompareObjects((myObjects));
+        sorted.sortByDistance();
+        for(SortedObject so: sorted.getList()){
+            sortedList.add(new SortedObject(so.getKey(), so.getValueDecimal()));
+//            Log.d(TAG, so.getKey()+" due: "+so.getValueDecimal());
+        }
+        return sortedList;
+    }
+
+    public ArrayList<SortedObject> getSortedListByName() throws Exception {
         this.sortedList = new ArrayList<>();
         HashMap<String, Station> insert = RailSingleton.getStationMap();
         if(insert==null) throw new Exception("empty input, stations list is null");
@@ -97,14 +117,14 @@ public class Sortownia {
         locB.setLongitude(myLocation.longitude);
         return (locA.distanceTo(locB));
     }
-    private float getDistance(double lat, double lng){
+    private int getDistance(double lat, double lng){
         Location locA = new Location("");
         Location locB = new Location("");
         locA.setLatitude(lat);
         locA.setLongitude(lng);
         locB.setLatitude(myLocation.latitude);
         locB.setLongitude(myLocation.longitude);
-        return (locA.distanceTo(locB));
+        return (int)(locA.distanceTo(locB));
     }
 
 

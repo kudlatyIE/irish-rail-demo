@@ -5,4 +5,5 @@ package ie.droidfactory.fragstations.model;
 public interface RailInterface {
 	public void onStationSelected(String stationId);
 	public void onTrainSelected(String trainId);
+	public void onStationSelectedFromTrain(String stationId);
 }

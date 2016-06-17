@@ -2,7 +2,6 @@ package ie.droidfactory.fragstations.utils;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
@@ -18,9 +17,10 @@ public class RailSingleton {
 	private static HashMap<String, Station> stationMap=null;
 	private static HashMap<String, Train> trainsMap=null;
 	private static HashMap<Integer, TrainDetails> trainDetailsMap=null;
-	private static ArrayList<StationDetails> timetable=null;
+	private static HashMap<String,StationDetails> timetableMap=null;
 	public static String currentStationCode="unknown";
 	private static LatLng myLocation=null;
+	private static int timeStampStationDetails;
 
 //	public static ArrayList<Station> getStationList() {
 ////		if(stationList==null) stationList = new ArrayList<Station>();
@@ -39,17 +39,17 @@ public class RailSingleton {
 		RailSingleton.stationMap = stationMap;
 	}
 
-	public static ArrayList<StationDetails> getTimetable() {
-		return timetable;
+	public static HashMap<String, StationDetails> getTimetable() {
+		return timetableMap;
 	}
 
-	public static void setTimetable(ArrayList<StationDetails> timetable) {
-		RailSingleton.timetable = timetable;
+	public static void setTimetable(HashMap<String,StationDetails> timetable) {
+		RailSingleton.timetableMap = timetable;
 	}
 	
 	public static void resetTimetable(){
 		currentStationCode = "unknown";
-		timetable = null;
+		timetableMap = null;
 	}
 
 	public static LatLng getMyLocation() {
@@ -74,4 +74,15 @@ public class RailSingleton {
 	public static void setTrainDetailsMap(HashMap<Integer, TrainDetails> trainDetailsMap) {
 		RailSingleton.trainDetailsMap = trainDetailsMap;
 	}
+
+	public static int getTimeStampStationDetails() {
+		return timeStampStationDetails;
+	}
+
+	public static void setTimeStampStationDetails(int timeStampTrainDetails) {
+		RailSingleton.timeStampStationDetails = timeStampTrainDetails;
+	}
+
+    public static void currentStationCode(String stationId) {
+    }
 }

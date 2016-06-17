@@ -36,9 +36,9 @@ public class StationListFragment extends MainFragment {
 
 
     RailInterface stationCallback;
-    public void setStationSelectedListener(RailInterface listener){
-        stationCallback = listener;
-    }
+//    public void setStationSelectedListener(RailInterface listener){
+//        stationCallback = listener;
+//    }
 
 
     @Override
@@ -68,7 +68,7 @@ public class StationListFragment extends MainFragment {
                 String dist = so.getValue1();
 //                Log.d(TAG, "by distance : "+so.getKey()+" ::: "+dist);
             }
-            this.sortedByName = new Sortownia().getSorteDListByName();
+            this.sortedByName = new Sortownia().getSortedListByName();
             for(SortedObject so: sortedByName){
 //                Log.d(TAG, "by name : "+so.getKey()+" ::: "+so.getValue1()+" ::: dist: "
 //                        +so.getValue2());

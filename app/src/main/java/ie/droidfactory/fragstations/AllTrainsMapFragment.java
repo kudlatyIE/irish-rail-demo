@@ -41,9 +41,10 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 public class AllTrainsMapFragment extends MainFragment {//implements AsyncStationsList.AsyncDoneCallback{
 
     RailInterface trainCallback;
-    public void setTrainSelectedListener(RailInterface listener){
-        trainCallback = listener;
-    }
+//    @Override
+//    public void setTrainSelectedListener(RailInterface listener){
+//        trainCallback = listener;
+//    }
     public static AllTrainsMapFragment newInstance(Bundle args){
         AllTrainsMapFragment fragment = new AllTrainsMapFragment();
         fragment.setArguments(args);

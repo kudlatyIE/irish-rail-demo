@@ -8,7 +8,7 @@ public class SortedObject {
     private String key;
     private String value1;
     private String value2;
-    private Float valueDecimal;
+    private Integer valueDecimal;
 
     public String getKey() {
         return key;
@@ -33,11 +33,11 @@ public class SortedObject {
         this.value2 = value;
     }
 
-    public Float getValueDecimal() {
+    public Integer getValueDecimal() {
         return valueDecimal;
     }
 
-    public void setValueDecimal(Float valueDecimal) {
+    public void setValueDecimal(Integer valueDecimal) {
         this.valueDecimal = valueDecimal;
     }
 
@@ -50,7 +50,7 @@ public class SortedObject {
         this.key=key;
         this.value1=value;
     }
-    public SortedObject(String key, Float value){
+    public SortedObject(String key, Integer value){
         this.key=key;
         this.valueDecimal=value;
     }

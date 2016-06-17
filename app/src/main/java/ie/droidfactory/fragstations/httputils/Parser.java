@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationDetails;
+import ie.droidfactory.fragstations.model.StationType;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
 
@@ -121,8 +122,10 @@ public class Parser {
 	}
 
 
-	public static ArrayList<StationDetails> parseTimetableForStation(String myXml) throws Exception{
-		ArrayList<StationDetails> timetable  = new ArrayList<StationDetails>();
+//	public static ArrayList<StationDetails> parseTimetableForStation(String myXml) throws Exception{
+public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
+            Exception{
+		HashMap<String, StationDetails> timetable  = new HashMap<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		h= new XmlKeyHolder();
 		try {
@@ -161,10 +164,9 @@ public class Parser {
 						String direction = e.getElementsByTagName(h.DIRECTION).item(0).getTextContent();
 						String trainType = e.getElementsByTagName(h.TRAIN_TYPE).item(0).getTextContent();
 						String locationType = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
-								
-						
-						
-						timetable.add(new StationDetails(serverTime, trainCode, stationFullName, stationCode, queryTime, trainDate,
+
+						timetable.put(trainCode, new StationDetails(serverTime, trainCode,
+                                stationFullName, stationCode, queryTime, trainDate,
 								origin, destination, originTime, destinationTime, status, lastLocation, dueIn, 
 								late, expArrival, expDepart, schArrival, schDepart, direction, trainType, locationType));
 					}
@@ -301,10 +303,12 @@ public class Parser {
                         String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
                                 .getTextContent();
 
-                        trainRoute.put(order, TrainDetails.makeTrainDetails(code,date,locationCode,
-                                locationName,order,locationType,origin,destination,schArrival,
-                                schDepart,expArrival, expDepart, arrival,depart,autoArrival,
-                                autoDepart, stopType));
+                        if(!locationType.equals(StationType.TYPE_T.getType())){
+							trainRoute.put(order, TrainDetails.makeTrainDetails(code,date,locationCode,
+									locationName,order,locationType,origin,destination,schArrival,
+									schDepart,expArrival, expDepart, arrival,depart,autoArrival,
+									autoDepart, stopType));
+						}
 //                        Log.w(TAG,trainRoute.get(order).toString());
                     }
                 }

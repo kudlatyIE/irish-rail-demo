@@ -14,10 +14,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 import ie.droidfactory.fragstations.httputils.HttpConnect;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.httputils.Parser;
+import ie.droidfactory.fragstations.model.SortedObject;
+import ie.droidfactory.fragstations.model.Sortownia;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.StationDetails;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
@@ -39,7 +43,8 @@ public class StationDetailsTimetableFragment extends Fragment {
     private Station station;
     private ProgressDialog dialog;
     private MyAdapter adapter;
-    private ArrayList<StationDetails> timetable = null;
+    private HashMap<String, StationDetails> timetable = null;
+    private ArrayList<SortedObject> sortedByDueTime;
 
     public static StationDetailsTimetableFragment newInstance(Bundle args){
         StationDetailsTimetableFragment fragment = new StationDetailsTimetableFragment();
@@ -68,6 +73,7 @@ public class StationDetailsTimetableFragment extends Fragment {
     public void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
+
         Bundle extras = getArguments();
         if(extras!=null) {
 //			mCurrentPosition = extras.getInt(FragmentUtils.PARENT_POSITION_KEY);
@@ -84,20 +90,22 @@ public class StationDetailsTimetableFragment extends Fragment {
         if(!RailSingleton.currentStationCode.equals(stationCode)) rail.execute(link.toString());
         else {
             timetable = RailSingleton.getTimetable();
-            if(timetable!=null) {
                 try {
-                    adapter = new MyAdapter(getActivity(), timetable);
-                    lv.setAdapter(adapter);
+                    setList(sortedByDueTime, timetable);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     Log.i(TAG, e.getMessage());
                 }
-
-            }
         }
 
     }
 
+    private void setList(ArrayList<SortedObject> list, HashMap<String, StationDetails> data) throws
+            Exception {
+        if(data==null) throw new Exception("no input data");
+        else adapter = new MyAdapter(getActivity(),list,data);
+        if(lv!=null) lv.setAdapter(adapter);
+    }
 
     private void updateDetails(String id){
         this.station = RailSingleton.getStationMap().get(id);
@@ -143,12 +151,11 @@ public class StationDetailsTimetableFragment extends Fragment {
                 timetable = Parser.parseTimetableForStation(res);
                 RailSingleton.setTimetable(timetable);
                 result = "stations number: "+timetable.size();
-                RailSingleton.currentStationCode = timetable.get(0).getStationCode();
-                adapter = new MyAdapter(getActivity(),timetable);
-                if(lv!=null) lv.setAdapter(adapter);
-
+//                RailSingleton.currentStationCode = timetable.get(0).getStationCode();
+                sortedByDueTime = new Sortownia().getSorteDueTime();
+                setList(sortedByDueTime, timetable);
             }catch(Exception ex){
-//				ex.printStackTrace();
+				ex.printStackTrace();
                 result = ex.getMessage();
                 Log.d(TAG, result);
             }
@@ -160,25 +167,28 @@ public class StationDetailsTimetableFragment extends Fragment {
 
     private class MyAdapter extends BaseAdapter {
         Holder h;
-        ArrayList<StationDetails> mlist;
+        HashMap<String, StationDetails> mMap;
+        ArrayList<SortedObject> sort;
         private LayoutInflater inflater;
 
-        MyAdapter(Context c, ArrayList<StationDetails> list) throws Exception{
-            if(list==null){
+        MyAdapter(Context c, ArrayList<SortedObject> sort, HashMap<String, StationDetails> map)
+                throws Exception{
+            if(map==null || sort==null){
                 throw new Exception("station list is NULL!");
             }
-            this.mlist=list;
+            this.sort=sort;
+            this.mMap=map;
             this.inflater = LayoutInflater.from(c);
 
         }
         @Override
         public int getCount() {
-            return mlist.size();
+            return sort.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mlist.get(position);
+            return sort.get(position);
         }
 
         @Override
@@ -202,9 +212,13 @@ public class StationDetailsTimetableFragment extends Fragment {
                 h = (Holder) v.getTag();
             }
 
-            h.tvTrainType.setText(position+" "+mlist.get(position).getTrainType());
-            h.tvDestination.setText(mlist.get(position).getDestination());
-            h.tvTime.setText(mlist.get(position).getDueIn());
+            h.tvTrainType.setText(String.format(Locale.ENGLISH,"%d %s", position, mMap.get
+                    (sort.get(position).getKey()).getTrainType()));
+            h.tvDestination.setText(String.format(Locale.ENGLISH,"%s", mMap.get(sort.get(position).getKey())
+                    .getDestination()));
+            h.tvTime.setText(String.format(Locale.ENGLISH,"%d %s", sort.get(position)
+                    .getValueDecimal(),"min"));
+
             return v;
         }
 

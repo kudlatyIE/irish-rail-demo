@@ -1,8 +1,8 @@
 package ie.droidfactory.fragstations;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +17,13 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.TreeSet;
 
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
+import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
 import ie.droidfactory.fragstations.utils.DataUtils;
@@ -31,7 +33,9 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 10/06/2016.
  */
-public class TrainDetailsFragment extends Fragment {
+public class TrainDetailsFragment extends MainFragment {
+
+    RailInterface stationFromTrainCallback;
 
     private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
             .AsyncDoneCallback() {
@@ -56,6 +60,7 @@ public class TrainDetailsFragment extends Fragment {
     private Train train;
     private ArrayList<Integer> mlist;
     private MyAdapter adapter;
+    private int stampNow, stampOld;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +81,17 @@ public class TrainDetailsFragment extends Fragment {
     public void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
+//        stampNow = new Date().getSeconds();
+//        if(RailSingleton.getTimeStampStationDetails()!=0){
+//            stampOld = RailSingleton.getTimeStampStationDetails();
+//            long diff = (stampNow-stampOld)/60000;
+//            if(diff>60){
+//                //TODO: load new timetable
+//            }else{
+//                //TODO: load data from singleton
+//            }
+//        }else RailSingleton.setTimeStampStationDetails(new Date().getSeconds());//and load timetable
+
         Bundle extras = getArguments();
         if(extras!=null) {
             trainCode = extras.getString(FragmentUtils.STATION_CODE);
@@ -86,19 +102,22 @@ public class TrainDetailsFragment extends Fragment {
             Log.d(TAG, "from bundle: trainCode: "+trainCode+", direction: "+trainDirection+"\nLAT:"
             +lat+" LNG:" + lng);
         }
-        try {
-            link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
-                    .getFormatedDate(null));// return train route details for today
-            AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode
-                    .GET_TRAIN_DETAILS, asyncDone, null);
-            async.execute(link);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(RailSingleton.getTimetable()!=null){
+            if(trainCode!= null) updateDetails(trainCode, msg);
+            Log.d(TAG, "onCreate() get map from singleton size: "+RailSingleton.getTrainDetailsMap
+                    ().size());
+            createDetailsList(FRAGMENT.CREATE);
+        }else{
+            try {
+                link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
+                        .getFormatedDate(null));// return train route details for today
+                AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode
+                        .GET_TRAIN_DETAILS, asyncDone, null);
+                async.execute(link);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
-
-
-
-
     }
 
     private void updateDetails(String id, String msg){
@@ -125,11 +144,30 @@ public class TrainDetailsFragment extends Fragment {
                             return false;
                         }
                     });
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            stationFromTrainCallback.onStationSelectedFromTrain(RailSingleton
+                                    .getTrainDetailsMap().get(mlist.get(position)).getLocationCode());
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+    @Override
+    public void onAttach(Activity activity) {
+        // TODO Auto-generated method stub
+        super.onAttach(activity);
+        try{
+            stationFromTrainCallback = (RailInterface) activity;
+        }catch(ClassCastException e){
+            throw new ClassCastException(activity.toString()+ "OnStationFromTrainSelected " +
+                    "Listener is not implemented...");
+        }
+        Log.d(TAG, "onAttach end...");
     }
 
     private class MyAdapter extends BaseAdapter{
@@ -182,10 +220,22 @@ public class TrainDetailsFragment extends Fragment {
                 v = convertView;
                 h = (Holder) v.getTag();
             }
+            //stuff belowe doesnt work: empty rows are still visible
+//            if(!mMap.get(list.get(position)).getLocationType().equals(StationType.TYPE_T.getType())){
+//                v.setVisibility(View.VISIBLE);
+//                h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
+//                h.tvLocation.setText(mMap.get(list.get(position)).getLocationFullName());
+//                h.tvDeparture.setText(mMap.get(list.get(position)).getDeparture());
+//                return v;
+//            }else v.setVisibility(View.GONE);
             h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
-            h.tvLocation.setText(mMap.get(list.get(position)).getLocationFullName());
+            h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
+                    mMap.get(list.get(position)).getLocationCode(),
+//                    mMap.get(list.get(position)).getLocationType(),
+                    mMap.get(list.get(position)).getLocationFullName()));
             h.tvDeparture.setText(mMap.get(list.get(position)).getDeparture());
             return v;
+
         }
     }
     private class Holder{

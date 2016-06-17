@@ -12,7 +12,7 @@
         android:id="@+id/adapter_train_details_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
     <TextView
         android:id="@+id/adapter_train_details_depart"
         android:layout_width="0dp"
