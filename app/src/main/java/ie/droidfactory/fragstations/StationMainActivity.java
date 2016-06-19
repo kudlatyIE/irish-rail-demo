@@ -190,24 +190,36 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     }
 
     @Override
-    public void onBackPressed() {
-        if(isDualPane){
-            if( detailsFragment!=null){
-                Log.d(TAG, "onBackPressed(): details fragment is not null!");
-                ft = getSupportFragmentManager().beginTransaction();
-                getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                ft.remove(detailsFragment);
-                ft.commit();
-                getSupportFragmentManager().executePendingTransactions();
-                detailsFragment=null;
-                updateViews(detailsView);
-
-            }else{
-                Log.d(TAG, "onBackPressed(): details fragment is NULL!");
-                super.onBackPressed();
-            }
-        }else super.onBackPressed();
+    public void onBackPressed()
+    {
+        if(!MainFragment.handleBackPressed(getSupportFragmentManager())){
+            super.onBackPressed();
+        }
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        if(isDualPane){
+//            if( detailsFragment!=null){
+//                if(getSupportFragmentManager().findFragmentByTag(AllTrainsMapFragment
+//                        .TAG_FULL_TRAINS_MAP)!=null){
+//
+//                }
+//                Log.d(TAG, "onBackPressed(): details fragment is not null!");
+//                ft = getSupportFragmentManager().beginTransaction();
+//                getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                ft.remove(detailsFragment);
+//                ft.commit();
+//                getSupportFragmentManager().executePendingTransactions();
+//                detailsFragment=null;
+//                updateViews(detailsView);
+//
+//            }else{
+//                Log.d(TAG, "onBackPressed(): details fragment is NULL!");
+//                super.onBackPressed();
+//            }
+//        }else super.onBackPressed();
+//    }
 
     @Override
     public void onStationSelected(String id) {
@@ -374,8 +386,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         Log.d(TAG, "station selected on list: "+stationId+" code: "+stationCode);
         detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
         FragmentTransaction ft;
-
+        Fragment currentFragment;
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
+            //remove preview view
             this.mId=stationId;
             Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
                     .fragment_station_list_container)==null));
@@ -391,6 +404,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             detailsFragment.setArguments(args);
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
+
             ft.addToBackStack(null);
             ft.commit();
 
@@ -418,13 +432,21 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 //TODO: dont reload the same details fragment if exist
                 if(stationId==mId) return;
                 else {
-                    ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                    if((currentFragment = getSupportFragmentManager().findFragmentById(R.id
+                            .fragment_station_details_container))!=null){
+                        ft.hide(currentFragment);
+                    }
                     mId=stationId;
                     ft.addToBackStack(null);
                     ft.commit();
                 }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                if((currentFragment = getSupportFragmentManager().findFragmentById(R.id
+                        .fragment_station_list_container))!=null){
+                    ft.hide(currentFragment);
+                }
                 mId=stationId;
                 ft.addToBackStack(null);
                 ft.commit();

@@ -62,7 +62,7 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
     };
 
     private final static String TAG = AllTrainsMapFragment.class.getSimpleName();
-    private final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
+    public final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
 //    private final static String TAG_USER = "My Location";
     private enum FRAGMENT{CREATE, REFRESH, RECREATE_MARKS};
     private Button btnRefresh;

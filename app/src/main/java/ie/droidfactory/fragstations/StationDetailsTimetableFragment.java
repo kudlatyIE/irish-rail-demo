@@ -62,7 +62,6 @@ public class StationDetailsTimetableFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfo = (TextView) view.findViewById(R.id.fragment_details_timetable_text_info);
         lv = (ListView) view.findViewById(R.id.fragment_details_timetable_listview);
@@ -71,7 +70,6 @@ public class StationDetailsTimetableFragment extends Fragment {
 
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
 
         Bundle extras = getArguments();
@@ -93,7 +91,6 @@ public class StationDetailsTimetableFragment extends Fragment {
                 try {
                     setList(sortedByDueTime, timetable);
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     Log.i(TAG, e.getMessage());
                 }
         }
@@ -107,7 +104,7 @@ public class StationDetailsTimetableFragment extends Fragment {
         if(lv!=null) lv.setAdapter(adapter);
     }
 
-    private void updateDetails(String id){
+    private void updateDetails(String id){ //temporary stuff
         this.station = RailSingleton.getStationMap().get(id);
         tvInfo.setText(TAG+" update details for:"+
                 "\nchild ID: "+childPosition+
@@ -122,8 +119,6 @@ public class StationDetailsTimetableFragment extends Fragment {
     }
 
     private class AsyncRail extends AsyncTask<String, Void, String> {
-
-
         @Override
         protected String doInBackground(String... params) {
             String xml = HttpConnect.getRailStuff(params[0]);
@@ -162,7 +157,6 @@ public class StationDetailsTimetableFragment extends Fragment {
             CharSequence temp = tvInfo.getText();
             tvInfo.setText(temp+"\n"+result);
         }
-
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -221,7 +215,6 @@ public class StationDetailsTimetableFragment extends Fragment {
 
             return v;
         }
-
     }
 
     private class Holder{

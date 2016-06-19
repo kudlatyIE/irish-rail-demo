@@ -22,14 +22,6 @@ public class RailSingleton {
 	private static LatLng myLocation=null;
 	private static int timeStampStationDetails;
 
-//	public static ArrayList<Station> getStationList() {
-////		if(stationList==null) stationList = new ArrayList<Station>();
-//		return stationList;
-//	}
-//
-//	public static void setStationList(ArrayList<Station> stationList) {
-//		RailSingleton.stationList = stationList;
-//	}
 
 	public static HashMap<String, Station> getStationMap() {
 		return stationMap;

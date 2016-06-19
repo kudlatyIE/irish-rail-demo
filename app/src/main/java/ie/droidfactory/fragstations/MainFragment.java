@@ -1,6 +1,7 @@
 package ie.droidfactory.fragstations;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import ie.droidfactory.fragstations.model.RailInterface;
 
@@ -31,5 +32,25 @@ public class MainFragment extends Fragment implements RailInterface {
     }
     public void setStationFromTrainListener(RailInterface listener){ stationFromTrainCallback =
             listener;}
+
+    public static boolean handleBackPressed(FragmentManager fm){
+        if(fm.getFragments()!=null){
+            for(Fragment f: fm.getFragments()){
+                if(f!=null && f.isVisible() && f instanceof MainFragment){
+                    if(((MainFragment)f).onBackPressed()) return true;
+                }
+            }
+        }
+        return false;
+    }
+    protected boolean onBackPressed(){
+        FragmentManager fm = getChildFragmentManager();
+        if(handleBackPressed(fm)) return true;
+        else if(getUserVisibleHint() && fm.getBackStackEntryCount()>0){
+            fm.popBackStack();
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -122,8 +122,7 @@ public class Parser {
 	}
 
 
-//	public static ArrayList<StationDetails> parseTimetableForStation(String myXml) throws Exception{
-public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
+    public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
             Exception{
 		HashMap<String, StationDetails> timetable  = new HashMap<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -303,6 +302,7 @@ public static HashMap<String,StationDetails> parseTimetableForStation(String myX
                         String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
                                 .getTextContent();
 
+                        //grab data only if stations is not timing_point type
                         if(!locationType.equals(StationType.TYPE_T.getType())){
 							trainRoute.put(order, TrainDetails.makeTrainDetails(code,date,locationCode,
 									locationName,order,locationType,origin,destination,schArrival,
