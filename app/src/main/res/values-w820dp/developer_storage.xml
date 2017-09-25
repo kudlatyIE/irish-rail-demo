@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="g_map_api_key">AIzaSyAwY2g3OxwByG0CXpUG7NFhoykyL-0fj3M</string>
+    <string name="acra_user">aterseadectionintogentri</string>
+    <string name="acra_password">2f6ad7071981827354f6d467da4525fd16d6a0e0</string>
+    <string name="acra_db_url">https://sensiacra.cloudant.com/acra-sensiandroid/_design/acra-storage/_update/report</string>
+
+</resources>
