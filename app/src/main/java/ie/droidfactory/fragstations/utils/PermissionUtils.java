@@ -114,7 +114,7 @@ public class PermissionUtils {
     {
         switch (requestCode)
         {
-            case 1:
+            case 123:
                 if(grantResults.length>0) {
                     Map<String, Integer> perms = new HashMap<>();
                     for (int i = 0; i < permissions.length; i++) {
@@ -154,11 +154,8 @@ public class PermissionUtils {
                                                     permissionResultCallback.PartialPermissionGranted(req_code,pending_permissions);
                                                 break;
                                         }
-
-
                                     }
                                 });
-
                     }
                     else
                     {
@@ -167,9 +164,7 @@ public class PermissionUtils {
                         permissionResultCallback.PermissionGranted(req_code);
 
                     }
-
-
-
+                    
                 }
                 break;
         }

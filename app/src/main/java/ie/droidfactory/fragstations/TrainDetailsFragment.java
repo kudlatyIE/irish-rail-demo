@@ -26,6 +26,7 @@ import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
+import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.DataUtils;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
@@ -33,7 +34,7 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 10/06/2016.
  */
-public class TrainDetailsFragment extends MainFragment {
+public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskResultCallback */{
 
     RailInterface stationFromTrainCallback;
 
@@ -52,6 +53,9 @@ public class TrainDetailsFragment extends MainFragment {
     };
 
     private final static String TAG = TrainDetailsFragment.class.getSimpleName();
+
+
+
     private enum FRAGMENT{CREATE, REFRESH};
     private String trainCode, trainName, trainDirection, link, msg="";
     private double lat, lng;
@@ -111,8 +115,7 @@ public class TrainDetailsFragment extends MainFragment {
             try {
                 link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
                         .getFormatedDate(null));// return train route details for today
-                AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode
-                        .GET_TRAIN_DETAILS, asyncDone, null);
+                AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode.GET_TRAIN_DETAILS, asyncDone);
                 async.execute(link);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -169,6 +172,17 @@ public class TrainDetailsFragment extends MainFragment {
         }
         Log.d(TAG, "onAttach end...");
     }
+
+//    @Override
+//    public void asyncDone(boolean done) {
+//        if (done) {
+//            if(trainCode!= null) updateDetails(trainCode, msg);
+//            Log.d(TAG, "onAsyncDone() callback, create map");
+//            Log.d(TAG, "onAsyncDone() callback, map size: "+RailSingleton.getTrainDetailsMap
+//                    ().size());
+//            createDetailsList(FRAGMENT.CREATE);
+//        }
+//    }
 
     private class MyAdapter extends BaseAdapter{
 

@@ -4,49 +4,48 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
+import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class AsyncStationsList extends AsyncTask<String, Void, String>{
+public class AsyncStationsList extends AsyncTask<String, Void, String> {
 
 	public interface AsyncDoneCallback{
 		void onAsyncDone(boolean done);
 	}
 	private AsyncDoneCallback asyncDoneCallback;
 
-	@Override
-	protected void onCancelled() {
-		super.onCancelled();
-		if(dialog!=null && dialog.isShowing()) dialog.dismiss();
-	}
+
     private final static String TAG = AsyncStationsList.class.getSimpleName();
 	private Context context;
-	private TextView tvResult;
+//	private TextView tvResult;
 	private ProgressDialog dialog;
 	private String result="";
 	private AsyncMode mode;
-	public AsyncStationsList(Context context, AsyncMode mode, AsyncDoneCallback callback, TextView
-            tvResult){
+	private Links link;
+//	private AsyncTaskResultCallback asyncTaskResultCallback;
+
+	public AsyncStationsList(Context context , AsyncMode mode , AsyncDoneCallback callback /*, TextView tvResult */){
 		this.context=context;
-		this.tvResult=tvResult;
+//		this.tvResult=tvResult;
 		this.mode=mode;
         this.asyncDoneCallback = callback;
+//		this.asyncTaskResultCallback = (AsyncTaskResultCallback) context;
         Log.d(TAG, "async constructor:: MODE: "+mode.toString());
     }
 	
 	@Override
 	protected String doInBackground(String... params) {
-		String xml = HttpConnect.getRailStuff(params[0]);
-		return xml;
+//		this.link = params[0];
+		return HttpConnect.getRailStuff(params[0]);
 	}
 
 	@Override
@@ -61,10 +60,52 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 		
 	}
 
+//	@Override
+//	protected void onPostExecute(String res) {
+//		// TODO Auto-generated method stub
+//		super.onPostExecute(res);
+//		try{
+//			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
+//
+//			if(link==Links.ALL_STATIONS){
+//				HashMap<String, Station> list = new HashMap<>();
+//				list = Parser.parseAllStationsMap(res);
+//				RailSingleton.setStationMap(list);
+//				MyShared.setStationsMap(context, res);
+//				result = "stations number: "+list.size();
+//			}
+//
+//			if(link==Links.GET_ALL_TRAINS){
+//				HashMap<String, Train> list;
+//				list = Parser.parseRunningTrains(res);
+//				RailSingleton.setTrainMap(list);
+//				result = "trains number: "+list.size();
+//			}
+//			if (link == Links.GET_TRAIN_DETAILS) {
+//				HashMap<Integer, TrainDetails> list;
+//				list = Parser.parseTrainDetails(res);
+//				RailSingleton.setTrainDetailsMap(list);
+//				result = "on route stations number: "+list.size();
+//			}
+//
+//
+//
+//		}catch(Exception ex){
+//			ex.printStackTrace();
+//			result = ex.getMessage();
+//			asyncTaskResultCallback.asyncDone(false);
+//		}
+//		Log.d(TAG, "async result:\n"+result);
+//		RailSingleton.setAsyncResult(result);
+//		asyncTaskResultCallback.asyncDone(true);
+////        tvResult.setText(result);
+//	}
+
 	@Override
 	protected void onPostExecute(String res) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(res);
+		boolean success = false;
 		try{
 
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
@@ -87,17 +128,23 @@ public class AsyncStationsList extends AsyncTask<String, Void, String>{
 				RailSingleton.setTrainDetailsMap(list);
 				result = "on route stations number: "+list.size();
 			}
-            asyncDoneCallback.onAsyncDone(true);
+			success=true;
 
 		}catch(Exception ex){
 			ex.printStackTrace();
 			result = ex.getMessage();
+			success=false;
 		}
-
-		if(tvResult!=null) tvResult.setText(result);
+//		asyncTaskResultCallback.asyncDone(success);
+		asyncDoneCallback.onAsyncDone(success);
+		RailSingleton.setAsyncResult(result);
 	}
 
+	@Override
+	protected void onCancelled() {
+		super.onCancelled();
+		if(dialog!=null && dialog.isShowing()) dialog.dismiss();
+	}
 
-	
 	
 }

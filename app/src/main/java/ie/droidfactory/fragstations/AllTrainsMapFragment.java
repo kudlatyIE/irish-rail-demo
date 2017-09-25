@@ -30,6 +30,7 @@ import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Train;
+import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
@@ -38,7 +39,7 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 09/06/2016.
  */
-public class AllTrainsMapFragment extends MainFragment {//implements AsyncStationsList.AsyncDoneCallback{
+public class AllTrainsMapFragment extends MainFragment /*implements AsyncTaskResultCallback */ {//implements AsyncStationsList.AsyncDoneCallback{
 
     RailInterface trainCallback;
 //    @Override
@@ -63,7 +64,9 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
     private final static String TAG = AllTrainsMapFragment.class.getSimpleName();
     public final static String TAG_FULL_TRAINS_MAP="fragment_full_trains_map";
-//    private final static String TAG_USER = "My Location";
+
+
+    //    private final static String TAG_USER = "My Location";
     private enum FRAGMENT{CREATE, REFRESH, RECREATE_MARKS};
     private Button btnRefresh;
     private TextView tvInfo;
@@ -110,8 +113,8 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
 
 //        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP);
         if(RailSingleton.getTrainMap()==null){
-            AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS,
-                    asyncDone, tvInfo);
+            AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_TRAINS, asyncDone);
+            tvInfo.setText(RailSingleton.getAsyncResult());
             rail.execute(link);
         }else createMapFragment(FRAGMENT.CREATE);
 
@@ -137,6 +140,14 @@ public class AllTrainsMapFragment extends MainFragment {//implements AsyncStatio
             setMap(RailSingleton.getTrainMap());
         }
     }
+
+//    @Override
+//    public void asyncDone(boolean done) {
+//        if (done) {
+//            Log.d(TAG, "onAsyncDone() callback, create map");
+//            createMapFragment(FRAGMENT.CREATE);
+//        }
+//    }
 
     private void createMapFragment(FRAGMENT todo){
         FragmentManager fm = getChildFragmentManager();

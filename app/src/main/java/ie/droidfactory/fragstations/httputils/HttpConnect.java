@@ -22,7 +22,7 @@ public class HttpConnect {
 	private static StringBuffer buffer;
 	private static BufferedReader reader;
 	private static int responseCode;
-	private static String result, errMsg="http: shit hapend";
+	private static String result, errMsg="http: shit happen";
 	
 	public static String getRailStuff(String request){
 		String line;

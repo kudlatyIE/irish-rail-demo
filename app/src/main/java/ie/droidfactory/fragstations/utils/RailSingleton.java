@@ -21,6 +21,7 @@ public class RailSingleton {
 	public static String currentStationCode="unknown";
 	private static LatLng myLocation=null;
 	private static int timeStampStationDetails;
+	private static String asyncResult; // just for develop test
 
 
 	public static HashMap<String, Station> getStationMap() {
@@ -77,4 +78,12 @@ public class RailSingleton {
 
     public static void currentStationCode(String stationId) {
     }
+
+	public static String getAsyncResult() {
+		return asyncResult;
+	}
+
+	public static void setAsyncResult(String asyncResult) {
+		RailSingleton.asyncResult = asyncResult;
+	}
 }
