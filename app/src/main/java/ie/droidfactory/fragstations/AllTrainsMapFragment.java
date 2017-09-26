@@ -30,7 +30,6 @@ import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Train;
-import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyShared;
@@ -216,7 +215,9 @@ public class AllTrainsMapFragment extends MainFragment /*implements AsyncTaskRes
         try{
             myLocation = LocationUtils.getLocation(getActivity());
         }catch(NullPointerException e){
-            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLocation();
+            if(RailSingleton.getMyLocation()!=null) this.myLocation =
+                    new LatLng(RailSingleton.getMyLocation().getLatitude(), RailSingleton
+                            .getMyLocation().getLongitude());
             else this.myLocation = MyShared.getMyLastLocation(getActivity());
         }
         if(lastLocation!=null) location = lastLocation;
@@ -225,8 +226,8 @@ public class AllTrainsMapFragment extends MainFragment /*implements AsyncTaskRes
         googleMap.getUiSettings().setAllGesturesEnabled(true);
         if(list!=null && list.size()!=1){
             for(String i: list.keySet()){
-                addTrainMarker(i, new LatLng(list.get(i).getTrainLatitude(),
-                                list.get(i).getTrainLongitude()),
+                addTrainMarker(i, new LatLng(list.get(i).getLatitude(),
+                                list.get(i).getLongitude()),
                         list.get(i).getDirection(),//title
                         list.get(i).getTrainCode(),//snippet
                         BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));//icon

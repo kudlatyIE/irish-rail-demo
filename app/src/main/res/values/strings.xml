@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">EireRail</string>
+    <string name="app_name">Irish Railway</string>
+    <string name="hello_world">Jesus loves you</string>
+    <string name="enter_station_name">enter station name</string>
+
     <string name="category_stations">stations</string>
     <string name="category_trains">trains</string>
     <string name="navigation_item_list">list</string>
@@ -24,5 +27,12 @@
     <string name="crash_dialog_comment_prompt">You can add extra information and comments here:</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+
+    <string name="menu_night_mode">Night mode</string>
+    <string name="menu_night_mode_system">Follow system</string>
+    <string name="menu_night_mode_day">Day (always)</string>
+    <string name="menu_night_mode_night">Night (always)</string>
+    <string name="menu_night_mode_auto">Auto</string>
+    <string name="enter_train_name">enter train route</string>
 
 </resources>

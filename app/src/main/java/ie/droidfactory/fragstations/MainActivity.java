@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
-import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.PermissionResultCallback;
@@ -80,8 +79,6 @@ public class MainActivity extends Activity implements
         btnStation.setOnClickListener(button);
         btnMap.setOnClickListener(button);
         btnTrain.setOnClickListener(button);
-
-
     }
 
 

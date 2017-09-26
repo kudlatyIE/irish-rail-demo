@@ -5,12 +5,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
+import ie.droidfactory.fragstations.model.StationDetails;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
-import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.MyShared;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
@@ -111,7 +112,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
 			if (mode == AsyncMode.GET_ALL_STATIONS) {
 				HashMap<String, Station> list;
-				list = Parser.parseAllStationsMap(res);
+				list = Parser.parseAllStationsMap(context, res);
 				RailSingleton.setStationMap(list);
 				MyShared.setStationsMap(context, res);
 				result = "stations number: "+list.size();
@@ -127,6 +128,12 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 				list = Parser.parseTrainDetails(res);
 				RailSingleton.setTrainDetailsMap(list);
 				result = "on route stations number: "+list.size();
+			}
+			if(mode==AsyncMode.GET_STATION_DETAIL){
+				ArrayList<StationDetails> list;
+				list = Parser.parseTimetableForStation(res);
+				RailSingleton.setTimetableList(list);
+				result = "trains due in number: "+list.size();
 			}
 			success=true;
 

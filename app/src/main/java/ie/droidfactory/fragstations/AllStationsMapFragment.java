@@ -128,7 +128,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         try{
             myLocation = LocationUtils.getLocation(getActivity());
         }catch(NullPointerException e){
-            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLocation();
+            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLatLng();
             else this.myLocation = MyShared.getMyLastLocation(getActivity());
         }
         if(lastLocation!=null) location = lastLocation;

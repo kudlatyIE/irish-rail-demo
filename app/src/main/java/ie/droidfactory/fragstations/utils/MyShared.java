@@ -38,7 +38,7 @@ public class MyShared {
 		Log.d(TAG, "getStationsList...");
 		settings = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
 		String myXml = settings.getString(KEY_STATIONS, null);
-		return Parser.parseAllStationsMap(myXml);
+		return Parser.parseAllStationsMap(context, myXml);
 	}
 
 	public static boolean setMyLastLocation(Context context, LatLng mLocation){

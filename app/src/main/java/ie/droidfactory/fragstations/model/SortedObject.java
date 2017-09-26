@@ -41,17 +41,17 @@ public class SortedObject {
         this.valueDecimal = valueDecimal;
     }
 
-    public SortedObject(String key, String value1, String value2){
-        this.key=key;
-        this.value1=value1;
-        this.value2=value2;
-    }
-    public SortedObject(String key, String value){
-        this.key=key;
-        this.value1=value;
-    }
-    public SortedObject(String key, Integer value){
-        this.key=key;
-        this.valueDecimal=value;
-    }
+//    public SortedObject(String key, String value1, String value2){
+//        this.key=key;
+//        this.value1=value1;
+//        this.value2=value2;
+//    }
+//    public SortedObject(String key, String value){
+//        this.key=key;
+//        this.value1=value;
+//    }
+//    public SortedObject(String key, Integer value){
+//        this.key=key;
+//        this.valueDecimal=value;
+//    }
 }

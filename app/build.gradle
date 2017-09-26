@@ -27,10 +27,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.2.2'
     compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support:design:26.0.0'
+    compile 'com.android.support:cardview-v7:26.0.0'
     compile 'com.android.support:recyclerview-v7:26.0.0'
     compile 'com.android.support:multidex:1.0.1'
 
     compile 'ch.acra:acra:4.8.5'
 }
 
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

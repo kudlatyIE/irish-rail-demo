@@ -1,5 +1,6 @@
 package ie.droidfactory.fragstations.httputils;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.w3c.dom.Document;
@@ -32,51 +33,9 @@ public class Parser {
 	private static XmlKeyHolder h;
 
 	
-	public static ArrayList<Station> parseAllStations_old(String myXml) throws Exception {
-		ArrayList<Station> stations  = new ArrayList<Station>();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		h= new XmlKeyHolder();
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(new ByteArrayInputStream(myXml.getBytes()));
-			doc.getDocumentElement().normalize();
-			NodeList list = doc.getElementsByTagName(h.OBJECT_STATION);
-			
-			if(list.getLength()>0){
-				for(int i=0;i<list.getLength();i++){
-					Node node = list.item(i);
-					if(node.getNodeType()==Node.ELEMENT_NODE){
-						Element e = (Element) node;
-						String id = e.getElementsByTagName(h.STATION_ID).item(0).getTextContent();
-						String name = e.getElementsByTagName(h.STATION_DESC).item(0).getTextContent();
-						String alias=h.EMPTY;
-						try{
-							alias = e.getElementsByTagName(h.STATION_ALIAS).item(0).getTextContent();
-						}catch(Exception e1){}//return default alias
-						double lat = Double.parseDouble(e.getElementsByTagName(h.STATION_LATITUDE).item(0).getTextContent());
-						double lon = Double.parseDouble(e.getElementsByTagName(h.STATION_LONGITUDE).item(0).getTextContent());
-						String code = e.getElementsByTagName(h.STATION_CODE).item(0).getTextContent();
-						String type=h.EMPTY;
-						try{
-							type  = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
-						}catch(Exception e2){}//return default station type
-						
-						stations.add(Station.makeStation(name, code, id, alias, lat, lon, type));
-					}
-				}
-			}else{
-				stations.add(Station.makeStation(null,h.errNoData));
-			}
-			
-		} catch (SAXException | IOException | ParserConfigurationException e) {
-			stations.add(Station.makeStation(null,e.getMessage()));
-            throw new Exception(e.getMessage());
-		}
-		 
-		return stations;
-	}
+
 	
-	public static HashMap<String, Station> parseAllStationsMap(String myXml){
+	public static HashMap<String, Station> parseAllStationsMap(Context ac, String myXml){
 		HashMap<String, Station> stations  = new HashMap<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		h= new XmlKeyHolder();
@@ -105,8 +64,8 @@ public class Parser {
 						try{
 							type  = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
 						}catch(Exception e2){}//return default station type
-						
-						stations.put(code, Station.makeStation(name, code, id, alias, lat, lon, type));
+
+						stations.put(code, Station.makeStation(ac, name, code, id, alias, lat, lon, type));
 					}
 				}
 			}else{
@@ -122,9 +81,70 @@ public class Parser {
 	}
 
 
-    public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
-            Exception{
-		HashMap<String, StationDetails> timetable  = new HashMap<>();
+//    public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
+//            Exception{
+//		HashMap<String, StationDetails> timetable  = new HashMap<>();
+//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		h= new XmlKeyHolder();
+//		try {
+//			DocumentBuilder builder = factory.newDocumentBuilder();
+//			Document doc = builder.parse(new ByteArrayInputStream(myXml.getBytes()));
+//			doc.getDocumentElement().normalize();
+//			NodeList list = doc.getElementsByTagName(h.OBJECT_STATION_DATA);
+//			Log.d(TAG, "timetable size: "+list.getLength());
+//			if(list.getLength()>0){
+//				for(int i=0;i<list.getLength();i++){
+//					Node node = list.item(i);
+//					if(node.getNodeType()==Node.ELEMENT_NODE){
+//						Element e = (Element) node;
+//						String serverTime = e.getElementsByTagName(h.SERVER_TIME).item(0).getTextContent();
+//						String trainCode = e.getElementsByTagName(h.STATION_TRAIN_CODE).item(0)
+//								.getTextContent();
+//
+//						String stationFullName = e.getElementsByTagName(h.STATION_FULL_NAME).item(0).getTextContent();
+//						String stationCode = e.getElementsByTagName(h.STATION_CODE_DETAILS).item(0).getTextContent();
+//						String queryTime = e.getElementsByTagName(h.QUERY_TIME).item(0).getTextContent();
+//						String trainDate = e.getElementsByTagName(h.STATION_TRAIN_DATE).item(0)
+//								.getTextContent();
+//						String origin = e.getElementsByTagName(h.ORIGIN).item(0).getTextContent();
+//						String destination = e.getElementsByTagName(h.DESTINATION).item(0).getTextContent();
+//						String originTime = e.getElementsByTagName(h.ORIGIN_TIME).item(0).getTextContent();
+//						String destinationTime = e.getElementsByTagName(h.DESTINATION_TIME).item(0).getTextContent();
+//						String status = e.getElementsByTagName(h.STATION_TRAIN_STATUS).item(0)
+//								.getTextContent();
+//						String lastLocation = e.getElementsByTagName(h.LAST_LOCATION).item(0).getTextContent();
+//						String dueIn = e.getElementsByTagName(h.DUE_IN).item(0).getTextContent();
+//						String late = e.getElementsByTagName(h.LATE).item(0).getTextContent();
+//						String expArrival = e.getElementsByTagName(h.EXP_ARRIVAL).item(0).getTextContent();
+//						String expDepart = e.getElementsByTagName(h.EXP_DEPART).item(0).getTextContent();
+//						String schArrival = e.getElementsByTagName(h.SCHEDULE_ARRIVAL).item(0).getTextContent();
+//						String schDepart = e.getElementsByTagName(h.SCHEDULE_DEPART).item(0).getTextContent();
+//						String direction = e.getElementsByTagName(h.DIRECTION).item(0).getTextContent();
+//						String trainType = e.getElementsByTagName(h.TRAIN_TYPE).item(0).getTextContent();
+//						String locationType = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
+//
+//						timetable.put(trainCode, new StationDetails(serverTime, trainCode,
+//                                stationFullName, stationCode, queryTime, trainDate,
+//								origin, destination, originTime, destinationTime, status, lastLocation, dueIn,
+//								late, expArrival, expDepart, schArrival, schDepart, direction, trainType, locationType));
+//					}
+//				}
+//			}else{
+//				throw new Exception(h.errNoData);
+//			}
+//
+//		} catch (SAXException | IOException | ParserConfigurationException e) {
+//			e.printStackTrace();
+//			throw new Exception(e.getMessage());
+//		}
+//
+//		return timetable;
+//	}
+
+	public static ArrayList<StationDetails> parseTimetableForStation(String myXml) throws
+			Exception{
+//		HashMap<String, StationDetails> timetable  = new HashMap<>();
+		ArrayList<StationDetails> timetable = new ArrayList<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		h= new XmlKeyHolder();
 		try {
@@ -141,7 +161,7 @@ public class Parser {
 						String serverTime = e.getElementsByTagName(h.SERVER_TIME).item(0).getTextContent();
 						String trainCode = e.getElementsByTagName(h.STATION_TRAIN_CODE).item(0)
 								.getTextContent();
-						
+
 						String stationFullName = e.getElementsByTagName(h.STATION_FULL_NAME).item(0).getTextContent();
 						String stationCode = e.getElementsByTagName(h.STATION_CODE_DETAILS).item(0).getTextContent();
 						String queryTime = e.getElementsByTagName(h.QUERY_TIME).item(0).getTextContent();
@@ -164,21 +184,21 @@ public class Parser {
 						String trainType = e.getElementsByTagName(h.TRAIN_TYPE).item(0).getTextContent();
 						String locationType = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
 
-						timetable.put(trainCode, new StationDetails(serverTime, trainCode,
-                                stationFullName, stationCode, queryTime, trainDate,
-								origin, destination, originTime, destinationTime, status, lastLocation, dueIn, 
+						timetable.add(new StationDetails(serverTime, trainCode,
+								stationFullName, stationCode, queryTime, trainDate,
+								origin, destination, originTime, destinationTime, status, lastLocation, dueIn,
 								late, expArrival, expDepart, schArrival, schDepart, direction, trainType, locationType));
 					}
 				}
 			}else{
 				throw new Exception(h.errNoData);
 			}
-			
+
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		}
-		 
+
 		return timetable;
 	}
 

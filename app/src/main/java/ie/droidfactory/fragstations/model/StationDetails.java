@@ -1,4 +1,7 @@
 package ie.droidfactory.fragstations.model;
+
+import java.util.Comparator;
+
 /**
  * Created by kudlaty on 02/06/2016.
  */
@@ -61,6 +64,58 @@ public class StationDetails {
 		this.direction = direction;
 		this.trainType = trainType;
 		this.locationType = locationType;
+	}
+
+	public static class TimetableTypeUp implements Comparator<StationDetails> {
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			return s1.trainType.compareToIgnoreCase(s2.trainType);
+		}
+	}
+	public static class TimetableTypeDown implements Comparator<StationDetails> {
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			return -1*s1.trainType.compareToIgnoreCase(s2.trainType);
+		}
+	}
+
+	public static class TimetableDestinationUp implements Comparator<StationDetails>{
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			return s1.destination.compareToIgnoreCase(s2.destination);
+		}
+	}
+	public static class TimetableDestinationDown implements Comparator<StationDetails>{
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			int t1 = Integer.parseInt(s1.dueIn);
+			int t2 = Integer.parseInt(s2.dueIn);
+			if(t1>t2) return 1;
+			if(t1<t2) return -1;
+			return 0;
+		}
+	}
+	public static class TimetableDueInTimeUp implements Comparator<StationDetails>{
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			int t1 = Integer.parseInt(s1.dueIn);
+			int t2 = Integer.parseInt(s2.dueIn);
+			if(t1>t2) return -1;
+			if(t1<t2) return 1;
+			return 0;
+		}
+	}
+	public static class TimetableDueInTimeDown implements Comparator<StationDetails>{
+
+		@Override
+		public int compare(StationDetails s1, StationDetails s2) {
+			return -1*s1.dueIn.compareToIgnoreCase(s2.dueIn);
+		}
 	}
 
 	public String getServerTime() {

@@ -1,7 +1,10 @@
 package ie.droidfactory.fragstations.utils;
 
+import android.location.Location;
+
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ie.droidfactory.fragstations.model.Station;
@@ -18,8 +21,11 @@ public class RailSingleton {
 	private static HashMap<String, Train> trainsMap=null;
 	private static HashMap<Integer, TrainDetails> trainDetailsMap=null;
 	private static HashMap<String,StationDetails> timetableMap=null;
+	private static ArrayList<StationDetails> timetableList=null;
 	public static String currentStationCode="unknown";
-	private static LatLng myLocation=null;
+	private static Location myLocation=null;
+	private static LatLng myLatLng=null;
+	private static double myLat, myLng;
 	private static int timeStampStationDetails;
 	private static String asyncResult; // just for develop test
 
@@ -30,6 +36,14 @@ public class RailSingleton {
 
 	public static void setStationMap(HashMap<String, Station> stationMap) {
 		RailSingleton.stationMap = stationMap;
+	}
+
+	public static ArrayList<StationDetails> getTimetableList() {
+		return timetableList;
+	}
+
+	public static void setTimetableList(ArrayList<StationDetails> timetableList) {
+		RailSingleton.timetableList = timetableList;
 	}
 
 	public static HashMap<String, StationDetails> getTimetable() {
@@ -44,13 +58,26 @@ public class RailSingleton {
 		currentStationCode = "unknown";
 		timetableMap = null;
 	}
+	public static LatLng getMyLatLng() {
+		return myLatLng;
+	}
 
-	public static LatLng getMyLocation() {
+	public static void setMyLatLng(LatLng myLocation) {
+		RailSingleton.myLatLng = myLocation;
+	}
+
+
+	public static Location getMyLocation() {
 		return myLocation;
 	}
 
 	public static void setMyLocation(LatLng myLocation) {
-		RailSingleton.myLocation = myLocation;
+		Location l = new Location("");
+		l.setLatitude(myLocation.latitude);
+		l.setLongitude(myLocation.longitude);
+		RailSingleton.myLocation = l;
+		RailSingleton.myLat = myLocation.latitude;
+		RailSingleton.myLng = myLocation.longitude;
 	}
 
 	public static HashMap<String, Train> getTrainMap() {

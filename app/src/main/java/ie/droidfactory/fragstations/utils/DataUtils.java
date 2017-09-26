@@ -1,5 +1,11 @@
 package ie.droidfactory.fragstations.utils;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
+
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +18,8 @@ import ie.droidfactory.fragstations.model.StationDetails;
  * Created by kudlaty on 02/06/2016.
  */
 public class DataUtils {
+
+	private final static String TAG = DataUtils.class.getSimpleName();
 	
 	public final static int SORT_AZ = 0, SORT_ZA=1, SORT_DISTANCE=3;
 	
@@ -61,6 +69,41 @@ public class DataUtils {
 			d = sdf.parse(date);
 		}
 		return date;
+	}
+
+	public static String formatDistance(double distance){
+		int d = (int) distance;
+		if(d<=1000) return String.valueOf(d).concat("m");
+		else {
+			DecimalFormat df = new DecimalFormat("#.##");
+			return df.format(distance/1000).concat("km");
+		}
+	}
+
+	/**
+	 * get current location
+	 */
+	public static Location getLocation(Context context){
+		Location l= null;
+		LocationManager lm = null;
+		MyLocationListener listener = new MyLocationListener();
+
+		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+			l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		}
+		if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+			l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
+
+
+		if(l!=null){
+			Log.d(TAG, "current lat, long: "+l.getLatitude()+", "+l.getLongitude());
+		}
+		lm.removeUpdates(listener);
+		return l;
 	}
 
 }

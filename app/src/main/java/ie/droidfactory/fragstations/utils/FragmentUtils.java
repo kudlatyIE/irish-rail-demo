@@ -10,6 +10,8 @@ public class FragmentUtils {
 	public final static String STATION_CODE = "station_code"; 
 	public final static String STATION_LAT = "latitude";
 	public final static String STATION_LONG = "longitude";
+	public final static String MY_LAT = "my_lat";
+	public final static String MY_LNG = "my_lng";
 	public final static String TRAIN_DESCRIPTION = "train_description";
 	
 	public final static String FRAGMENT = "fragment";
@@ -18,6 +20,10 @@ public class FragmentUtils {
 	public final static String FRAGMENT_ALL_MAP = "all_map";
 	public final static String FRAGMENT_ALL_TRAINS_MAP = "all_trains_map";
 	public final static String FRAGMENT_INFO = "info";
+
+	public final static String FRAGMENT_STATION_LIST = "station_list";
+	public final static String FRAGMENT_STATION_MAP = "station_map";
+	public final static String FRAGMENT_TRAIN_LIST = "train_list";
 
 	public final static String FRAGMENT_TRAIN = "train";
 	public final static String TRAIN_MSG = "train_msg";

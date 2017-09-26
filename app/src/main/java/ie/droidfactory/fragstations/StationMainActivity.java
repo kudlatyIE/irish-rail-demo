@@ -298,10 +298,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         String trainCode = train.getTrainCode();
         String direction = train.getDirection();
         //TODO: fix break line char from XML
-        String msg = train.getPublicMessage().replaceAll("\\n", "\\n");
-//        String msg = train.getPublicMessage().replaceAll("\n", "\\n");
-        double lat = train.getTrainLatitude();
-        double lo = train.getTrainLongitude();
+        String msg = train.getMessage();
+        double lat = train.getLatitude();
+        double lo = train.getLongitude();
 
         Log.d(TAG, "train selected on list: "+trainCode+" code: "+trainId);
         detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
