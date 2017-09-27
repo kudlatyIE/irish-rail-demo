@@ -44,6 +44,9 @@ public class StationDetailsTimetableFragment extends Fragment {
         public void onAsyncDone(boolean done) {
             if(done){
                 timetableList = RailSingleton.getTimetableList();
+                StationDetails.TimetableDestinationDown compare = new StationDetails
+                        .TimetableDestinationDown();
+                Collections.sort(timetableList, compare);
                 adapter = new MyAdapter(getActivity(), R.layout.adapter_station_timetable, timetableList);
                 lv.setAdapter(adapter);
             }

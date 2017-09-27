@@ -114,7 +114,11 @@ public class StationDetails {
 
 		@Override
 		public int compare(StationDetails s1, StationDetails s2) {
-			return -1*s1.dueIn.compareToIgnoreCase(s2.dueIn);
+			int t1 = Integer.parseInt(s1.dueIn);
+			int t2 = Integer.parseInt(s2.dueIn);
+			if(t1>t2) return 1;
+			if(t1<t2) return -1;
+			return 0;
 		}
 	}
 

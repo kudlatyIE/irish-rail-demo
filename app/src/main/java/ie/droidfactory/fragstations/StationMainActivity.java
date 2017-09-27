@@ -100,16 +100,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 return true;
             }
         });
-        /*
-        this will be handle by drawer menu
-         */
-//        Bundle extras = getIntent().getExtras();
-//        if(extras!=null) mainFragmentId = extras.getString(FragmentUtils.FRAGMENT);
-//        else mainFragmentId = FragmentUtils.FRAGMENT_LIST;
 
-        //handle fragments....
-        //        detailsView = findViewById(R.id.fragment_station_details_container); //kick
-        // this away, can throw nullpointerexception
         detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
 
         //SINGLE PANE - PORTRAIT

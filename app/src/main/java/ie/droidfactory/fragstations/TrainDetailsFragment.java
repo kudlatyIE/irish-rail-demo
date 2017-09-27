@@ -234,14 +234,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 v = convertView;
                 h = (Holder) v.getTag();
             }
-            //stuff belowe doesnt work: empty rows are still visible
-//            if(!mMap.get(list.get(position)).getLocationType().equals(StationType.TYPE_T.getType())){
-//                v.setVisibility(View.VISIBLE);
-//                h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
-//                h.tvLocation.setText(mMap.get(list.get(position)).getLocationFullName());
-//                h.tvDeparture.setText(mMap.get(list.get(position)).getDeparture());
-//                return v;
-//            }else v.setVisibility(View.GONE);
+
             h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
             h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
                     mMap.get(list.get(position)).getLocationCode(),

@@ -1,6 +1,7 @@
 package ie.droidfactory.fragstations;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -35,7 +36,8 @@ public class StationDetailsFragment extends Fragment {
         ViewPager vp = (ViewPager) v.findViewById(R.id.fragment_details_parent_viewPager);
         //TODO: set pager adapter here....
         vp.setAdapter(new PagerAdapter(getChildFragmentManager()));
-
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_details_parent_tabs);
+        tabLayout.setupWithViewPager(vp);
         return v;
     }
 
