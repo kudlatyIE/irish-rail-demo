@@ -6,7 +6,7 @@
     <string name="category_stations">stations</string>
     <string name="category_trains">trains</string>
     <string name="navigation_item_list">list</string>
-    <string name="navigation_item_map">map</string>
+    <string name="navigation_item_map">trains on map</string>
     <string name="navigation_item_other">other</string>
     <string name="navigation_item_search">search</string>
     <string name="navigation_item_settings">settings</string>
@@ -34,5 +34,11 @@
     <string name="menu_night_mode_night">Night (always)</string>
     <string name="menu_night_mode_auto">Auto</string>
     <string name="enter_train_name">enter train route</string>
+    <string name="news">News</string>
+    <string name="stations_list">Stations list</string>
+    <string name="stations_map">Stations map</string>
+    <string name="fav">Fav</string>
+    <string name="about">about</string>
+    <string name="help">help</string>
 
 </resources>

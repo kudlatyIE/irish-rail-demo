@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_info"
+            android:icon="@drawable/ic_news"
+            android:title="@string/news"
+            android:checked="true" />
+        <item
+            android:id="@+id/item_station_list"
+            android:icon="@drawable/ic_train"
+            android:title="@string/stations_list"
+            android:checked="true" />
+        <item
+            android:id="@+id/item_station_map"
+            android:icon="@drawable/ic_map"
+            android:title="@string/stations_map"
+            android:checked="true" />
+        <item
+            android:id="@+id/item_fav"
+            android:icon="@drawable/ic_favorit"
+            android:title="@string/fav"
+            android:checked="true" />
+        <item
+            android:id="@+id/item_train_map"
+            android:icon="@drawable/ic_map"
+            android:title="@string/navigation_item_map"
+            android:checked="true"
+            />
+
+    </group>
+
+    <item android:title="About">
+        <menu>
+            <item
+                android:id="@+id/item_about"
+                android:icon="@drawable/ic_about"
+                android:title="@string/about"
+                android:checked="true" />
+            <item
+                android:id="@+id/item_help"
+                android:icon="@drawable/ic_help"
+                android:title="@string/help"
+                android:checked="true" />
+        </menu>
+    </item>
+
+</menu>
+<!--
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_category_station"
@@ -24,17 +74,13 @@
                 android:checked="true"
                 />
         </menu>
-
-
     </item>
 
     <item
         android:id="@+id/navigation_category_train"
         android:title="@string/category_trains"
         android:checked="true">
-
         <menu>
-
             <item
                 android:id="@+id/item_train_map"
                 android:title="@string/navigation_item_map"
@@ -46,7 +92,6 @@
                 android:checked="true"
                 />
         </menu>
-
     </item>
 
     <item
@@ -66,3 +111,4 @@
     />
 
 </menu>
+-->

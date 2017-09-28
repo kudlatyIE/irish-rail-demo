@@ -32,4 +32,5 @@ public class FragmentUtils {
 
 	public static final String FRAGMENT_SETTINGS = "settings";
 	public static final String FRAGMENT_ABOUT = "about";
+	public final static String FRAGMENT_HELP = "help";
 }

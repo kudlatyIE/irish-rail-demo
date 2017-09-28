@@ -41,7 +41,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private LinearLayout maineContainer;
     private FragmentTransaction ft;
     private static String mainFragmentId = FragmentUtils.FRAGMENT_INFO;
-
     private boolean isDrawerVisible=false;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -64,13 +63,16 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         1. initialization drawer....
          */
         isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.test_drawer_main_text);
+
+//        getSupportActionBar().setTitle(R.string.test_drawer_main_text);
     //1.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar,R.string.open_drawer, R.string.close_drawer){
 
@@ -534,10 +536,10 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that ia about everything!");
                 frag = AboutFragment.newInstance(arg);
                 break;
-            case FragmentUtils.FRAGMENT_SETTINGS:
+            case FragmentUtils.FRAGMENT_HELP:
 //                frag = new InfoFragment();
                 arg = new Bundle();
-                arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little settings here!");
+                arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little help here!");
                 frag = SettingsFragment.newInstance(arg);
                 break;
             default: frag = new StationListFragment();
@@ -548,8 +550,16 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private void setFragmentFromDrawer(int index){
         boolean create = false;
         switch (index){
+            case R.id.item_info:
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_INFO)) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_INFO;
+                    create = true;
+                }
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
+                break;
+
             case R.id.item_station_list:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_LIST) {
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_LIST)) {
                     mainFragmentId = FragmentUtils.FRAGMENT_LIST;
                     create = true;
                 }
@@ -557,51 +567,36 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 break;
 
             case R.id.item_station_map:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_ALL_MAP) {
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_ALL_MAP)) {
                     mainFragmentId = FragmentUtils.FRAGMENT_ALL_MAP;
                     create=true;
                 }
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
-            case R.id.item_station_search:
-                Toast.makeText(getApplicationContext(),"click at search station..", Toast
-                        .LENGTH_SHORT).show();
-                break;
+
             case R.id.item_train_map:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_ALL_TRAINS_MAP) {
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_ALL_TRAINS_MAP)) {
                     mainFragmentId = FragmentUtils.FRAGMENT_ALL_TRAINS_MAP;
                     create=true;
                 }
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
-                Toast.makeText(getApplicationContext(),"click at train map..", Toast
-                        .LENGTH_SHORT).show();
                 break;
 
-            case R.id.item_train_search:
-                Toast.makeText(getApplicationContext(),"click at train station..", Toast
-                        .LENGTH_SHORT).show();
-                break;
-            case R.id.item_info:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_INFO) {
-                    mainFragmentId = FragmentUtils.FRAGMENT_INFO;
+            case R.id.item_help:
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_HELP)) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_HELP;
                     create = true;
                 }
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
             case R.id.item_about:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_ABOUT) {
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_ABOUT)) {
                     mainFragmentId = FragmentUtils.FRAGMENT_ABOUT;
                     create = true;
                 }
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
-            case R.id.item_settings:
-                if(mainFragmentId != FragmentUtils.FRAGMENT_SETTINGS) {
-                    mainFragmentId = FragmentUtils.FRAGMENT_SETTINGS;
-                    create = true;
-                }
-                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
-                break;
+
         }
         if(create) createFragment(mainFragmentId);
 
