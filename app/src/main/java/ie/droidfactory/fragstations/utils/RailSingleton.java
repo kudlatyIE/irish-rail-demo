@@ -19,7 +19,8 @@ public class RailSingleton {
 
 	private static HashMap<String, Station> stationMap=null;
 	private static HashMap<String, Train> trainsMap=null;
-	private static HashMap<Integer, TrainDetails> trainDetailsMap=null;
+//	private static HashMap<Integer, TrainDetails> trainDetailsMap=null;
+	private static ArrayList<TrainDetails> trainDetailsList;
 	private static HashMap<String,StationDetails> timetableMap=null;
 	private static ArrayList<StationDetails> timetableList=null;
 	public static String currentStationCode="unknown";
@@ -87,12 +88,21 @@ public class RailSingleton {
 	public static void setTrainMap(HashMap<String, Train> trainMap) {
 		RailSingleton.trainsMap = trainMap;
 	}
-	public static HashMap<Integer, TrainDetails> getTrainDetailsMap() {
-		return trainDetailsMap;
+//	public static HashMap<Integer, TrainDetails> getTrainDetailsMap() {
+//		return trainDetailsMap;
+//	}
+//
+//	public static void setTrainDetailsMap(HashMap<Integer, TrainDetails> trainDetailsMap) {
+//		RailSingleton.trainDetailsMap = trainDetailsMap;
+//	}
+
+
+	public static ArrayList<TrainDetails> getTrainDetailsList() {
+		return trainDetailsList;
 	}
 
-	public static void setTrainDetailsMap(HashMap<Integer, TrainDetails> trainDetailsMap) {
-		RailSingleton.trainDetailsMap = trainDetailsMap;
+	public static void setTrainDetailsList(ArrayList<TrainDetails> trainDetailsList) {
+		RailSingleton.trainDetailsList = trainDetailsList;
 	}
 
 	public static int getTimeStampStationDetails() {

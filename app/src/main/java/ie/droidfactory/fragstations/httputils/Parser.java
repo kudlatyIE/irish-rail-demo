@@ -249,13 +249,104 @@ public class Parser {
         return trains;
 	}
 
+	public static ArrayList<TrainDetails> parseTrainDetails(String myXml) throws Exception {
+		ArrayList<TrainDetails> trainRoute  = new ArrayList<>();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		h= new XmlKeyHolder();
+		try{
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(new ByteArrayInputStream(myXml.getBytes()));
+			doc.getDocumentElement().normalize();
+			NodeList list = doc.getElementsByTagName(h.OBJECT_TRAIN_MOVEMENTS);
+
+			if(list.getLength()>0){
+				for(int i=0;i<list.getLength();i++){
+					Node node = list.item(i);
+					if(node.getNodeType()==Node.ELEMENT_NODE){
+						Element e = (Element) node;
+
+						String code = e.getElementsByTagName(h.TD_TRAIN_CODE).item(0)
+								.getTextContent();
+						String date  = e.getElementsByTagName(h.TD_TRAIN_DATE).item(0)
+								.getTextContent();
+						String locationCode = e.getElementsByTagName(h.TD_LOCATION_CODE).item(0)
+								.getTextContent();
+						String locationName = e.getElementsByTagName(h.TD_LOCATION_FULL_NAME).item(0)
+								.getTextContent();
+						Integer order = Integer.parseInt(e.getElementsByTagName(h.TD_LOCATION_ORDER).item(0)
+								.getTextContent());
+						String locationType = e.getElementsByTagName(h.TD_LOCATION_TYPE).item(0)
+								.getTextContent();
+						String origin = e.getElementsByTagName(h.TD_TRAIN_ORIGIN).item(0)
+								.getTextContent();
+						String destination = e.getElementsByTagName(h.TD_TRAIN_DESTINATION).item(0)
+								.getTextContent();
+						String schArrival = e.getElementsByTagName(h.TD_SCHEUDLE_ARRIVAL).item(0)
+								.getTextContent();
+						String schDepart = e.getElementsByTagName(h.TD_SCHEUDLE_DEPARTURE).item(0)
+								.getTextContent();
+						String expArrival = e.getElementsByTagName(h.TD_EXPECTED_ARRIVAL).item(0)
+								.getTextContent();
+						String expDepart = e.getElementsByTagName(h.TD_EXPECTED_DEPARTURE).item(0)
+								.getTextContent();
+						//can be null - use try-catch
+						//get data only id Location type !=T (timing point, train not stopping), hm
+						//but sometimes is stopping, WHY?
+						String arrival = h.EMPTY;
+						try{
+							arrival =e.getElementsByTagName(h.TD_ARRIVAL).item(0)
+									.getTextContent();
+						}catch(Exception e1){}
+						String depart = h.EMPTY;
+						try{
+							depart = e.getElementsByTagName(h.TD_DEPARTURE).item(0)
+									.getTextContent();
+						}catch (Exception e1){}
+						String autoArrival = h.EMPTY;
+						try{
+							autoArrival = e.getElementsByTagName(h.TD_AUTOARRIVAL).item(0)
+									.getTextContent();
+						}catch (Exception e1){}
+						String autoDepart = h.EMPTY;
+						try{
+							autoDepart = e.getElementsByTagName(h.TD_AUTODEPART).item(0)
+									.getTextContent();
+						}catch (Exception e1){}
+						// until this line
+						String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
+								.getTextContent();
+
+						//grab data only if stations is not timing_point type
+						if(!locationType.equals(StationType.TYPE_T.getType())){
+							trainRoute.add(TrainDetails.makeTrainDetails(code,date,locationCode,
+									locationName,order,locationType,origin,destination,schArrival,
+									schDepart,expArrival, expDepart, arrival,depart,autoArrival,
+									autoDepart, stopType));
+						}
+//                        Log.w(TAG,trainRoute.get(order).toString());
+					}
+				}
+//                Log.d(TAG, "map size: "+trainRoute.size());
+			}else{
+//                trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData));
+				throw new Exception(h.errNoData);
+			}
+
+		} catch (SAXException | ParserConfigurationException | IOException e) {
+			e.printStackTrace();
+//            trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData))
+			throw new Exception(e.getMessage());
+		}
+		return trainRoute;
+	}
+
 	/**
 	 *
 	 * @param myXml
 	 * @return hashmap location order is a key
 	 * @throws Exception
      */
-    public static HashMap<Integer, TrainDetails> parseTrainDetails(String myXml) throws Exception {
+    public static HashMap<Integer, TrainDetails> parseTrainDetails_NOT_USED(String myXml) throws Exception {
         HashMap<Integer, TrainDetails> trainRoute  = new HashMap<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         h= new XmlKeyHolder();

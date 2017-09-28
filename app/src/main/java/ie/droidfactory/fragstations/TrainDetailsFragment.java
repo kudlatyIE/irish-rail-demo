@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -44,9 +45,11 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         public void onAsyncDone(boolean done) {
             if (done) {
                 if(trainCode!= null) updateDetails(trainCode, msg);
+                trainDetailsList = RailSingleton.getTrainDetailsList();
                 Log.d(TAG, "onAsyncDone() callback, create map");
-                Log.d(TAG, "onAsyncDone() callback, map size: "+RailSingleton.getTrainDetailsMap
-                        ().size());
+                Log.d(TAG, "onAsyncDone() callback, map size: "+trainDetailsList.size());
+                TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
+                Collections.sort(trainDetailsList, compareUp);
                 createDetailsList(FRAGMENT.CREATE);
             }
         }
@@ -62,7 +65,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     private TextView tvInfo;
     private ListView lv;
     private Train train;
-    private ArrayList<Integer> mlist;
+//    private ArrayList<Integer> mlist;
+    private ArrayList<TrainDetails> trainDetailsList;
     private MyAdapter adapter;
     private int stampNow, stampOld;
 
@@ -108,8 +112,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         }
         if(RailSingleton.getTimetable()!=null){
             if(trainCode!= null) updateDetails(trainCode, msg);
-            Log.d(TAG, "onCreate() get map from singleton size: "+RailSingleton.getTrainDetailsMap
-                    ().size());
+//            Log.d(TAG, "onCreate() get map from singleton size: "+RailSingleton.getTrainDetailsList().size());
             createDetailsList(FRAGMENT.CREATE);
         }else{
             try {
@@ -135,23 +138,24 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 //        updateDetails(trainCode, msg);
         if(lv==null) return;
         if(todo==FRAGMENT.CREATE){
-            if(RailSingleton.getTrainDetailsMap()!=null){
+            if(RailSingleton.getTrainDetailsList()!=null){
+                trainDetailsList = RailSingleton.getTrainDetailsList();
+                TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
+                Collections.sort(trainDetailsList, compareUp);
                 try {
-                    adapter = new MyAdapter(getActivity(), RailSingleton.getTrainDetailsMap());
+                    adapter = new MyAdapter(getActivity(), trainDetailsList);
                     lv.setAdapter(adapter);
                     lv.setOnItemLongClickListener(new OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(),"click on:\n"+RailSingleton.getTrainDetailsMap()
-                                    .get(mlist.get(position)).getLocationFullName(), Toast.LENGTH_SHORT ).show();
+                            Toast.makeText(getActivity(),"click on:\n"+trainDetailsList.get(position).getLocationFullName(), Toast.LENGTH_SHORT ).show();
                             return false;
                         }
                     });
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            stationFromTrainCallback.onStationSelectedFromTrain(RailSingleton
-                                    .getTrainDetailsMap().get(mlist.get(position)).getLocationCode());
+                            stationFromTrainCallback.onStationSelectedFromTrain(trainDetailsList.get(position).getLocationCode());
                         }
                     });
                 } catch (Exception e) {
@@ -187,20 +191,16 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     private class MyAdapter extends BaseAdapter{
 
         Holder h;
-        ArrayList<Integer> list;
-        HashMap<Integer, TrainDetails> mMap;
+//        ArrayList<Integer> list;
+//        HashMap<Integer, TrainDetails> mMap;
+        ArrayList<TrainDetails> list;
         private LayoutInflater inflater;
 
-        MyAdapter(Context c, HashMap<Integer, TrainDetails> map) throws Exception {
-            if(map==null){
+        MyAdapter(Context c, ArrayList<TrainDetails> list) throws Exception {
+            if(list==null){
                 throw new Exception("station list is NULL!");
             }
-            this.mMap=map;
-            this.list = new ArrayList<>();
-            for(Integer key: new TreeSet<>(map.keySet())){
-                list.add(key);
-            }
-            if(list!=null) mlist = list;
+            this.list=list;
             Log.d(TAG, "for this route stations number: "+list.size());
             this.inflater = LayoutInflater.from(c);
 
@@ -212,7 +212,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
         @Override
         public Object getItem(int position) {
-            return mMap.get(list.get(position));
+            return list.get(position);
         }
 
         @Override
@@ -235,12 +235,12 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 h = (Holder) v.getTag();
             }
 
-            h.tvArrival.setText(mMap.get(list.get(position)).getArrival());
+            h.tvArrival.setText(list.get(position).getArrival());
             h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
-                    mMap.get(list.get(position)).getLocationCode(),
+                    list.get(position).getLocationCode(),
 //                    mMap.get(list.get(position)).getLocationType(),
-                    mMap.get(list.get(position)).getLocationFullName()));
-            h.tvDeparture.setText(mMap.get(list.get(position)).getDeparture());
+                    list.get(position).getLocationFullName()));
+            h.tvDeparture.setText(list.get(position).getDeparture());
             return v;
 
         }

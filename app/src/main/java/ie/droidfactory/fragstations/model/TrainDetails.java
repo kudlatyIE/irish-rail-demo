@@ -1,5 +1,7 @@
 package ie.droidfactory.fragstations.model;
 
+import java.util.Comparator;
+
 /**
  * Created by kudlaty on 09/06/2016.
  */
@@ -95,6 +97,16 @@ public class TrainDetails {
                 locationType, trainOrigin, trainDestination, scheduledArrival, scheduledDeparture,
                 expectedArrival, expectedDeparture,arrival, departure, autoArrival, autoDepart, stopType);
     }
+
+    public static class TranLocationOrderCompareUp implements Comparator<TrainDetails>{
+        @Override
+        public int compare(TrainDetails t1, TrainDetails t2) {
+            if(t1.locationOrder>t2.locationOrder) return 1;
+            if(t1.locationOrder<t2.locationOrder) return -1;
+            return 0;
+        }
+    }
+
     public String getTrainCode() {
         return trainCode;
     }

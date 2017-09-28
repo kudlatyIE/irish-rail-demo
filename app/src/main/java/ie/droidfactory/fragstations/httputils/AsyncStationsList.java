@@ -107,6 +107,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 		// TODO Auto-generated method stub
 		super.onPostExecute(res);
 		boolean success = false;
+		Log.d(TAG, "XML:\n"+res);
 		try{
 
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
@@ -124,9 +125,9 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 				result = "trains number: "+list.size();
 			}
 			if (mode == AsyncMode.GET_TRAIN_DETAILS) {
-				HashMap<Integer, TrainDetails> list;
+				ArrayList<TrainDetails> list;
 				list = Parser.parseTrainDetails(res);
-				RailSingleton.setTrainDetailsMap(list);
+				RailSingleton.setTrainDetailsList(list);
 				result = "on route stations number: "+list.size();
 			}
 			if(mode==AsyncMode.GET_STATION_DETAIL){
