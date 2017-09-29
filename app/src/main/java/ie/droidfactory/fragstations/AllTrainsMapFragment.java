@@ -83,8 +83,6 @@ public class AllTrainsMapFragment extends MainFragment /*implements AsyncTaskRes
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated beginning...");
-        Log.d(TAG, "onViewCreated map is null: "+(googleMap==null));
         btnRefresh = (Button) view.findViewById(R.id.fragment_all_trains_mapa_btn_refresh);
         tvInfo = (TextView) view.findViewById(R.id.fragment_all_trains_mapa_text_info);
     }

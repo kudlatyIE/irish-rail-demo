@@ -13,6 +13,7 @@ public class FragmentUtils {
 	public final static String MY_LAT = "my_lat";
 	public final static String MY_LNG = "my_lng";
 	public final static String TRAIN_DESCRIPTION = "train_description";
+	public final static String TRAIN_CODE = "train_code";
 	
 	public final static String FRAGMENT = "fragment";
 	public final static String FRAGMENT_LIST = "list";

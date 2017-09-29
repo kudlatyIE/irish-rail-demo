@@ -107,7 +107,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 		// TODO Auto-generated method stub
 		super.onPostExecute(res);
 		boolean success = false;
-		Log.d(TAG, "XML:\n"+res);
+//		Log.d(TAG, "XML:\n"+res);
 		try{
 
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();

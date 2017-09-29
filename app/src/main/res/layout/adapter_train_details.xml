@@ -6,6 +6,33 @@
     <TextView
         android:id="@+id/adapter_train_details_arrival"
         android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textAlignment="textEnd"
+        android:text="arrival time"/>
+    <ImageView
+        android:id="@+id/adapter_train_details_img_marker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_train_marker_empty"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter" />
+    <TextView
+        android:id="@+id/adapter_train_details_location"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textAlignment="textStart"
+        android:text="station name"/>
+
+
+</LinearLayout>
+
+<!--
+<TextView
+        android:id="@+id/adapter_train_details_arrival"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
     <TextView
@@ -19,4 +46,4 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
-</LinearLayout>
+-->

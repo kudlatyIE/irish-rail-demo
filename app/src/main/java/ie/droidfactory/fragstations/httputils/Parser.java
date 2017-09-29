@@ -203,6 +203,8 @@ public class Parser {
 	}
 
 
+
+
 	public static HashMap<String, Train> parseRunningTrains(String myXml) throws Exception {
 		HashMap<String, Train> trains  = new HashMap<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -315,7 +317,8 @@ public class Parser {
 						// until this line
 						String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
 								.getTextContent();
-
+						Log.d(TAG, "order: "+order+" arrivaArriva: "+schArrival+"\n"
+								+" StationName: "+locationName+" locationType: "+locationType);
 						//grab data only if stations is not timing_point type
 						if(!locationType.equals(StationType.TYPE_T.getType())){
 							trainRoute.add(TrainDetails.makeTrainDetails(code,date,locationCode,

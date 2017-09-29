@@ -2,6 +2,7 @@ package ie.droidfactory.fragstations;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
+import ie.droidfactory.fragstations.model.StationType;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
 import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
@@ -51,6 +54,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
                 Collections.sort(trainDetailsList, compareUp);
                 createDetailsList(FRAGMENT.CREATE);
+            }else {
+                tvInfo.setText(RailSingleton.getAsyncResult());
             }
         }
     };
@@ -126,9 +131,42 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // TODO Auto-generated method stub
+        super.onSaveInstanceState(outState);
+        outState.putString(FragmentUtils.STATION_CODE, trainCode);
+        outState.putDouble(FragmentUtils.MY_LAT, lat);
+        outState.putDouble(FragmentUtils.MY_LNG, lng);
+    }
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onViewStateRestored(savedInstanceState);
+        restore(savedInstanceState);
+    }
+
+    public void restore(Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            lat = savedInstanceState.getDouble(FragmentUtils.MY_LAT);
+            lng = savedInstanceState.getDouble(FragmentUtils.MY_LNG);
+            trainCode = savedInstanceState.getString(FragmentUtils.STATION_CODE);
+        }
+    }
+
     private void updateDetails(String id, String msg){
         Log.d(TAG, "updateDetails arg: "+msg);
-        this.train = RailSingleton.getTrainMap().get(id);
+
+        if(RailSingleton.getTrainMap()==null){
+            try {
+                link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
+                        .getFormatedDate(null));// return train route details for today
+                AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode.GET_TRAIN_DETAILS, asyncDone);
+                async.execute(link);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else this.train = RailSingleton.getTrainMap().get(id);
         Log.d(TAG, "train is NULL: "+(train==null));
 //        tvInfo.setText(train.getTrainCode()+":\n"+train.getPublicMessage());
         tvInfo.setText(msg);
@@ -228,25 +266,54 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 h = new Holder();
                 h.tvArrival = (TextView) v.findViewById(R.id.adapter_train_details_arrival);
                 h.tvLocation = (TextView) v.findViewById(R.id.adapter_train_details_location);
-                h.tvDeparture = (TextView) v.findViewById(R.id.adapter_train_details_depart);
+//                h.tvDeparture = (TextView) v.findViewById(R.id.adapter_train_details_depart);
+                h.imgTrainMarker = v.findViewById(R.id.adapter_train_details_img_marker);
                 v.setTag(h);
             }else {
                 v = convertView;
                 h = (Holder) v.getTag();
             }
-
-            h.tvArrival.setText(list.get(position).getArrival());
-            h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
-                    list.get(position).getLocationCode(),
-//                    mMap.get(list.get(position)).getLocationType(),
-                    list.get(position).getLocationFullName()));
-            h.tvDeparture.setText(list.get(position).getDeparture());
+            TrainDetails train = list.get(position);
+            String arrivaArriva = train.getArrival();
+            if(arrivaArriva.length()==0) arrivaArriva = train.getScheduledArrival();
+            h.tvArrival.setText(arrivaArriva);
+//            h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
+//                    list.get(position).getLocationCode(),
+//                    list.get(position).getLocationFullName()));
+            h.tvLocation.setText(train.getLocationFullName());
+//            h.tvDeparture.setText(list.get(position).getDeparture());
+             h.imgTrainMarker.setImageDrawable(getTrainMarker(train));
             return v;
 
         }
     }
+
+    private Drawable getTrainMarker(TrainDetails train){
+        Log.d(TAG, "getTrainMarker::: stopTYpe: "+train.getStopType());
+//        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()==0)
+//            return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
+        if(train.getLocationOrder()==1 & train.getDeparture().length()==0)
+            return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
+
+//        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()>0)
+//            return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
+        if(train.getLocationOrder()==1 & train.getDeparture().length()>0)
+            return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
+        if((train.getLocationType().equals(StationType.TYPE_S.getType()) || train.getLocationType().equals(StationType.TYPE_C.getType()))
+                & train.getArrival().length()>0 & train.getDeparture().length()==0)
+            return  getResources().getDrawable(R.drawable.ic_train_marker_arrived);
+        if(train.getLocationType().equals(StationType.TYPE_S.getType()) & train.getDeparture().length()>0)
+            return getResources().getDrawable(R.drawable.ic_train_marker_departed);
+        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & train.getDeparture().length()==0)
+            return getResources().getDrawable(R.drawable.ic_train_marker_destination_not);
+        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & train.getArrival().length()>0)
+            return getResources().getDrawable(R.drawable.ic_train_marker_destination_completed);
+
+        return getResources().getDrawable(R.drawable.ic_train_marker_empty);
+    }
     private class Holder{
-        TextView tvArrival, tvLocation, tvDeparture;
+        TextView tvArrival, tvLocation; //, tvDeparture;
+        ImageView imgTrainMarker;
     }
 
 }

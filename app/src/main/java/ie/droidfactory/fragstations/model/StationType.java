@@ -7,6 +7,7 @@ public enum StationType {
 	TYPE_O ("O", "Origin"),
 	TYPE_T ("T","TimingPoint"),
 	TYPE_S ("S","Stop"),
+	TYPE_C ("C","Cos"),
 	TYPE_D ("D","Destination");
 	
 	private String type, name;
