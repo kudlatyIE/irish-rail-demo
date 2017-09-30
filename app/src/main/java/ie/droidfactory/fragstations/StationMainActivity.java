@@ -54,6 +54,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 //        setContentView(R.layout.main_layout);
         //TODO: try layout with drawer and toolbar
         setContentView(R.layout.drawer_layout);
+//        MainActivity.suomi.finish();
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);

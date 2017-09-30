@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements
     private boolean isPermissionGranted=false;
     private ArrayList<String> permissions=new ArrayList<>();
     private PermissionUtils permissionUtils;
-    public Activity suomi;
+    public static Activity suomi;
 
     private Button btnStation, btnTrain, btnMap;
 
@@ -69,11 +69,11 @@ public class MainActivity extends Activity implements
 
         //--------------------
         suomi = this;
-        tvInfo = (TextView)findViewById(R.id.main_text_info);
-
-        btnStation = (Button) findViewById(R.id.main_btn_stations);
-        btnMap = (Button) findViewById(R.id.main_btn_map);
-        btnTrain = (Button) findViewById(R.id.main_btn_train);
+//        tvInfo = (TextView)findViewById(R.id.main_text_info);
+//
+//        btnStation = (Button) findViewById(R.id.main_btn_stations);
+//        btnMap = (Button) findViewById(R.id.main_btn_map);
+//        btnTrain = (Button) findViewById(R.id.main_btn_train);
 
         MyButtons button = new MyButtons();
         btnStation.setOnClickListener(button);
@@ -148,30 +148,27 @@ public class MainActivity extends Activity implements
         @Override
         public void onClick(View v) {
 
-            if(isPermissionGranted){
-                if(v.getId()==R.id.main_btn_stations){
-                    intent = new Intent(suomi, StationMainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_LIST);
-                    startActivity(intent);
-                }
-                if(v.getId()==R.id.main_btn_map){
-                    intent = new Intent(suomi, StationMainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_MAP);
-                    startActivity(intent);
-                }
-                if(v.getId()==R.id.main_btn_train){
-					intent = new Intent(suomi, StationMainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_INFO);
-					startActivity(intent);
-//                    Toast.makeText(suomi, "not yet...", Toast.LENGTH_SHORT).show();
-                }
-            }
-
+//            if(isPermissionGranted){
+//                if(v.getId()==R.id.main_btn_stations){
+//                    intent = new Intent(suomi, StationMainActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_LIST);
+//                    startActivity(intent);
+//                }
+//                if(v.getId()==R.id.main_btn_map){
+//                    intent = new Intent(suomi, StationMainActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_MAP);
+//                    startActivity(intent);
+//                }
+//                if(v.getId()==R.id.main_btn_train){
+//					intent = new Intent(suomi, StationMainActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra(FragmentUtils.FRAGMENT, FragmentUtils.FRAGMENT_INFO);
+//					startActivity(intent);
+//                }
+//            }
 
         }
-
     }
 }

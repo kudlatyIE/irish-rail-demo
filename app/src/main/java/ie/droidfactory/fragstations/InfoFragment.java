@@ -7,9 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import ie.droidfactory.fragstations.httputils.AsyncMode;
+import ie.droidfactory.fragstations.httputils.AsyncStationsList;
+import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
+import ie.droidfactory.fragstations.utils.LocationUtils;
+import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
  * Created by kudlaty on 06/06/2016.
@@ -20,6 +26,32 @@ public class InfoFragment extends MainFragment {
     private final static String TAG = InfoFragment.class.getSimpleName();
     private String info = "default nothing";
     private TextView tvInfo;
+
+    private AsyncStationsList.AsyncDoneCallback asyncStationsListDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            Log.d(TAG, "async success: "+done);
+            Log.d(TAG, "async result: "+ RailSingleton.getAsyncResult());
+
+            if(done){
+                //TODO: download NEWS from twitter
+            }
+        }
+    };
+
+    private AsyncStationsList.AsyncDoneCallback asyncNewsDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            Log.d(TAG, "async success: "+done);
+            Log.d(TAG, "async result: "+ RailSingleton.getAsyncResult());
+
+            if(done){
+                //TODO: download NEWS from twitter
+            }
+        }
+    };
 
 
     RailInterface stationCallback;
@@ -63,7 +95,8 @@ public class InfoFragment extends MainFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated....");
+        downloadAllStationList();
+
     }
 
     @Override
@@ -77,6 +110,13 @@ public class InfoFragment extends MainFragment {
                     "implemented...");
         }
     }
+
+    private void downloadAllStationList(){
+        LocationUtils.getLocation(getActivity());
+        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncStationsListDone);
+        rail.execute(Links.ALL_STATIONS.getRailLink());
+    }
+
 
     private void updateDetails(String info){
         this.info =info;

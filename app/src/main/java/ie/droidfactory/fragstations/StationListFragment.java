@@ -116,6 +116,10 @@ public class StationListFragment extends MainFragment {
 
 
         stationList = new ArrayList<>(stationHashMap.values());
+        Station.distanceDown compare = new Station.distanceDown();
+        Collections.sort(stationList, compare);
+        sortMode = Sort.DISTANCE_UP;
+        imgSortDistance.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
 
         try {
             adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList); //TODO: fuk, to tez nie działa, ale czemu??????

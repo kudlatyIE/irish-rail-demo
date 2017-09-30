@@ -66,8 +66,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     private final static String TAG = TrainDetailsFragment.class.getSimpleName();
 
 
-
-
     private enum FRAGMENT{CREATE, REFRESH};
     private String trainCode, trainName, trainDirection, link, msg="";
     private double lat, lng;
@@ -83,8 +81,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_train_details, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_train_details, container, false);
     }
 
     @Override
@@ -201,6 +198,10 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         if(todo==FRAGMENT.CREATE){
             if(RailSingleton.getTrainDetailsList()!=null){
                 trainDetailsList = RailSingleton.getTrainDetailsList();
+//                if(trainDetailsList==null){
+//                    Toast.makeText(getActivity(), "train detail list is NULL!", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
                 Collections.sort(trainDetailsList, compareUp);
                 try {
