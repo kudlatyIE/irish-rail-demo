@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             .AsyncDoneCallback() {
         @Override
         public void onAsyncDone(boolean done) {
+            swipeRefreshLayout.setRefreshing(false);
             if (done) {
                 if(trainCode!= null) updateDetails(trainCode, msg);
                 trainDetailsList = RailSingleton.getTrainDetailsList();
@@ -57,10 +59,12 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }else {
                 tvInfo.setText(RailSingleton.getAsyncResult());
             }
+
         }
     };
 
     private final static String TAG = TrainDetailsFragment.class.getSimpleName();
+
 
 
 
@@ -69,6 +73,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     private double lat, lng;
     private TextView tvInfo;
     private ListView lv;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private Train train;
 //    private ArrayList<Integer> mlist;
     private ArrayList<TrainDetails> trainDetailsList;
@@ -88,6 +93,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         super.onViewCreated(view, savedInstanceState);
         tvInfo = (TextView) view.findViewById(R.id.fragment_train_details_info);
         lv = (ListView) view.findViewById(R.id.fragment_train_details_listview);
+        swipeRefreshLayout = view.findViewById(R.id.fragment_train_details_swipe_refresh_layout);
     }
 
     @Override
@@ -120,14 +126,31 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 //            Log.d(TAG, "onCreate() get map from singleton size: "+RailSingleton.getTrainDetailsList().size());
             createDetailsList(FRAGMENT.CREATE);
         }else{
-            try {
-                link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
-                        .getFormatedDate(null));// return train route details for today
-                AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode.GET_TRAIN_DETAILS, asyncDone);
-                async.execute(link);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            onRefreshListView();
+        }
+        //TODO: swipe refresh!
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                onRefreshListView();
             }
+        });
+    }
+
+//    @Override
+//    public void onRefresh() {
+//        onRefreshListView();
+//    }
+
+    private void onRefreshListView(){
+        try {
+            link = Links.GET_TRAIN_DETAILS.getTrainDetailsLink(trainCode, DataUtils
+                    .getFormatedDate(null));// return train route details for today
+            AsyncStationsList async = new AsyncStationsList(getActivity(), AsyncMode.GET_TRAIN_DETAILS, asyncDone);
+            async.execute(link);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 

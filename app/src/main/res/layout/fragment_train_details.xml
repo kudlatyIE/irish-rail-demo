@@ -20,26 +20,40 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textAlignment="textEnd"
             android:text="ARRIVAL"/>
         <TextView
             android:id="@+id/fragment_train_details_location"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="status"/>
+            android:textAlignment="center"
+            android:text="location"/>
         <TextView
             android:id="@+id/fragment_train_details_depart_time"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textAlignment="textStart"
             android:text="STATION"/>
 
     </LinearLayout>
-    <ListView
-        android:id="@+id/fragment_train_details_listview"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_train_details_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </ListView>
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/fragment_train_details_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            >
+        </ListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

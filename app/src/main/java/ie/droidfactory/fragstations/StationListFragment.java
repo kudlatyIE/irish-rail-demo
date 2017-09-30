@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,10 +29,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import ie.droidfactory.fragstations.httputils.AsyncMode;
+import ie.droidfactory.fragstations.httputils.AsyncStationsList;
+import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.utils.DataUtils;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
+import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -39,16 +44,14 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
  */
 public class StationListFragment extends MainFragment {
 
+
+
     private final static String TAG = StationListFragment.class.getSimpleName();
     private ListView lv;
-//    private TextView tvInfo;
-//    private TextView tvSortByName, tvSortByDistance;//TODO: implement clickable to switch sorting
-//    private ArrayList<SortedObject> sortedByDistance;
-//    private ArrayList<SortedObject> sortedByName;
-    private TextView tvInfo, tvColumTitle1, tvColumnTitle2;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView tvInfo;
     private EditText editSearch;
     private ImageView imgCancel, imgSortName, imgSortDistance;
-    //    private ArrayList<String> mlist;
     private ArrayList<Station> allStations, stationList, filteredList;
     private HashMap<String, Station> stationHashMap;
     private MyAdapter adapter = null;
@@ -57,6 +60,20 @@ public class StationListFragment extends MainFragment {
     private double myLat, myLng;
     private Sort sortMode = Sort.UNSORTED;
 
+    private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            Log.d(TAG, "async success: "+done);
+            Log.d(TAG, "async result: "+RailSingleton.getAsyncResult());
+            swipeRefreshLayout.setRefreshing(false);
+            if(done){
+                stationHashMap = RailSingleton.getStationMap();
+                stationList = new ArrayList<>(stationHashMap.values());
+                sortStation(sortMode, stationList);
+            }
+        }
+    };
 
     RailInterface stationCallback;
 
@@ -76,6 +93,7 @@ public class StationListFragment extends MainFragment {
         imgSortDistance = v.findViewById(R.id.fragment_stations_main_img_sort_distance);
         imgSortName = v.findViewById(R.id.fragment_stations_main_img_sort_station_name);
         lv = (ListView) v.findViewById(R.id.fragment_stations_main_listview);
+        swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
         return v;
     }
 
@@ -95,21 +113,11 @@ public class StationListFragment extends MainFragment {
             this.myLat = myLocation.getLatitude();
             this.myLng = myLocation.getLongitude();
         }
-//        this.mlist = new ArrayList<>();
-//        for(String key: stationHashMap.keySet()){
-//            mlist.add(key);
-//        }
+
 
         stationList = new ArrayList<>(stationHashMap.values());
-//        stationList = allStations;
-        //initial default sorting station list by name A-Z
-//        Station.stationNameUp stationCompare = new Station.stationNameUp();
-//        Collections.sort(stationList, stationCompare);
 
-
-//        MyAdapter2 adapter2;
         try {
-//            adapter = new MyAdapter(getActivity(), stationList);
             adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList); //TODO: fuk, to tez nie działa, ale czemu??????
             lv.setAdapter(adapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -160,6 +168,16 @@ public class StationListFragment extends MainFragment {
             e.printStackTrace();
             tvInfo.setText(e.getMessage());
         }
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                LocationUtils.getLocation(getActivity());
+                AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
+                rail.execute(Links.ALL_STATIONS.getRailLink());
+            }
+        });
     }
 
     @Override

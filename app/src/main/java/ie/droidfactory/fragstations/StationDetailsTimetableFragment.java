@@ -7,6 +7,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class StationDetailsTimetableFragment extends Fragment {
     private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList.AsyncDoneCallback() {
         @Override
         public void onAsyncDone(boolean done) {
+            swipeRefreshLayout.setRefreshing(false);
             if(done){
                 timetableList = RailSingleton.getTimetableList();
                 StationDetails.TimetableDestinationDown compare = new StationDetails
@@ -64,6 +66,7 @@ public class StationDetailsTimetableFragment extends Fragment {
     private EditText editSearch;
     private ImageView imgSortDestination, imgSortTime, imgCancel;
     private static ListView lv;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private Station station;
     private ProgressDialog dialog;
     private static MyAdapter adapter;
@@ -94,6 +97,7 @@ public class StationDetailsTimetableFragment extends Fragment {
         imgSortDestination = view.findViewById(R.id.fragment_details_timetable_img_sort_destination);
         imgSortTime = view.findViewById(R.id.fragment_details_timetable_img_sort_time);
         editSearch = view.findViewById(R.id.fragment_details_timetable_edit_search);
+        swipeRefreshLayout = view.findViewById(R.id.fragment_details_timetable_swipe_refresh_layout);
 
     }
 
@@ -158,6 +162,24 @@ public class StationDetailsTimetableFragment extends Fragment {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                refreshDetailsData();
+            }
+        });
+    }
+
+    private void refreshDetailsData(){
+        link = Links.GET_STATION_DATA_BY_STATION_CODE.getRailLink()+stationCode;
+        Log.d(TAG, "refresh async link: "+link);
+        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode
+                .GET_STATION_DETAIL, asyncDone);
+        rail.execute(link.toString());
+
     }
 
     private class Cliker implements View.OnClickListener {

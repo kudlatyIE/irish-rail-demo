@@ -14,10 +14,8 @@
         android:id="@+id/adapter_train_details_img_marker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:src="@drawable/ic_train_marker_empty"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:adjustViewBounds="true" />
     <TextView
         android:id="@+id/adapter_train_details_location"
         android:layout_width="0dp"

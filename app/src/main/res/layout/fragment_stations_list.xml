@@ -48,7 +48,7 @@
 			android:layout_weight="1">
 
 			<TextView
-				android:id="@+id/adapter_stations_text_station_id"
+				android:id="@+id/fragment_stations_main_text_station_id"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceMedium"
@@ -70,7 +70,7 @@
 			android:layout_weight="1">
 
 			<TextView
-				android:id="@+id/adapter_stations_text_station_name"
+				android:id="@+id/fragment_stations_main_text_station_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textStyle="bold"
@@ -88,13 +88,20 @@
 
 	</LinearLayout>
 
-	<ListView
-		android:id="@+id/fragment_stations_main_listview"
+	<android.support.v4.widget.SwipeRefreshLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/fragment_stations_main_swipe_refresh_layout"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp"
-		android:layout_marginRight="5dp"
-		></ListView>
+		android:layout_height="wrap_content">
+		<ListView
+			android:id="@+id/fragment_stations_main_listview"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			/>
+	</android.support.v4.widget.SwipeRefreshLayout>
+
 
 
 </LinearLayout>
