@@ -1,12 +1,16 @@
 package ie.droidfactory.fragstations;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.Train;
+import ie.droidfactory.fragstations.utils.CustomEndDialog;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
@@ -45,6 +50,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
 
+    public static Activity suomi;
+    private CustomEndDialog dialog;
+
 
 
     @Override
@@ -54,6 +62,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 //        setContentView(R.layout.main_layout);
         //TODO: try layout with drawer and toolbar
         setContentView(R.layout.drawer_layout);
+        suomi = this;
 //        MainActivity.suomi.finish();
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
@@ -184,36 +193,36 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPresed invoked...");
         if(!MainFragment.handleBackPressed(getSupportFragmentManager())){
             super.onBackPressed();
+        }else {
+            dialog = new CustomEndDialog(this);
+            dialog.show();
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if(isDualPane){
-//            if( detailsFragment!=null){
-//                if(getSupportFragmentManager().findFragmentByTag(AllTrainsMapFragment
-//                        .TAG_FULL_TRAINS_MAP)!=null){
-//
-//                }
-//                Log.d(TAG, "onBackPressed(): details fragment is not null!");
-//                ft = getSupportFragmentManager().beginTransaction();
-//                getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                ft.remove(detailsFragment);
-//                ft.commit();
-//                getSupportFragmentManager().executePendingTransactions();
-//                detailsFragment=null;
-//                updateViews(detailsView);
-//
-//            }else{
-//                Log.d(TAG, "onBackPressed(): details fragment is NULL!");
-//                super.onBackPressed();
-//            }
-//        }else super.onBackPressed();
-//    }
+
+
+    private void runAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 
     @Override
     public void onStationSelected(String id) {
@@ -456,6 +465,14 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     detail.setVisibility(View.GONE);
                 }else detail.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(dialog!=null && dialog.isShowing()){
+            dialog.dismiss();
         }
     }
 

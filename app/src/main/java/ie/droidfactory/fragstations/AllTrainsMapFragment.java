@@ -1,6 +1,7 @@
 package ie.droidfactory.fragstations;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -130,6 +131,8 @@ public class AllTrainsMapFragment extends MainFragment /*implements AsyncTaskRes
             }
         });
     }
+
+
     private void restoreMarks(){
         GoogleMapOptions options = new GoogleMapOptions();
         if(cameraPosition!=null) options.camera(cameraPosition);
