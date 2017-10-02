@@ -80,12 +80,7 @@ public class StationListFragment extends MainFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        View v = inflater.inflate(R.layout.fragment_stations_list, container,false);
-//        tvInfo = (TextView) v.findViewById(R.id.fragment_stations_main_text_info);
-//        tvSortByName = (TextView) v.findViewById(R.id.fragment_stations_main_text_station_name);
-//        tvSortByDistance = (TextView) v.findViewById(R.id.fragment_stations_main_text_station_distance);
-//        lv = (ListView) v.findViewById(R.id.fragment_stations_main_listview);
-//        return v;
+
         View v = inflater.inflate(R.layout.fragment_stations_list, container,false);
         tvInfo = (TextView) v.findViewById(R.id.fragment_stations_main_text_info);
         editSearch = (EditText) v.findViewById(R.id.fragment_stations_main_edit_search);
@@ -116,13 +111,10 @@ public class StationListFragment extends MainFragment {
 
 
         stationList = new ArrayList<>(stationHashMap.values());
-        Station.distanceDown compare = new Station.distanceDown();
-        Collections.sort(stationList, compare);
-        sortMode = Sort.DISTANCE_UP;
-        imgSortDistance.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
+        sortStation(Sort.DISTANCE_UP, stationList);
 
         try {
-            adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList); //TODO: fuk, to tez nie działa, ale czemu??????
+            adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
             lv.setAdapter(adapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
@@ -155,7 +147,6 @@ public class StationListFragment extends MainFragment {
                                 filteredList.add(station);
                             }
                         }
-//                        stationList = tempList;
                         sortStation(sortMode, filteredList);
                         adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, filteredList);
                         lv.setAdapter(adapter);
@@ -332,17 +323,14 @@ public class StationListFragment extends MainFragment {
                 v = convertView;
                 h = (Holder) v.getTag();
             }
-
             h.tvStationId.setText(DataUtils.formatDistance(stations.get(position).getDistance()));
             h.tvStationName.setText(stations.get(position).getStationDesc());
             return v;
         }
-
     }
 
     class Holder{
         TextView tvStationId, tvStationName,  tvDistance;
-
     }
 
     private class StationFilter extends Filter {
@@ -359,7 +347,6 @@ public class StationListFragment extends MainFragment {
                 }
                 filterResults.count = tempList.size();
                 filterResults.values = stationList;
-
             }
             return filterResults;
         }
