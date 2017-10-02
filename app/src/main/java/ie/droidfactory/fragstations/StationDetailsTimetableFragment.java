@@ -46,9 +46,10 @@ public class StationDetailsTimetableFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
             if(done){
                 timetableList = RailSingleton.getTimetableList();
-                StationDetails.TimetableDestinationDown compare = new StationDetails
-                        .TimetableDestinationDown();
-                Collections.sort(timetableList, compare);
+//                StationDetails.TimetableDestinationDown compare = new StationDetails
+//                        .TimetableDestinationDown();
+//                Collections.sort(timetableList, compare);
+                sortTimetable(Sort.TIME_UP, timetableList);
                 adapter = new MyAdapter(getActivity(), R.layout.adapter_station_timetable, timetableList);
                 lv.setAdapter(adapter);
             }
@@ -216,7 +217,8 @@ public class StationDetailsTimetableFragment extends Fragment {
             StationDetails.TimetableDestinationDown compare = new StationDetails
                     .TimetableDestinationDown();
             Collections.sort(list, compare);
-            imgSortDestination.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
+            imgSortDestination.setImageDrawable(getResources().getDrawable(R.drawable
+                    .ic_sort_up));
         }
         if(mode==Sort.DESTINATION_DOWN){
             StationDetails.TimetableDestinationUp compare = new StationDetails
@@ -229,12 +231,12 @@ public class StationDetailsTimetableFragment extends Fragment {
             StationDetails.TimetableDueInTimeDown compare = new StationDetails
                     .TimetableDueInTimeDown();
             Collections.sort(list, compare);
-            imgSortTime.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
+            imgSortTime.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
         }
         if(mode==Sort.TIME_DOWN){
             StationDetails.TimetableDueInTimeUp compare = new StationDetails.TimetableDueInTimeUp();
             Collections.sort(list, compare);
-            imgSortTime.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
+            imgSortTime.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
         }
         setList(list);
     }

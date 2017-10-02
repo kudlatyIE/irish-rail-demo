@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
@@ -21,6 +24,7 @@ import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
 import ie.droidfactory.fragstations.utils.MyLocationListener;
+import ie.droidfactory.fragstations.utils.PermissionUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -76,6 +80,7 @@ public class InfoFragment extends MainFragment {
         // TODO Auto-generated method stub
         super.onStart();
         Log.d(TAG, "onStart....");
+
         Bundle extras = getArguments();
         if (extras != null) {
             info = extras.getString(FragmentUtils.FRAGMENT_INFO);
@@ -123,6 +128,8 @@ public class InfoFragment extends MainFragment {
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncStationsListDone);
         rail.execute(Links.ALL_STATIONS.getRailLink());
     }
+
+
 
     private void getLocation(){
         Location l= null;

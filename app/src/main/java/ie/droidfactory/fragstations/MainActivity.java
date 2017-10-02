@@ -64,7 +64,6 @@ public class MainActivity extends Activity implements
         permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(android.Manifest.permission.ACCESS_WIFI_STATE);
 
-        isPermissionGranted = true;
         permissionUtils.check_permission(permissions,"dialog context", PERMISSIONS_MULTIPLE_REQUEST );
 
         //--------------------
@@ -74,11 +73,11 @@ public class MainActivity extends Activity implements
 //        btnStation = (Button) findViewById(R.id.main_btn_stations);
 //        btnMap = (Button) findViewById(R.id.main_btn_map);
 //        btnTrain = (Button) findViewById(R.id.main_btn_train);
-
-        MyButtons button = new MyButtons();
-        btnStation.setOnClickListener(button);
-        btnMap.setOnClickListener(button);
-        btnTrain.setOnClickListener(button);
+//
+//        MyButtons button = new MyButtons();
+//        btnStation.setOnClickListener(button);
+//        btnMap.setOnClickListener(button);
+//        btnTrain.setOnClickListener(button);
     }
 
 
@@ -109,7 +108,10 @@ public class MainActivity extends Activity implements
     public void PermissionGranted(int request_code) {
         Log.i("PERMISSION","GRANTED");
         isPermissionGranted = true;
-        executeStationsList(isPermissionGranted);
+//        executeStationsList(isPermissionGranted);
+        Intent intent = new Intent(this, StationMainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

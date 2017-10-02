@@ -1,13 +1,9 @@
 package ie.droidfactory.fragstations;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,23 +18,24 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
+import java.util.ArrayList;
 
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.utils.CustomEndDialog;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
-import ie.droidfactory.fragstations.utils.MyLocationListener;
+import ie.droidfactory.fragstations.utils.PermissionUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
  * Created by kudlaty on 02/06/2016.
  */
 public class StationMainActivity extends AppCompatActivity implements RailInterface,
-        AllStationsMapFragment.RestartCallback {
+        AllStationsMapFragment.RestartCallback{//}, ActivityCompat.OnRequestPermissionsResultCallback,PermissionResultCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
+//    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
     public final static String FRAG_SUBDETAILS = "frag_subdetails";
     public final static String FRAG_DETAILS = "frag_details";//, FRAG_STATIONS="frag_stations";
     public final static String FRAG_MAIN="frag_main";
@@ -59,143 +56,160 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     public static Activity suomi;
     private CustomEndDialog dialog;
 
+    private boolean isPermissionGranted=false;
+    private ArrayList<String> permissions=new ArrayList<>();
+    private PermissionUtils permissionUtils;
+    private Bundle savedInstanceState;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.savedInstanceState=savedInstanceState;
 //        setContentView(R.layout.main_layout);
         //TODO: try layout with drawer and toolbar
-        setContentView(R.layout.drawer_layout);
-        suomi = this;
+
+//        permissionUtils=new PermissionUtils(this);
+//        permissions.add(android.Manifest.permission.INTERNET);
+//        permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+//        permissions.add(android.Manifest.permission.ACCESS_WIFI_STATE);
+//
+//        permissionUtils.check_permission(permissions,"dialog context", PERMISSIONS_MULTIPLE_REQUEST );
+        loadFragments(true);
+    }
+
+    private void loadFragments(boolean isPermissionGranted){
+
+        if(isPermissionGranted){
+            setContentView(R.layout.drawer_layout);
+            suomi = this;
 //        MainActivity.suomi.finish();
-        isDualPane = getResources().getBoolean(R.bool.has_two_panes);
-        isTablet = getResources().getBoolean(R.bool.is_tablet);
-        Log.d(TAG, "id landscape layout: "+isDualPane);
+            isDualPane = getResources().getBoolean(R.bool.has_two_panes);
+            isTablet = getResources().getBoolean(R.bool.is_tablet);
+            Log.d(TAG, "id landscape layout: "+isDualPane);
 
         /*
         add toolbar and drawer... and make them work!
         1. initialization drawer....
          */
-        isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
+            isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+            setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 //        getSupportActionBar().setTitle(R.string.test_drawer_main_text);
-    //1.
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            //1.
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                toolbar,R.string.open_drawer, R.string.close_drawer){
+            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                    toolbar,R.string.open_drawer, R.string.close_drawer){
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-        drawerLayout.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
-
-        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                if(item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                drawerLayout.closeDrawers();
-                setFragmentFromDrawer(item.getItemId());
-                //TODO: create selected fragment and replace view...
-//                createFragment(mainFragmentId);
-                return true;
-            }
-        });
-
-        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
-
-        //SINGLE PANE - PORTRAIT
-        if(!isDualPane){
-            Log.d(TAG, "onCreate, PORT, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-            Log.d(TAG, "onCreate, PORT, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
-            if(detailsFragment!=null){
-                if(isTablet){
-
-                    ft = getSupportFragmentManager().beginTransaction();
-                    getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    ft.remove(detailsFragment).commit();
-                    getSupportFragmentManager().executePendingTransactions();
-                    ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
-                    ft.addToBackStack(null);
-                    ft.commit();
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
                 }
 
-            }else{
-                if(findViewById(R.id.fragment_station_list_container)!=null) {
-                    if(savedInstanceState!=null) return; // TODO: check is fragment is savedInstanceState
-                    if(mainFragment==null){
-                        ft = getSupportFragmentManager().beginTransaction();
-                        mainFragment = (MainFragment) setMainFragment(mainFragmentId);
-                        mainFragment.setStationSelectedListener(this);
-                        ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
-                    }
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
                 }
-            }
+            };
+            drawerLayout.addDrawerListener(drawerToggle);
+            drawerToggle.syncState();
 
-            //DUAL PANE - LANDSCAPE
-        }else{
-            detailsView = findViewById(R.id.fragment_station_details_container);
-            if(detailsView!=null) updateViews(detailsView);
-            Log.d(TAG, "onCreate, LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-            Log.d(TAG, "onCreate, LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
-            if(findViewById(R.id.fragment_station_list_container)!=null){
+            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem item) {
+                    if(item.isChecked()) item.setChecked(false);
+                    else item.setChecked(true);
+                    drawerLayout.closeDrawers();
+                    setFragmentFromDrawer(item.getItemId());
+                    return true;
+                }
+            });
+            detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+
+            //SINGLE PANE - PORTRAIT
+            if(!isDualPane){
+                Log.d(TAG, "onCreate, PORT, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
+                Log.d(TAG, "onCreate, PORT, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
                 if(detailsFragment!=null){
-                    detailsView.setVisibility(View.VISIBLE);
-                    ft = getSupportFragmentManager().beginTransaction();
-                    getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    ft.remove(detailsFragment).commit();
-                    getSupportFragmentManager().executePendingTransactions();
-                    ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.fragment_station_details_container, detailsFragment, FRAG_DETAILS);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                    if(mainFragment!=null){
-                        ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
-                                .commit();
-                    }
-                }else {
-                    if(mainFragment==null){
-                        ft = getSupportFragmentManager().beginTransaction();
-//						listFragment = new StationListFragment();
-                        mainFragment = (MainFragment) setMainFragment(mainFragmentId);
-                        mainFragment.setStationSelectedListener(this);
-                        ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
-                    }else return;
-                }
-            }else{
-                ft = getSupportFragmentManager().beginTransaction();
-                mainFragment = (MainFragment) setMainFragment(mainFragmentId);
-                mainFragment.setStationSelectedListener(this);
-                ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
-            }
-        }
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    if(isTablet){
 
-            @Override
-            public void onBackStackChanged() {
-                updateViews(detailsView);
-                Log.d(TAG, "onBackStackChanged....");
+                        ft = getSupportFragmentManager().beginTransaction();
+                        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        ft.remove(detailsFragment).commit();
+                        getSupportFragmentManager().executePendingTransactions();
+                        ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                    }
+
+                }else{
+                    if(findViewById(R.id.fragment_station_list_container)!=null) {
+                        if(savedInstanceState!=null) return; // TODO: check is fragment is savedInstanceState
+                        if(mainFragment==null){
+                            ft = getSupportFragmentManager().beginTransaction();
+                            mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                            mainFragment.setStationSelectedListener(this);
+                            ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                        }
+                    }
+                }
+
+                //DUAL PANE - LANDSCAPE
+            }else{
+                detailsView = findViewById(R.id.fragment_station_details_container);
+                if(detailsView!=null) updateViews(detailsView);
+                Log.d(TAG, "onCreate, LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
+                Log.d(TAG, "onCreate, LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
+                if(findViewById(R.id.fragment_station_list_container)!=null){
+                    if(detailsFragment!=null){
+                        detailsView.setVisibility(View.VISIBLE);
+                        ft = getSupportFragmentManager().beginTransaction();
+                        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        ft.remove(detailsFragment).commit();
+                        getSupportFragmentManager().executePendingTransactions();
+                        ft = getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.fragment_station_details_container, detailsFragment, FRAG_DETAILS);
+                        ft.addToBackStack(null);
+                        ft.commit();
+                        if(mainFragment!=null){
+                            ft = getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
+                                    .commit();
+                        }
+                    }else {
+                        if(mainFragment==null){
+                            ft = getSupportFragmentManager().beginTransaction();
+//						listFragment = new StationListFragment();
+                            mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                            mainFragment.setStationSelectedListener(this);
+                            ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                        }else return;
+                    }
+                }else{
+                    ft = getSupportFragmentManager().beginTransaction();
+                    mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                    mainFragment.setStationSelectedListener(this);
+                    ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                }
             }
-        });
+            getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+
+                @Override
+                public void onBackStackChanged() {
+                    updateViews(detailsView);
+                    Log.d(TAG, "onBackStackChanged....");
+                }
+            });
+        }
+
     }
 
     @Override
@@ -463,7 +477,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         }
     }
 
-
     private void updateViews(View detail){
         if(isDualPane){
             if(detailsView!=null){
@@ -631,6 +644,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         Log.d(TAG, "restart callback!");
         if(isClicked) createFragment(fragmentName);
     }
+
 
 }
 
