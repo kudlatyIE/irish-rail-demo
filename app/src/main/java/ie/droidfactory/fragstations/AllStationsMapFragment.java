@@ -63,7 +63,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     private final static String TAG_FULL_MAP="fragment_full_map";
     private SupportMapFragment mapFragment;
     private GoogleMap map;
-    private double myLat=0, myLo=0;
+//    private double myLat=0, myLo=0;
     private LatLng myLocation=null;
 
     @Override
@@ -72,14 +72,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         return v;
     }
 
-//    @Override
-//    public void onViewCreated(View view, Bundle savedInstanceState){
-//        super.onViewCreated(view, savedInstanceState);
-//        Log.d(TAG, "onViewCreated beginning...");
-//        Log.d(TAG, "onViewCreated map is null: "+(googleMap==null));
-//        btnRefresh = (Button) view.findViewById(R.id.fragment_all_mapa_btn_refresh);
-//        //TODO create map fragment
-//    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
@@ -103,52 +95,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
         }
     }
-//    @Override
-//    public void onViewCreated(View view, Bundle savedInstanceState) {
-//        // TODO Auto-generated method stub
-//        super.onViewCreated(view, savedInstanceState);
-//        btnRefresh = (Button) view.findViewById(R.id.fragment_all_mapa_btn_refresh);
-//    }
-
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        // retain this fragment
-//        setRetainInstance(true);
-//    }
-//
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        // TODO Auto-generated method stub
-//        super.onActivityCreated(savedInstanceState);
-//        createMapFragment(FRAGMENT.CREATE);
-//        btnRefresh.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "restart callback!");
-//                restartCallback.onRestartButtonClicked(true, FragmentUtils.FRAGMENT_ALL_MAP);
-//            }
-//        });
-//    }
-
-//    private void initializeMap(SupportMapFragment fragment){
-//        if(fragment!=null){
-//            mapFragment.getMapAsync(new OnMapReadyCallback(){
-//
-//                @Override
-//                public void onMapReady(GoogleMap arg0) {
-//                    if(arg0!=null){
-//                        googleMap=arg0;
-//                        setMap(RailSingleton.getStationMap());
-//                    }
-//                    Log.d(TAG, "FRAGMENT.CREATE::onMapReady arg0 is null: "+(arg0==null));
-//                }
-//            });
-//        }else{
-//            Log.e(TAG, "unable initalize map, mapFragment is null");
-//        }
-//    }
 
     private void setMap(HashMap<String, Station> list){
         getLocation();
@@ -156,6 +102,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         if(list==null || list.size()==1){
 
             map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
             map.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
             return;
         }else{
@@ -211,153 +158,39 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             Log.d(TAG, "Nick, you bad boy, do not destroy map anymore!");
         }
     }
-//    private void setMap(HashMap<String, Station> list){
-//        Log.d(TAG, "setMap beginning...");
-//        LatLng location;
-//        try{
-//            myLocation = LocationUtils.getLocation(getActivity());
-//        }catch(NullPointerException e){
-//            if(RailSingleton.getMyLocation()!=null) this.myLocation = RailSingleton.getMyLatLng();
-//            else this.myLocation = MyShared.getMyLastLocation(getActivity());
-//        }
-//        if(lastLocation!=null) location = lastLocation;
-//        else location = myLocation;
-//        googleMap.getUiSettings().setAllGesturesEnabled(true);
-//        if(list!=null && list.size()!=1){
-//            for(String i: list.keySet()){
-//                addStationsMarker(i, new LatLng(list.get(i).getStationLatitude(),
-//                                list.get(i).getStationLongitude()),
-//                        list.get(i).getStationDesc(),//title
-//                        list.get(i).getStationCode(),//snippet
-//                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));//icon
-//            }
-//        }
-//        //add user location as default marker
-//        googleMap.addMarker(new MarkerOptions().position(this.myLocation).title(FragmentUtils.TAG_USER)
-//                .snippet(FragmentUtils.TAG_USER));
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(16),1000,null);
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-//        Log.d(TAG, "setMap() map is null: "+(googleMap==null));
-//    }
-
-//    private void addStationsMarker(String id, LatLng stationLatLng, String stationTitle, String code, BitmapDescriptor ic){
-//        googleMap.addMarker(new MarkerOptions().position(stationLatLng).title(stationTitle).snippet(code).icon(ic));
-//        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
-//
-//            @Override
-//            public boolean onMarkerClick(Marker arg0) {
-//                Log.d(TAG, "item on: "+arg0.getTitle()+" code: "+arg0.getSnippet());
-//                if(!arg0.getSnippet().equals(FragmentUtils.TAG_USER)) stationCallback.onStationSelected(arg0.getSnippet());
-//                else Toast.makeText(getActivity(), "click on"+arg0.getSnippet(), Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//
-//        });
-//    }
-
-
-//    private void createMapFragment(FRAGMENT todo){
-//        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_MAP);
-//        View view = getActivity().findViewById(R.id.fragment_all_map_mapa);
-////        if()
-//        Log.d(TAG, "fragment_all_mapa_map getVisiblity: "+(view.getVisibility()));
-//
-//        if(todo==FRAGMENT.CREATE){
-//            if(mapFragment==null){
-//                Log.d(TAG, "FRAGMENT.CREATE, mapFragment is NULL, create new!");
-//                FragmentManager fm = getChildFragmentManager();
-//                mapFragment = SupportMapFragment.newInstance();
-//                fm.beginTransaction().replace(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_MAP)
-//                        .commit();
-//                fm.executePendingTransactions();
-//                initializeMap(mapFragment);
-//            }else{
-//                Log.d(TAG, "FRAGMENT.CREATE, mapFragment is not null...");
-//            }
-//        }
-//        if(todo==FRAGMENT.REFRESH){
-//            if(mapFragment!=null){
-//                Log.d(TAG, "FRAGMENT.REFRESH, mapFragment exist, kill and create new!");
-//                FragmentManager fm = getChildFragmentManager();
-//                fm.beginTransaction().remove( mapFragment).commit();
-//                fm.executePendingTransactions();
-//                fm = getChildFragmentManager();
-//                mapFragment = SupportMapFragment.newInstance();
-//                fm.beginTransaction().add(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_MAP)
-//                        .commit();
-//                fm.executePendingTransactions();
-//                initializeMap(mapFragment);
-//
-//            }else{
-//                Log.d(TAG, "FRAGMENT.REFRESH, mapFragment is null...");
-//                FragmentManager fm = getChildFragmentManager();
-//                mapFragment = SupportMapFragment.newInstance();
-//                fm.beginTransaction().add(R.id.fragment_all_map_mapa, mapFragment, TAG_FULL_MAP)
-//                        .commit();
-//                fm.executePendingTransactions();
-//                initializeMap(mapFragment);
-//            }
-//        }
-//    }
-
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    public void onAttach(Activity activity) {
-//        // TODO Auto-generated method stub
-//        super.onAttach(activity);
-//        try{
-//            stationCallback = (RailInterface) activity;
-//            restartCallback = (RestartCallback) activity;
-//        }catch(ClassCastException e){
-//            throw new ClassCastException(activity.toString()+ e.getMessage()+" is not " +
-//                    "implemented...");
-//        }
-//
-//        Log.d(TAG, "onAttach end...");
-//    }
-
-//    @Override
-//    public void onDestroyView(){
-//        super.onDestroyView();
-//        Log.d(TAG, "onDestroyView, beginning...");
-//        if(googleMap!=null)  cameraPosition = googleMap.getCameraPosition();
-//        lastLocation = cameraPosition.target;
-//    }
-
-//    @Override
-//    public void onDestroy(){
-//        SupportMapFragment mf = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id
-//                .fragment_all_map_mapa);
-//        if(mf!=null && mf.isResumed()) getFragmentManager().beginTransaction().remove(mf)
-//                .commitAllowingStateLoss();
-//        super.onDestroy();
-//    }
 
     private void getLocation(){
         Location l= null;
         LocationManager lm = null;
         MyLocationListener listener = new MyLocationListener();
 
-        lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-            l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        try{
+            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            lm.removeUpdates(listener);
+            if(l!=null){
+//                this.myLo = l.getLongitude();
+//                this.myLat = l.getLatitude();
+                this.myLocation = new LatLng(l.getLatitude(), l.getLongitude());
+                Log.d(TAG, "current lat, long: "+l.getLatitude()+", "+l.getLongitude());
+            }
+        }catch (NullPointerException e){
+            Log.d(TAG, "capture location problem");
+//            this.myLo = RailSingleton.getMyLatLng().longitude;
+//            this.myLat = RailSingleton.getMyLatLng().latitude;
         }
 
 
-        if(l!=null){
-            this.myLo = l.getLongitude();
-            this.myLat = l.getLatitude();
-            this.myLocation = new LatLng(this.myLat, this.myLo);
-        }
-        Log.d(TAG, "current lat, long: "+this.myLat+", "+this.myLo);
 
-        lm.removeUpdates(listener);
     }
 
 
 }
+//NullPointerException

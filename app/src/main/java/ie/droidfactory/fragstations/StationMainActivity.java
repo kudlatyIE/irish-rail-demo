@@ -1,7 +1,10 @@
 package ie.droidfactory.fragstations;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -19,11 +22,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.utils.CustomEndDialog;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
+import ie.droidfactory.fragstations.utils.MyLocationListener;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -625,6 +631,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         Log.d(TAG, "restart callback!");
         if(isClicked) createFragment(fragmentName);
     }
+
 }
 
 //    @Override

@@ -1,6 +1,9 @@
 package ie.droidfactory.fragstations;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,12 +12,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
 import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
+import ie.droidfactory.fragstations.utils.MyLocationListener;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -95,6 +101,7 @@ public class InfoFragment extends MainFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+        getLocation();
         downloadAllStationList();
 
     }
@@ -115,6 +122,31 @@ public class InfoFragment extends MainFragment {
         LocationUtils.getLocation(getActivity());
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncStationsListDone);
         rail.execute(Links.ALL_STATIONS.getRailLink());
+    }
+
+    private void getLocation(){
+        Location l= null;
+        LocationManager lm = null;
+        MyLocationListener listener = new MyLocationListener();
+
+        try{
+            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            lm.removeUpdates(listener);
+            if(l!=null){
+
+                RailSingleton.setMyLocation(new LatLng(l.getLatitude(), l.getLongitude()));
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
 
