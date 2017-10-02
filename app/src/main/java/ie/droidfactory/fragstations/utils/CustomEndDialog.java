@@ -15,6 +15,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import ie.droidfactory.fragstations.OnBackPressedListener;
 import ie.droidfactory.fragstations.R;
 
 /**
@@ -27,11 +28,13 @@ public class CustomEndDialog extends Dialog implements View.OnClickListener  {
     private TextView tvInfo;
     private Button btnYes, btnCancel;
     private Activity activity;
+//    private OnBackPressedListener listener;
 
 
-    public CustomEndDialog(@NonNull Activity activity) {
+    public CustomEndDialog(@NonNull Activity activity){//}, OnBackPressedListener listener) {
         super(activity);
         this.activity=activity;
+//        this.listener=listener;
     }
 
     @Override
@@ -52,8 +55,10 @@ public class CustomEndDialog extends Dialog implements View.OnClickListener  {
         switch (view.getId()){
             case R.id.custom_end_dialog_btn_yes:
                 activity.finish();
+//                listener.doKill(true);
                 break;
             case R.id.custom_end_dialog_btn_cancel:
+//                listener.doKill(false);
                 dismiss();
                 break;
         }

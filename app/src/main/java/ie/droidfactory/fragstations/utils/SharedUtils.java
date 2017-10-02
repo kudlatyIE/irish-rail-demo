@@ -17,12 +17,11 @@ public class SharedUtils {
     private final static String KEY_FAVORITIES="fav_list";
 
 
-    public static boolean saveFavList(Context context, ArrayList<Station>){
-        settings = context.getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor ed = settings.edit();
-
-        ed.
-    }
+//    public static boolean saveFavList(Context context, ArrayList<Station>){
+//        settings = context.getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor ed = settings.edit();
+//
+//    }
 
 
 

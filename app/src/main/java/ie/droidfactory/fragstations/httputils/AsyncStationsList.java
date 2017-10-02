@@ -52,12 +52,14 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		dialog = new ProgressDialog(context);
-		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		dialog.setIndeterminate(true);
-		dialog.setCancelable(true);
-		dialog.setMessage("rail connection....");
-		dialog.show();
+		if(context!=null){
+			dialog = new ProgressDialog(context);
+			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(true);
+			dialog.setMessage("rail connection....");
+			dialog.show();
+		}
 		
 	}
 
@@ -108,6 +110,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 		super.onPostExecute(res);
 		boolean success = false;
 //		Log.d(TAG, "XML:\n"+res);
+		if(dialog!=null && dialog.isShowing()) dialog.dismiss();
 		try{
 
 			if(dialog!=null && dialog.isShowing()) dialog.dismiss();

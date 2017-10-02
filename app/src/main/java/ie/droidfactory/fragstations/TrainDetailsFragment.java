@@ -217,7 +217,12 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            stationFromTrainCallback.onStationSelectedFromTrain(trainDetailsList.get(position).getLocationCode());
+                            //TODO: is complicate on landscape tablet - kepp it for next time.
+//                            stationFromTrainCallback.onStationSelectedFromTrain(trainDetailsList.get(position).getLocationCode());
+                            String time;
+                            if(trainDetailsList.get(position).getArrival().length()>0) time = "\ntrain arrived at "+trainDetailsList.get(position).getArrival();
+                            else time="\ntrain is expected at "+trainDetailsList.get(position).getScheduledArrival();
+                            Toast.makeText(getActivity(), trainDetailsList.get(position).getLocationFullName().concat(time), Toast.LENGTH_SHORT ).show();
                         }
                     });
                 } catch (Exception e) {

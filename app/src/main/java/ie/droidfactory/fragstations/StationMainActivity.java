@@ -60,8 +60,28 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private ArrayList<String> permissions=new ArrayList<>();
     private PermissionUtils permissionUtils;
     private Bundle savedInstanceState;
+    protected OnBackPressedListener onBackPressedListener;
 
 
+//    public OnBackPressedListener killListener = new OnBackPressedListener() {
+//        @Override
+//        public void doBack() {
+//
+//        }
+//
+//        @Override
+//        public void doKill(boolean kill) {
+//            if(kill) {
+//                ft = getSupportFragmentManager().beginTransaction();
+//                if(detailsFragment!=null) ft.remove(detailsFragment);
+//                if(mainFragment!=null) ft.remove(mainFragment);
+//                ft.commit();
+//                getSupportFragmentManager().executePendingTransactions();
+//                finish();
+//            }
+//            else dialog.dismiss();
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,14 +232,44 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        Log.d(TAG, "onBackPresed invoked...");
+//        if(!MainFragment.handleBackPressed(getSupportFragmentManager())){
+//            super.onBackPressed();
+//        }else {
+//            dialog = new CustomEndDialog(this);
+//            dialog.show();
+//        }
+//    }
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "onBackPresed invoked...");
-        if(!MainFragment.handleBackPressed(getSupportFragmentManager())){
-            super.onBackPressed();
+        Log.d(TAG, "onBackPressed() call...............");
+        if (onBackPressedListener != null)
+            onBackPressedListener.doBack();
+        if(isDualPane){
+            if( detailsFragment!=null){
+                Log.d(TAG, "onBackPressed(): details fragment is not null!");
+                ft = getSupportFragmentManager().beginTransaction();
+                getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                ft.remove(detailsFragment);
+                ft.commit();
+                getSupportFragmentManager().executePendingTransactions();
+                detailsFragment=null;
+                updateViews(detailsView);
+
+            }else{
+                Log.d(TAG, "onBackPressed(): details fragment is NULL!");
+//                super.onBackPressed();
+                dialog = new CustomEndDialog(this);//, killListener);
+                dialog.show();
+            }
         }else {
-            dialog = new CustomEndDialog(this);
-            dialog.show();
+//            if(detailsFragment!=null && detailsFragment.isVisible()) super.onBackPressed();
+            if(mainFragment!=null && mainFragment.isVisible()){
+                dialog = new CustomEndDialog(this);//, killListener);
+                dialog.show();
+            }else super.onBackPressed();
         }
     }
 
