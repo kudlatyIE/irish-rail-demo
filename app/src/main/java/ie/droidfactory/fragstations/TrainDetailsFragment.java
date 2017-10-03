@@ -374,7 +374,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         if(train.getLocationOrder()==1 & train.getDeparture().length()>0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
         if((train.getLocationType().equals(StationType.TYPE_S.getType())
-                || train.getLocationType().equals(StationType.TYPE_C.getType()))
+                || train.getLocationType().equals(StationType.TYPE_C.getType())
+                || train.getLocationType().equals(StationType.TYPE_T.getType()))
                 & train.getArrival().length()>0 & train.getDeparture().length()==0)
             return  getResources().getDrawable(R.drawable.ic_train_marker_arrived);
         if(train.getLocationType().equals(StationType.TYPE_S.getType()) & train.getDeparture().length()>0)
