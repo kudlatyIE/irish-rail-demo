@@ -40,7 +40,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 		this.mode=mode;
         this.asyncDoneCallback = callback;
 //		this.asyncTaskResultCallback = (AsyncTaskResultCallback) context;
-        Log.d(TAG, "async constructor:: MODE: "+mode.toString());
+        Log.d(TAG, "async :: MODE: "+mode.toString());
     }
 	
 	@Override
@@ -57,7 +57,7 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(true);
-			dialog.setMessage("rail connection....");
+			dialog.setMessage("connection....");
 			dialog.show();
 		}
 		

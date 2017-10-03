@@ -72,7 +72,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 //    private ArrayList<Integer> mlist;
     private ArrayList<TrainDetails> trainDetailsList;
     private MyAdapter adapter;
-    private int stampNow, stampOld;
+    private int trainCurrentPosition;
+    boolean stop = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +89,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         lv = (ListView) view.findViewById(R.id.fragment_train_details_listview);
         swipeRefreshLayout = view.findViewById(R.id.fragment_train_details_swipe_refresh_layout);
     }
+
 
     @Override
     public void onStart() {
@@ -119,6 +121,43 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 onRefreshListView();
             }
         });
+
+//        if(lv!=null){
+//            lv.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
+//                    lv.smoothScrollToPosition(trainCurrentPosition);
+//                    lv.setSelection(trainCurrentPosition);
+//                }
+//            });
+            //-------------OR-----------
+//            final Handler handler = new Handler();
+////100ms wait to scroll to item after applying changes
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
+//                    lv.smoothScrollToPosition(trainCurrentPosition);
+//                }}, 2000);
+//        }else Log.d(TAG, "listView is NULL");
+
+    }
+
+    private void scrollList(int position){
+        Log.d(TAG, "scrollList ::: trainCurrentPosition: "+position);
+//        if(lv!=null && position!=0) {
+//            lv.smoothScrollToPosition(position);
+//            lv.setSelection(position);
+//        }
+        lv.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
+                    lv.smoothScrollToPosition(trainCurrentPosition);
+                    lv.setSelection(trainCurrentPosition);
+                }
+            });
     }
 
     private void onRefreshListView(){
@@ -155,6 +194,33 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         }
     }
 
+    private void setCurrentPosition(ArrayList<TrainDetails> list){
+        String stationDeparted=null;
+            if(stop) return;
+            for(int i =0; i<list.size(); i++) {
+                if (list.get(i).getDeparture().length() > 0) {
+                    stationDeparted = list.get(i).getLocationCode();
+                    Log.d(TAG, "order: " + i + " ::::: " + list.get(i).getLocationCode()+" passed position:::::: " + i);
+                }
+                try{
+                    if(stationDeparted!=null){
+                        if(list.get(i+1).getDeparture().length()==0){
+                            this.trainCurrentPosition = i;
+                            Log.d(TAG, "found train current position:::::: "+i);
+                            stop=true;
+                            return;
+                        }
+                    }
+                }catch (ArrayIndexOutOfBoundsException e){
+                    this.trainCurrentPosition = i;
+                    Log.d(TAG, "found train current position:::::: "+i);
+                    stop=true;
+                }
+            }
+
+
+    }
+
     private void updateDetails(String id, String msg){
         Log.d(TAG, "updateDetails arg: "+msg);
 
@@ -185,9 +251,17 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 //                }
                 TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
                 Collections.sort(trainDetailsList, compareUp);
+                setCurrentPosition(trainDetailsList);
                 try {
                     adapter = new MyAdapter(getActivity(), trainDetailsList);
                     lv.setAdapter(adapter);
+                    lv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                        @Override
+                        public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                            lv.removeOnLayoutChangeListener(this);
+                            scrollList(trainCurrentPosition);
+                        }
+                    });
                     lv.setOnItemLongClickListener(new OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -212,6 +286,9 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
         }
     }
+
+
+
     @Override
     public void onAttach(Activity activity) {
         // TODO Auto-generated method stub
@@ -229,6 +306,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
         Holder h;
         ArrayList<TrainDetails> list;
+
+
         private LayoutInflater inflater;
 
         MyAdapter(Context c, ArrayList<TrainDetails> list) throws Exception {
@@ -274,11 +353,14 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             if(arrivaArriva.length()==0) arrivaArriva = train.getScheduledArrival();
             h.tvArrival.setText(arrivaArriva);
             h.tvLocation.setText(train.getLocationFullName());
-             h.imgTrainMarker.setImageDrawable(getTrainMarker(train));
+            h.imgTrainMarker.setImageDrawable(getTrainMarker(train));
+//            setCurrentPosition(train, position);
             return v;
 
         }
+
     }
+
 
     private Drawable getTrainMarker(TrainDetails train){
         Log.d(TAG, "getTrainMarker::: stopTYpe: "+train.getStopType());
@@ -291,7 +373,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 //            return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
         if(train.getLocationOrder()==1 & train.getDeparture().length()>0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
-        if((train.getLocationType().equals(StationType.TYPE_S.getType()) || train.getLocationType().equals(StationType.TYPE_C.getType()))
+        if((train.getLocationType().equals(StationType.TYPE_S.getType())
+                || train.getLocationType().equals(StationType.TYPE_C.getType()))
                 & train.getArrival().length()>0 & train.getDeparture().length()==0)
             return  getResources().getDrawable(R.drawable.ic_train_marker_arrived);
         if(train.getLocationType().equals(StationType.TYPE_S.getType()) & train.getDeparture().length()>0)

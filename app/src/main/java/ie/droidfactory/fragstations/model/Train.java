@@ -2,6 +2,7 @@ package ie.droidfactory.fragstations.model;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -19,6 +20,15 @@ public class Train {
     private Train (String trainCode, String error){
         this.trainCode=trainCode;
         this.error=error;
+    }
+
+    /**
+     * Train constructor to store trains in DB
+     * @param trainCode
+     * @param direction
+     */
+    private Train(String trainCode, String direction, ArrayList<Station>stopStations ) {
+
     }
 
     public Train(String trainStatus, String trainCode, String trainDate, String message, String direction,

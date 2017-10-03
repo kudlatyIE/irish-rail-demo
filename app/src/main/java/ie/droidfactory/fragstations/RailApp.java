@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.twitter.sdk.android.core.Twitter;
+
 import org.acra.ACRA;
 import org.acra.config.ACRAConfigurationException;
 
@@ -30,7 +32,7 @@ public class RailApp extends Application{
     @Override
     public void onCreate(){
         super.onCreate();
-//        ACRA.init(this);
+        Twitter.initialize(this);
     }
     
 

@@ -43,15 +43,10 @@ public class Station implements Serializable {
 		this.stationCode=code;
 		this.stationId=id;
 		this.stationAlias=alias;
-//        this.city=findCity(ac, name, latitude, longitude);
-//        this.city = Cities.valueOf("_"+id).getCity();
 		this.stationLatitude=latitude;
 		this.stationLongitude=longitude;
 		this.stationType=type;
-//        this.myLocation = DataUtils.getLocation(ac);
-//        this.stLocation = calcLocation(latitude, longitude);
 		this.distance = RailSingleton.getMyLocation().distanceTo(calcLocation(latitude, longitude));
-//        this.distanceDown = DataUtils.calculateDistance(latitude, longitude, RailSingleton.getMyLat(), RailSingleton.getMyLng());//myLocation.distanceTo(stLocation);
 		Log.d(TAG, name+"\t"+distance);
 
 	}
