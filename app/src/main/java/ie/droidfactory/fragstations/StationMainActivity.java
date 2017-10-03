@@ -269,7 +269,10 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             if(mainFragment!=null && mainFragment.isVisible()){
                 dialog = new CustomEndDialog(this);//, killListener);
                 dialog.show();
-            }else super.onBackPressed();
+            }else {
+                updateViews(detailsView);
+                super.onBackPressed();
+            }
         }
     }
 
@@ -529,7 +532,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     private void updateViews(View detail){
         if(isDualPane){
-            if(detailsView!=null){
+            if(detail!=null){
                 if(getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS)==null){
                     detail.setVisibility(View.GONE);
                 }else detail.setVisibility(View.VISIBLE);
@@ -612,19 +615,16 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 frag = AllTrainsMapFragment.newInstance(arg);
                 break;
             case FragmentUtils.FRAGMENT_INFO:
-//                frag = new InfoFragment();
                 arg = new Bundle();
                 arg.putString(FragmentUtils.FRAGMENT_INFO, "njus, njus, HOT njus!");
                 frag = InfoFragment.newInstance(arg);
                 break;
             case FragmentUtils.FRAGMENT_ABOUT:
-//                frag = new InfoFragment();
                 arg = new Bundle();
                 arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that ia about everything!");
                 frag = AboutFragment.newInstance(arg);
                 break;
             case FragmentUtils.FRAGMENT_HELP:
-//                frag = new InfoFragment();
                 arg = new Bundle();
                 arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little help here!");
                 frag = SettingsFragment.newInstance(arg);
@@ -695,18 +695,4 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         if(isClicked) createFragment(fragmentName);
     }
 
-
 }
-
-//    @Override
-//    public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        }
-//        if (!viewIsAtHome) { //if the current view is not the News fragment
-//            displayView(R.id.nav_news); //display the News fragment
-//        } else {
-//            moveTaskToBack(true);  //If view is in News fragment, exit application
-//        }
-//    }

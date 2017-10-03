@@ -110,24 +110,7 @@ public class Station implements Serializable {
 			else return 0;
 		}
 	}
-	//    public static class distanceDown implements Comparator<Station>{
-//
-//        @Override
-//        public int compare(Station o1, Station o2) {
-//            Location l1 = new Location("");
-//            l1.setLatitude(o1.stationLatitude);
-//            l1.setLongitude(o1.stationLongitude);
-//            Location l2 = new Location("");
-//            l2.setLatitude(o2.stationLatitude);
-//            l2.setLongitude(o2.stationLongitude);
-//            float dist1 = l1.distanceTo(myLocation);
-//            float dist2 = l2.distanceTo(myLocation);
-//
-//            if(dist1>dist2) return 1;
-//            if (dist1<dist2) return -1;
-//            return 0;
-//        }
-//    }
+
 	public static class distanceDown implements Comparator<Station>{
 
 		@Override

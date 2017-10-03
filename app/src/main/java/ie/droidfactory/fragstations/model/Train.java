@@ -52,14 +52,6 @@ public class Train {
                 publicMessage, direction);
     }
 
-//    public static Train makeTrain(String trainStatus, double trainLatitude, double trainLongitude,
-//                                  String trainCode,
-//                                  String trainDate, String publicMessage, String direction){
-//        return new Train(trainStatus,  trainCode, trainDate,publicMessage, direction,
-//                trainLatitude, trainLongitude);
-//    }
-
-
 
     public static Train makeTrain(String trainCode, String error){
         return new Train(trainCode, error);
@@ -118,16 +110,6 @@ public class Train {
         String totalSplit[] = route.split(" to ");
         this.origin = totalSplit[0].trim();
         this.destination = totalSplit[1].trim();
-        //------------------------
-//        StringTokenizer token = new StringTokenizer(route, "\\n");
-//        Log.d(TAG, "spliter route, tokens num: "+token.countTokens());
-//        String s1="orig doopa", s2="dest doopa";
-//        if(token.countTokens()>1){
-//            s1 = token.nextToken();
-//            s2 = token.nextToken();
-//        }
-//        this.origin=s1;
-//        this.destination=s2;
     }
 
 

@@ -94,14 +94,12 @@ public class StationDetailsFragment extends Fragment {
             mCurrentPosition = savedInstanceState.getInt(FragmentUtils.PARENT_POSITION_KEY);
             mChildPosition = savedInstanceState.getInt(FragmentUtils.CHILD_POSITION_KEY);
         }
-
     }
 
 
     class PagerAdapter extends FragmentStatePagerAdapter {
 
         DetailsChilds[] child = DetailsChilds.values();
-
         public PagerAdapter(FragmentManager fm) {
             super(fm);
             // TODO Auto-generated constructor stub
@@ -136,7 +134,6 @@ public class StationDetailsFragment extends Fragment {
                     args.putString(FragmentUtils.STATION_CODE, stationCode);
                     Log.d(TAG, "tab: "+child[2].getFrag_title());
                     return StationDetailsOtherFragment.newInstance(args);
-
                 default: return null;
             }
         }
@@ -151,7 +148,6 @@ public class StationDetailsFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             return child[position].getFrag_title();
         }
-
     }
 
 
@@ -192,16 +188,13 @@ public class StationDetailsFragment extends Fragment {
 
                 default: return null;
             }
-
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             return child[position].getFrag_title();
         }
-
     }
-
 
 }
 

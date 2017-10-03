@@ -13,11 +13,5 @@
         android:layout_alignParentTop="true"
         android:text="FRAGMENT DETAILS OTHER!"
         />
-    <Button
-        android:id="@+id/fragment_detais_other_btn_bum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/btn_bada_bum"/>
 
 </RelativeLayout>

@@ -20,9 +20,6 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.TreeSet;
 
 import ie.droidfactory.fragstations.httputils.AsyncMode;
 import ie.droidfactory.fragstations.httputils.AsyncStationsList;
@@ -31,7 +28,6 @@ import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.StationType;
 import ie.droidfactory.fragstations.model.Train;
 import ie.droidfactory.fragstations.model.TrainDetails;
-import ie.droidfactory.fragstations.utils.AsyncTaskResultCallback;
 import ie.droidfactory.fragstations.utils.DataUtils;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.RailSingleton;
@@ -97,16 +93,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     public void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-//        stampNow = new Date().getSeconds();
-//        if(RailSingleton.getTimeStampStationDetails()!=0){
-//            stampOld = RailSingleton.getTimeStampStationDetails();
-//            long diff = (stampNow-stampOld)/60000;
-//            if(diff>60){
-//                //TODO: load new timetable
-//            }else{
-//                //TODO: load data from singleton
-//            }
-//        }else RailSingleton.setTimeStampStationDetails(new Date().getSeconds());//and load timetable
 
         Bundle extras = getArguments();
         if(extras!=null) {
@@ -134,11 +120,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
         });
     }
-
-//    @Override
-//    public void onRefresh() {
-//        onRefreshListView();
-//    }
 
     private void onRefreshListView(){
         try {
@@ -210,7 +191,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                     lv.setOnItemLongClickListener(new OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(),"click on:\n"+trainDetailsList.get(position).getLocationFullName(), Toast.LENGTH_SHORT ).show();
+//                            Toast.makeText(getActivity(),"click on:\n"+trainDetailsList.get(position).getLocationFullName(), Toast.LENGTH_SHORT ).show();
                             return false;
                         }
                     });
@@ -244,22 +225,9 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         Log.d(TAG, "onAttach end...");
     }
 
-//    @Override
-//    public void asyncDone(boolean done) {
-//        if (done) {
-//            if(trainCode!= null) updateDetails(trainCode, msg);
-//            Log.d(TAG, "onAsyncDone() callback, create map");
-//            Log.d(TAG, "onAsyncDone() callback, map size: "+RailSingleton.getTrainDetailsMap
-//                    ().size());
-//            createDetailsList(FRAGMENT.CREATE);
-//        }
-//    }
-
     private class MyAdapter extends BaseAdapter{
 
         Holder h;
-//        ArrayList<Integer> list;
-//        HashMap<Integer, TrainDetails> mMap;
         ArrayList<TrainDetails> list;
         private LayoutInflater inflater;
 
@@ -295,7 +263,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 h = new Holder();
                 h.tvArrival = (TextView) v.findViewById(R.id.adapter_train_details_arrival);
                 h.tvLocation = (TextView) v.findViewById(R.id.adapter_train_details_location);
-//                h.tvDeparture = (TextView) v.findViewById(R.id.adapter_train_details_depart);
                 h.imgTrainMarker = v.findViewById(R.id.adapter_train_details_img_marker);
                 v.setTag(h);
             }else {
@@ -306,11 +273,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             String arrivaArriva = train.getArrival();
             if(arrivaArriva.length()==0) arrivaArriva = train.getScheduledArrival();
             h.tvArrival.setText(arrivaArriva);
-//            h.tvLocation.setText(String.format(Locale.ENGLISH, "%s %s",
-//                    list.get(position).getLocationCode(),
-//                    list.get(position).getLocationFullName()));
             h.tvLocation.setText(train.getLocationFullName());
-//            h.tvDeparture.setText(list.get(position).getDeparture());
              h.imgTrainMarker.setImageDrawable(getTrainMarker(train));
             return v;
 

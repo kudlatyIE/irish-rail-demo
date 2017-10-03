@@ -156,14 +156,12 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
             l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 
-
         if(l!=null){
             this.myLo = l.getLongitude();
             this.myLat = l.getLatitude();
             this.myLocation = new LatLng(this.myLat, this.myLo);
         }
         Log.d(TAG, "current lat, long: "+this.myLat+", "+this.myLo);
-
         lm.removeUpdates(listener);
     }
 

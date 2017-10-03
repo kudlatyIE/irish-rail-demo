@@ -138,8 +138,8 @@ public class AllTrainsMapFragment extends MainFragment {
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Toast.makeText(getActivity(), "click train"+arg0.getSnippet()+":\n"+RailSingleton.getTrainMap().
-                        get(arg0.getSnippet()).getMessage(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "click train"+arg0.getSnippet()+":\n"+RailSingleton.getTrainMap().
+//                        get(arg0.getSnippet()).getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
                 stationCallback.onTrainSelected(arg0.getSnippet());
                 return false;

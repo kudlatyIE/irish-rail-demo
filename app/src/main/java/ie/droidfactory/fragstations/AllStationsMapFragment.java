@@ -126,8 +126,8 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()+":\n"+RailSingleton.getStationMap().
-                        get(arg0.getSnippet()).getStationDesc(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()+":\n"+RailSingleton.getStationMap().
+//                        get(arg0.getSnippet()).getStationDesc(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
                 stationCallback.onStationSelected(arg0.getSnippet());
                 return false;
@@ -176,15 +176,11 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             }
             lm.removeUpdates(listener);
             if(l!=null){
-//                this.myLo = l.getLongitude();
-//                this.myLat = l.getLatitude();
                 this.myLocation = new LatLng(l.getLatitude(), l.getLongitude());
                 Log.d(TAG, "current lat, long: "+l.getLatitude()+", "+l.getLongitude());
             }
         }catch (NullPointerException e){
             Log.d(TAG, "capture location problem");
-//            this.myLo = RailSingleton.getMyLatLng().longitude;
-//            this.myLat = RailSingleton.getMyLatLng().latitude;
         }
 
 

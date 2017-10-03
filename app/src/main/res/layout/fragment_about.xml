@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:text="FRAGMENT ABOUT!"/>
 
-    <Button
-        android:id="@+id/fragment_about_btn_bum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/btn_bada_bum"/>
+    <!--<Button-->
+        <!--android:id="@+id/fragment_about_btn_bum"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:text="@string/btn_bada_bum"/>-->
 
 </RelativeLayout>

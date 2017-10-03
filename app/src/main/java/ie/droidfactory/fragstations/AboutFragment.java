@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import ie.droidfactory.fragstations.model.RailInterface;
@@ -20,7 +19,7 @@ public class AboutFragment  extends MainFragment {
     private final static String TAG = InfoFragment.class.getSimpleName();
     private String info = "default nothing";
     private TextView tvInfo;
-    private Button btnBum;
+//    private Button btnBum;
 
 
     RailInterface stationCallback;
@@ -58,7 +57,7 @@ public class AboutFragment  extends MainFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tvInfo = (TextView) view.findViewById(R.id.fragment_about_text_info);
-        btnBum = (Button) view.findViewById(R.id.fragment_about_btn_bum);
+//        btnBum = (Button) view.findViewById(R.id.fragment_about_btn_bum);
         Log.d(TAG, "onViewCreated....");
 
     }
@@ -67,12 +66,12 @@ public class AboutFragment  extends MainFragment {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated....");
-        btnBum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bum();
-            }
-        });
+//        btnBum.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                bum();
+//            }
+//        });
     }
 
     @Override

@@ -223,33 +223,21 @@ public class StationListFragment extends MainFragment {
             Station.stationNameDown compare = new Station.stationNameDown();
             Collections.sort(list, compare);
             imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
-            for (Station s: stationList){
-                Log.d("name:",s.toString());
-            }
         }
         if(mode==Sort.NAME_DOWN){
             Station.stationNameUp compare = new Station.stationNameUp();
             Collections.sort(list, compare);
             imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
-            for (Station s: stationList){
-                Log.d("name:",s.toString());
-            }
         }
         if(mode==Sort.DISTANCE_UP){
             Station.distanceDown compare = new Station.distanceDown();
             Collections.sort(list, compare);
             imgSortDistance.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
-            for (Station s: stationList){
-                Log.d("distanceUp: ",s.toString());
-            }
         }
         if(mode==Sort.DISTANCE_DOWN){
             Station.distanceUp compare = new Station.distanceUp();
             Collections.sort(list, compare);
             imgSortDistance.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
-            for (Station s: stationList){
-                Log.d("distanceDown: ",s.toString());
-            }
         }
         adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, list);
         lv.setAdapter(adapter);
@@ -264,7 +252,6 @@ public class StationListFragment extends MainFragment {
 
             switch (view.getId()){
                 case R.id.fragment_stations_main_img_cancel:
-//                    stationList = allStations;
                     sortStation(sortMode, temp);
                     editSearch.setText("");
                     break;
@@ -357,7 +344,6 @@ public class StationListFragment extends MainFragment {
             adapter.notifyDataSetChanged();
         }
     }
-
 
 }
 

@@ -249,13 +249,6 @@ public class StationDetailsTimetableFragment extends Fragment {
         if(lv!=null) lv.setAdapter(adapter);
     }
 
-//    private void setList(ArrayList<SortedObject> list, HashMap<String, StationDetails> data) throws
-//            Exception {
-//        if(data==null) throw new Exception("no input data");
-//        else adapter = new MyAdapter(getActivity(),list,data);
-//        if(lv!=null) lv.setAdapter(adapter);
-//    }
-
     private void updateDetails(String id){ //temporary stuff
         this.station = RailSingleton.getStationMap().get(id);
         tvInfo.setText(TAG+" update details for:"+
@@ -271,49 +264,10 @@ public class StationDetailsTimetableFragment extends Fragment {
     }
 
     private enum Sort{
-        TYPE_UP, TYPE_DOWN, DESTINATION_UP, DESTINATION_DOWN, TIME_UP, TIME_DOWN, UNSORTED;
+        DESTINATION_UP, DESTINATION_DOWN, TIME_UP, TIME_DOWN, UNSORTED;
     }
 
-//    private class AsyncRail extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... params) {
-//            String xml = HttpConnect.getRailStuff(params[0]);
-//            return xml;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            dialog = new ProgressDialog(getActivity());
-//            dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            dialog.setIndeterminate(true);
-//            dialog.setCancelable(true);
-//            dialog.setMessage("rail connection....");
-//            dialog.show();
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String res) {
-//            // TODO Auto-generated method stub
-//            super.onPostExecute(res);
-//            try{
-//                if(dialog!=null && dialog.isShowing()) dialog.dismiss();
-//                timetable = Parser.parseTimetableForStation(res);
-//                RailSingleton.setTimetable(timetable);
-//                result = "stations number: "+timetable.size();
-////                RailSingleton.currentStationCode = timetable.get(0).getStationCode();
-//                sortedByDueTime = new Sortownia().getSorteDueTime();
-//                setList(sortedByDueTime, timetable);
-//            }catch(Exception ex){
-//				ex.printStackTrace();
-//                result = ex.getMessage();
-//                Log.d(TAG, result);
-//            }
-//            CharSequence temp = tvInfo.getText();
-//            tvInfo.setText(temp+"\n"+result);
-//        }
-//    }
+
 
     private class MyAdapter  extends ArrayAdapter{
 
@@ -359,7 +313,6 @@ public class StationDetailsTimetableFragment extends Fragment {
             h.tvTime.setText(list.get(position).getDueIn());
             return v;
         }
-
     }
 
     private class MyAdapter2 extends BaseAdapter {
