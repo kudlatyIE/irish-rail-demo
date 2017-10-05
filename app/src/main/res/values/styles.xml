@@ -6,9 +6,9 @@
     </style>
 
     <style name="Base.Theme.RailDesign" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">#673AB7</item>
-        <item name="colorPrimaryDark">#512DA8</item>
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="Widget.CardContent" parent="android:Widget">
@@ -21,17 +21,21 @@
 
 </resources>
 
-<!--
-<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
-<item name="colorPrimary">@color/colorPrimary</item>
-<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-<item name="colorAccent">@color/colorAccent</item>
-    </style>
+<!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
 
-<style name="DrawerStyle" parent="AppTheme">
-<item name="android:windowActionBar">false</item>
-<item name="android:windowNoTitle">true</item>
-<item name="windowActionModeOverlay">true</item>
-</style>
--->
+<!--*****************-->
+<!--<item name="colorPrimary">#673AB7</item>-->
+        <!--<item name="colorPrimaryDark">#512DA8</item>-->
+        <!--<item name="colorAccent">#FF4081</item>-->
+<!--****************-->
+<!--<item name="colorPrimary">@color/colorPrimary</item>-->
+<!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
+
+<!--<style name="DrawerStyle" parent="AppTheme">-->
+<!--<item name="android:windowActionBar">false</item>-->
+<!--<item name="android:windowNoTitle">true</item>-->
+<!--<item name="windowActionModeOverlay">true</item>-->
+<!--</style>-->

@@ -624,11 +624,11 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that ia about everything!");
                 frag = AboutFragment.newInstance(arg);
                 break;
-            case FragmentUtils.FRAGMENT_HELP:
-                arg = new Bundle();
-                arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little help here!");
-                frag = SettingsFragment.newInstance(arg);
-                break;
+//            case FragmentUtils.FRAGMENT_HELP:
+//                arg = new Bundle();
+//                arg.putString(FragmentUtils.FRAGMENT_SETTINGS, "my little help here!");
+//                frag = SettingsFragment.newInstance(arg);
+//                break;
             default: frag = new StationListFragment();
         }
         return frag;
@@ -669,13 +669,13 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
-            case R.id.item_help:
-                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_HELP)) {
-                    mainFragmentId = FragmentUtils.FRAGMENT_HELP;
-                    create = true;
-                }
-                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
-                break;
+//            case R.id.item_help:
+//                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_HELP)) {
+//                    mainFragmentId = FragmentUtils.FRAGMENT_HELP;
+//                    create = true;
+//                }
+//                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
+//                break;
             case R.id.item_about:
                 if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_ABOUT)) {
                     mainFragmentId = FragmentUtils.FRAGMENT_ABOUT;
