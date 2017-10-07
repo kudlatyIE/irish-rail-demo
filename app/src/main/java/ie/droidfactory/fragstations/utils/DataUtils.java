@@ -103,11 +103,20 @@ public class DataUtils {
             Date origin  = format.parse(date+" "+tOrigin);
 			Date next  = format.parse(date+" "+timeNext);
             if(next.before(origin)){
-                now.add(Calendar.HOUR, 24);
+//                now.add(Calendar.HOUR, 24);
+//				DateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
+//				Date dateNow = new Date();
+//				dateNow = df.parse(df.format(dateNow));
+//				next = format.parse(dateNow.toString()+" "+next);
+				Calendar cNext= Calendar.getInstance();
+				cNext.setTime(next);
+				cNext.add(Calendar.HOUR, 24);
+				return cNext.getTime().after(origin);
             }else{
                 now.add(Calendar.MINUTE, offset);
+				return next.before(now.getTime());
             }
-            return next.before(now.getTime());
+
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return false;
