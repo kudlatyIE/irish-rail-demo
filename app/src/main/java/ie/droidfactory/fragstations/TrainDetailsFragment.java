@@ -306,13 +306,17 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
         Holder h;
         ArrayList<TrainDetails> list;
-
+        String timeOrigin;
 
         private LayoutInflater inflater;
 
         MyAdapter(Context c, ArrayList<TrainDetails> list) throws Exception {
             if(list==null){
                 throw new Exception("station list is NULL!");
+            }else {
+                for(TrainDetails td: list){
+                    if(td.getLocationOrder()==1) timeOrigin=td.getExpectedDeparture();
+                }
             }
             this.list=list;
             Log.d(TAG, "for this route stations number: "+list.size());
@@ -350,10 +354,14 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
             TrainDetails train = list.get(position);
             String arrivaArriva = train.getArrival();
-            if(arrivaArriva.length()==0) arrivaArriva = train.getScheduledArrival();
+            if(arrivaArriva.length()==0) {
+                if(train.getLocationOrder()==1){
+                    arrivaArriva = "departure: "+train.getExpectedDeparture();
+                }else arrivaArriva = train.getScheduledArrival();
+            }
             h.tvArrival.setText(arrivaArriva);
             h.tvLocation.setText(train.getLocationFullName());
-            h.imgTrainMarker.setImageDrawable(getTrainMarker(train));
+            h.imgTrainMarker.setImageDrawable(getTrainMarker(train, timeOrigin));
 //            setCurrentPosition(train, position);
             return v;
 
@@ -362,27 +370,38 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     }
 
 
-    private Drawable getTrainMarker(TrainDetails train){
+    private Drawable getTrainMarker(TrainDetails train, String timeOrigin){
         Log.d(TAG, "getTrainMarker::: stopTYpe: "+train.getStopType());
 //        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()==0)
 //            return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
-        if(train.getLocationOrder()==1 & train.getDeparture().length()==0)
+        if(train.getLocationOrder()==1 & !DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1))//train.getDeparture().length()==0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
 
 //        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()>0)
 //            return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
-        if(train.getLocationOrder()==1 & train.getDeparture().length()>0)
+        if(train.getLocationOrder()==1 & DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1))//train.getDeparture().length()>0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
-        if((train.getLocationType().equals(StationType.TYPE_S.getType())
+//        if(train.getLocationOrder()>1&& (
+//                train.getLocationType().equals(StationType.TYPE_S.getType())
+//                        || train.getLocationType().equals(StationType.TYPE_C.getType())
+////                || train.getLocationType().equals(StationType.TYPE_T.getType())
+//        ) & train.getArrival().length()==0 &(DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1)))
+//            return getResources().getDrawable(R.drawable.ic_train_marker_arrived);
+        if(train.getLocationOrder()>1&&(
+                    train.getLocationType().equals(StationType.TYPE_S.getType())
                 || train.getLocationType().equals(StationType.TYPE_C.getType())
-                || train.getLocationType().equals(StationType.TYPE_T.getType()))
+//                || train.getLocationType().equals(StationType.TYPE_T.getType())
+        )
                 & train.getArrival().length()>0 & train.getDeparture().length()==0)
             return  getResources().getDrawable(R.drawable.ic_train_marker_arrived);
-        if(train.getLocationType().equals(StationType.TYPE_S.getType()) & train.getDeparture().length()>0)
+        if(train.getLocationType().equals(StationType.TYPE_S.getType()) & (train.getDeparture().length()>0
+                | (DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedArrival(), 0))))
             return getResources().getDrawable(R.drawable.ic_train_marker_departed);
-        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & train.getDeparture().length()==0)
+        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & (train.getArrival().length()==0
+                | (DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 0))))
             return getResources().getDrawable(R.drawable.ic_train_marker_destination_not);
-        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & train.getArrival().length()>0)
+        if(train.getLocationType().equals(StationType.TYPE_D.getType()) & (train.getArrival().length()>0
+                | (DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedArrival(), 1))))
             return getResources().getDrawable(R.drawable.ic_train_marker_destination_completed);
 
         return getResources().getDrawable(R.drawable.ic_train_marker_empty);

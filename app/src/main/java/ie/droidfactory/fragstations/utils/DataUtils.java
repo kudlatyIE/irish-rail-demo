@@ -5,10 +5,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -79,6 +81,51 @@ public class DataUtils {
 			return df.format(distance/1000).concat("km");
 		}
 	}
+
+    /**
+     *
+     * @param date train date - beware of midnight
+     * @param timeOrigin origin station departed time
+     * @param timeNext next station departed/arrived time
+     * @param offset extra minute to compare departed time (if train is late)
+     * @return
+     */
+	public static boolean compareTrainDateNow(String date, String timeOrigin, String timeNext, int offset){
+		DateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
+		Calendar now = Calendar.getInstance();
+        String tOrigin;
+        if(timeOrigin==null) {
+            tOrigin="00:00:00";
+            Log.d(TAG, "time origin is NUll, set default: "+tOrigin);
+        }
+        else tOrigin=timeOrigin;
+		try {
+            Date origin  = format.parse(date+" "+tOrigin);
+			Date next  = format.parse(date+" "+timeNext);
+            if(next.before(origin)){
+                now.add(Calendar.HOUR, 24);
+            }else{
+                now.add(Calendar.MINUTE, offset);
+            }
+            return next.before(now.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+//	public static boolean compareMidnightTime(String date, String timeStart, String timeEnd){
+//        DateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
+////        Calendar now = Calendar.getInstance();
+//        try {
+//            Date origin  = format.parse(date+" "+timeStart);
+//            Date next  = format.parse(date+" "+timeEnd);
+//            return
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 	/**
 	 * get current location
