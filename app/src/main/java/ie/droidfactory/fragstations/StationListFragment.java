@@ -3,6 +3,7 @@ package ie.droidfactory.fragstations;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -37,6 +38,7 @@ import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.utils.DataUtils;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
 import ie.droidfactory.fragstations.utils.LocationUtils;
+import ie.droidfactory.fragstations.utils.MyLocationListener;
 import ie.droidfactory.fragstations.utils.RailSingleton;
 
 /**
@@ -68,9 +70,7 @@ public class StationListFragment extends MainFragment {
             Log.d(TAG, "async result: "+RailSingleton.getAsyncResult());
             swipeRefreshLayout.setRefreshing(false);
             if(done){
-                stationHashMap = RailSingleton.getStationMap();
-                stationList = new ArrayList<>(stationHashMap.values());
-                sortStation(sortMode, stationList);
+                loadStationList();
             }
         }
     };
@@ -100,15 +100,68 @@ public class StationListFragment extends MainFragment {
 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getLocation();
         if(savedInstanceState!=null){
             restore(savedInstanceState);
-        }else {
-            this.stationHashMap = RailSingleton.getStationMap();
-            this.myLocation = DataUtils.getLocation(getActivity());
-            this.myLat = myLocation.getLatitude();
-            this.myLng = myLocation.getLongitude();
         }
+        if(RailSingleton.getStationMap()==null){
+            Log.d(TAG, "download stations....");
+            downloadAllStationList();
+        }else loadStationList();
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // TODO Auto-generated method stub
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(FragmentUtils.FRAGMENT_STATION_MAP, stationHashMap);
+        outState.putDouble(FragmentUtils.MY_LAT, myLat);
+        outState.putDouble(FragmentUtils.MY_LNG, myLng);
+    }
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onViewStateRestored(savedInstanceState);
+        restore(savedInstanceState);
+    }
+
+    public void restore(Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            myLat = savedInstanceState.getDouble(FragmentUtils.MY_LAT);
+            myLng = savedInstanceState.getDouble(FragmentUtils.MY_LNG);
+            myLocation = new Location("");
+            myLocation.setLatitude(myLat);
+            myLocation.setLongitude(myLng);
+            RailSingleton.setMyLocation(new LatLng(myLat, myLng));
+            stationHashMap = (HashMap<String, Station>) savedInstanceState.getSerializable(FragmentUtils.FRAGMENT_STATION_MAP);
+        }
+    }
+
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        // TODO Auto-generated method stub
+        super.onAttach(activity);
+        try{
+            stationCallback = (RailInterface) activity;
+        }catch(ClassCastException e){
+            throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
+                    "implemented...");
+        }
+        Log.d(TAG, "onAttach end...");
+    }
+    private void downloadAllStationList(){
+        LocationUtils.getLocation(getActivity());
+        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
+        rail.execute(Links.ALL_STATIONS.getRailLink());
+    }
+    private void loadStationList(){
+        this.stationHashMap = RailSingleton.getStationMap();
+        this.myLocation = DataUtils.getLocation(getActivity());
+        this.myLat = myLocation.getLatitude();
+        this.myLng = myLocation.getLongitude();
 
         stationList = new ArrayList<>(stationHashMap.values());
         sortStation(Sort.DISTANCE_UP, stationList);
@@ -173,48 +226,6 @@ public class StationListFragment extends MainFragment {
                 rail.execute(Links.ALL_STATIONS.getRailLink());
             }
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // TODO Auto-generated method stub
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(FragmentUtils.FRAGMENT_STATION_MAP, stationHashMap);
-        outState.putDouble(FragmentUtils.MY_LAT, myLat);
-        outState.putDouble(FragmentUtils.MY_LNG, myLng);
-    }
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onViewStateRestored(savedInstanceState);
-        restore(savedInstanceState);
-    }
-
-    public void restore(Bundle savedInstanceState) {
-        if(savedInstanceState!=null){
-            myLat = savedInstanceState.getDouble(FragmentUtils.MY_LAT);
-            myLng = savedInstanceState.getDouble(FragmentUtils.MY_LNG);
-            myLocation = new Location("");
-            myLocation.setLatitude(myLat);
-            myLocation.setLongitude(myLng);
-            RailSingleton.setMyLocation(new LatLng(myLat, myLng));
-            stationHashMap = (HashMap<String, Station>) savedInstanceState.getSerializable(FragmentUtils.FRAGMENT_STATION_MAP);
-        }
-    }
-
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
-        super.onAttach(activity);
-        try{
-            stationCallback = (RailInterface) activity;
-        }catch(ClassCastException e){
-            throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
-                    "implemented...");
-        }
-        Log.d(TAG, "onAttach end...");
     }
 
     private void sortStation(Sort mode, ArrayList<Station> list){
@@ -342,6 +353,30 @@ public class StationListFragment extends MainFragment {
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             filteredList = (ArrayList<Station>) filterResults.values;
             adapter.notifyDataSetChanged();
+        }
+    }
+    private void getLocation(){
+        Location l= null;
+        LocationManager lm = null;
+        MyLocationListener listener = new MyLocationListener();
+
+        try{
+            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            lm.removeUpdates(listener);
+            if(l!=null){
+
+                RailSingleton.setMyLocation(new LatLng(l.getLatitude(), l.getLongitude()));
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
     }
 

@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/fragment_info_text_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FRAGMENT INFO!"/>
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
 
+    <ListView
+        android:id="@+id/fragment_info_tweet_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/colorPrimary"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"/>
 </LinearLayout>
+
+
+
+<!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:twittersdk="http://schemas.android.com/apk/res-auto">-->
+
+    <!--<com.twitter.sdk.android.tweetui.TweetView-->
+        <!--android:id="@+id/bike_tweet"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--twittersdk:tw__tweet_id="510908133917487104"/>-->
+
+<!--</FrameLayout>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+              <!--android:layout_width="match_parent"-->
+              <!--android:layout_height="match_parent"-->
+              <!--android:orientation="vertical">-->
+    <!--<TextView-->
+        <!--android:id="@+id/fragment_info_text_info"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="FRAGMENT INFO!"/>-->
+
+<!--</LinearLayout>-->

@@ -69,7 +69,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     private ListView lv;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Train train;
-//    private ArrayList<Integer> mlist;
     private ArrayList<TrainDetails> trainDetailsList;
     private MyAdapter adapter;
     private int trainCurrentPosition;
@@ -235,8 +234,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
         }else this.train = RailSingleton.getTrainMap().get(id);
         Log.d(TAG, "train is NULL: "+(train==null));
-//        tvInfo.setText(train.getTrainCode()+":\n"+train.getPublicMessage());
-        tvInfo.setText(msg);
+        tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
     }
 
     private void createDetailsList(FRAGMENT todo){

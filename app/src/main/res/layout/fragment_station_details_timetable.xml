@@ -9,12 +9,15 @@
         android:id="@+id/fragment_details_timetable_text_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FRAGMENT DETAILS TIMETABLE!"
+		android:layout_marginEnd="@dimen/activity_horizontal_margin"
+		android:layout_marginStart="@dimen/activity_horizontal_margin"
+		android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         />
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/activity_horizontal_margin"
 		android:orientation="horizontal">
 
 		<EditText
@@ -35,16 +38,16 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp"
-		android:layout_marginRight="5dp"
+		android:layout_marginEnd="@dimen/activity_horizontal_margin"
+		android:layout_marginStart="@dimen/activity_horizontal_margin"
 		android:orientation="horizontal" >
 
 		<TextView
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:textStyle="bold"
-			android:text="TYPE"
+			android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+			android:text="type"
 			/>
 
 		<LinearLayout
@@ -54,8 +57,8 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:text="DESTINATION"
+			android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+			android:text="destination"
 			/>
 			<ImageView
 				android:id="@+id/fragment_details_timetable_img_sort_destination"
@@ -76,8 +79,8 @@
 			<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textStyle="bold"
-				android:text="DUE IN"
+				android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+				android:text="due in"
 			/>
 			<ImageView
 				android:id="@+id/fragment_details_timetable_img_sort_time"
@@ -94,14 +97,16 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/fragment_details_timetable_swipe_refresh_layout"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/activity_horizontal_margin">
 
 		<ListView
 			android:id="@+id/fragment_details_timetable_listview"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="5dp"
-			android:layout_marginRight="5dp"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:divider="@color/colorPrimary"
+			android:dividerHeight="1dp"
 			/>
 	</android.support.v4.widget.SwipeRefreshLayout>
 

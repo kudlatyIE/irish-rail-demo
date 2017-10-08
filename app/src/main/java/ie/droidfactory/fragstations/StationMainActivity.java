@@ -144,8 +144,18 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem item) {
+
+////                    if(item.getGroupId() == R.id.menu_group_main){
+//                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_main, (item.getGroupId() == R.id.menu_group_main), true);
+//                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_other, (item.getGroupId() == R.id.menu_group_other), true);
+////                    }else {
+////                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_main, true, true);
+////                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_other, false, true);
+////                    }
+//                    item.setChecked(true);
                     if(item.isChecked()) item.setChecked(false);
                     else item.setChecked(true);
+
                     drawerLayout.closeDrawers();
                     setFragmentFromDrawer(item.getItemId());
                     return true;
@@ -616,12 +626,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 break;
             case FragmentUtils.FRAGMENT_INFO:
                 arg = new Bundle();
-                arg.putString(FragmentUtils.FRAGMENT_INFO, "njus, njus, HOT njus!");
+                arg.putString(FragmentUtils.FRAGMENT_INFO, null);
                 frag = InfoFragment.newInstance(arg);
                 break;
             case FragmentUtils.FRAGMENT_ABOUT:
                 arg = new Bundle();
-                arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that ia about everything!");
+                arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that is about everything!");
                 frag = AboutFragment.newInstance(arg);
                 break;
 //            case FragmentUtils.FRAGMENT_HELP:

@@ -123,18 +123,6 @@ public class DataUtils {
 		}
 	}
 
-//	public static boolean compareMidnightTime(String date, String timeStart, String timeEnd){
-//        DateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
-////        Calendar now = Calendar.getInstance();
-//        try {
-//            Date origin  = format.parse(date+" "+timeStart);
-//            Date next  = format.parse(date+" "+timeEnd);
-//            return
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
 	/**
 	 * get current location

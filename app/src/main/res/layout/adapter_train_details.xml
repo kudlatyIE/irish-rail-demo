@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAlignment="textEnd"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:text="arrival time"/>
     <ImageView
         android:id="@+id/adapter_train_details_img_marker"
@@ -22,6 +23,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAlignment="textStart"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:text="station name"/>
 
 
