@@ -27,7 +27,7 @@
         <item
             android:id="@+id/item_train_map"
             android:icon="@drawable/ic_map"
-            android:title="@string/navigation_item_map"
+            android:title="@string/trains_map"
             android:checked="true"
             />
         <item

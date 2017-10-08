@@ -68,10 +68,10 @@ public class StationDetailsOtherFragment extends Fragment {
 
     private void updateDetails(String id){
         this.station = RailSingleton.getStationMap().get(id);
-        tvInfo.setText(TAG+" update details for: "+
-                "\nchild ID: "+childPosition+
-                "\nAlias: "+station.getStationAlias()+" ID: "+station.getStationCode()+
-                "\nDetails: "+station.getStationDesc());
+//        tvInfo.setText(TAG+" update details for: "+
+//                "\nchild ID: "+childPosition+
+//                "\nAlias: "+station.getStationAlias()+" ID: "+station.getStationCode()+
+//                "\nDetails: "+station.getStationDesc());
     }
 
 

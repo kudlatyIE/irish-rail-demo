@@ -162,6 +162,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 }
             });
             detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+            getSupportActionBar().setTitle(getResources().getString(R.string.news));
 
             //SINGLE PANE - PORTRAIT
             if(!isDualPane){
@@ -652,6 +653,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_INFO;
                     create = true;
                 }
+                getSupportActionBar().setTitle(getResources().getString(R.string.news));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
@@ -660,6 +662,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_LIST;
                     create = true;
                 }
+                getSupportActionBar().setTitle(getResources().getString(R.string.stations_list));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
@@ -668,6 +671,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_ALL_MAP;
                     create=true;
                 }
+                getSupportActionBar().setTitle(getResources().getString(R.string.stations_map));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
@@ -676,6 +680,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_ALL_TRAINS_MAP;
                     create=true;
                 }
+                getSupportActionBar().setTitle(getResources().getString(R.string.trains_map));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 
@@ -691,6 +696,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     mainFragmentId = FragmentUtils.FRAGMENT_ABOUT;
                     create = true;
                 }
+                getSupportActionBar().setTitle(getResources().getString(R.string.about));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 

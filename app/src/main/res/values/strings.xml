@@ -6,7 +6,7 @@
     <string name="category_stations">stations</string>
     <string name="category_trains">trains</string>
     <string name="navigation_item_list">list</string>
-    <string name="navigation_item_map">Trains on map</string>
+    <string name="trains_map">Trains on map</string>
     <string name="navigation_item_other">other</string>
     <string name="navigation_item_search">search</string>
     <string name="navigation_item_settings">settings</string>
@@ -26,7 +26,7 @@
         stop. Would you like to send the details to help fix the issue?</string>
     <string name="crash_dialog_comment_prompt">You can add extra information and comments here:</string>
     <string name="ok">OK</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
 
     <string name="menu_night_mode">Night mode</string>
     <string name="menu_night_mode_system">Follow system</string>
@@ -34,7 +34,7 @@
     <string name="menu_night_mode_night">Night (always)</string>
     <string name="menu_night_mode_auto">Auto</string>
     <string name="enter_train_name">enter train route</string>
-    <string name="news">News</string>
+    <string name="news">Rail News</string>
     <string name="stations_list">Stations list</string>
     <string name="stations_map">Stations map</string>
     <string name="fav">Fav</string>
