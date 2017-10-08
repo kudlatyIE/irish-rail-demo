@@ -234,7 +234,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
         }else this.train = RailSingleton.getTrainMap().get(id);
         Log.d(TAG, "train is NULL: "+(train==null));
-        tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
+        if(msg!=null)tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
     }
 
     private void createDetailsList(FRAGMENT todo){
