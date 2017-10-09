@@ -2,6 +2,8 @@ package ie.droidfactory.fragstations;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,19 +36,6 @@ public class AboutFragment  extends MainFragment {
     }
 
     @Override
-    public  void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        Log.d(TAG, "onStart....");
-        Bundle extras = getArguments();
-        if (extras != null) {
-            info = extras.getString(FragmentUtils.FRAGMENT_ABOUT);
-        }
-        Log.d(TAG, "onStart....");
-        tvInfo.setText(info);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_about, container, false);
@@ -59,8 +48,24 @@ public class AboutFragment  extends MainFragment {
         tvInfo = (TextView) view.findViewById(R.id.fragment_about_text_info);
 //        btnBum = (Button) view.findViewById(R.id.fragment_about_btn_bum);
         Log.d(TAG, "onViewCreated....");
-
     }
+
+    @Override
+    public  void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        Log.d(TAG, "onStart....");
+        Bundle extras = getArguments();
+        if (extras != null) {
+            info = extras.getString(FragmentUtils.FRAGMENT_ABOUT);
+        }
+        Log.d(TAG, "onStart....");
+//        tvInfo.setText(info);
+        tvInfo.setText(Html.fromHtml(getString(R.string.help_about)));
+        tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -72,6 +77,7 @@ public class AboutFragment  extends MainFragment {
 //                bum();
 //            }
 //        });
+
     }
 
     @Override

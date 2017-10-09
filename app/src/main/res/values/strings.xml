@@ -42,4 +42,27 @@
     <string name="help">help</string>
     <string name="eire_rail_app">Eire Rail App</string>
 
+    <string name="help_about">
+        <![CDATA[
+
+         <br>
+         © 2017
+         <br><br>
+         It is a demo app and does not have special functionality - is just an example of using fragments.
+         Real time and locations data come from Irish Rail Realtime API.
+         <br>
+         In case of crash or other failure please email me or use crash report. App will be updated with new features.
+         <br><br>
+         <a href="mailto:developer.walicki@gmail.com">developer.walicki@gmail.com</a>
+         <br><br>
+         Me on Twitter: <a href="https://twitter.com/kudlatyIE">@kudlatyIE</a>
+         <br><br>
+         nad G+ <a href="google.com/+NikodemW">NikodemW</a>
+         <br><br>
+         Cheers,
+         <br><br>
+         Nikodem Walicki
+         ]]>
+    </string>
+
 </resources>
