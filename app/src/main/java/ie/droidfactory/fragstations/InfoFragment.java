@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ public class InfoFragment extends MainFragment {
     private String info = "default nothing";
     private TextView tvInfo;
     private ListView lvTweets;
+    private LinearLayout layout1, layout2, layout3;
     private UserTimeline userTimeline;
     private TweetTimelineListAdapter tweetAdapter;
     private List<Tweet> tweetList;
@@ -94,9 +96,16 @@ public class InfoFragment extends MainFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_info, container, false);
-        tvInfo = (TextView) v.findViewById(R.id.fragment_info_text_info);
-        lvTweets = v.findViewById(R.id.fragment_info_tweet_list);
+        View v = inflater.inflate(R.layout.fragment_stations_list, container, false);
+        tvInfo = (TextView) v.findViewById(R.id.fragment_stations_main_text_info);
+        tvInfo.setVisibility(View.GONE);
+        layout1 = v.findViewById(R.id.fragme_station_list_top_1);
+        layout2 = v.findViewById(R.id.fragme_station_list_top_2);
+        layout3 = v.findViewById(R.id.fragme_station_list_top_3);
+        layout1.setVisibility(View.GONE);
+        layout2.setVisibility(View.GONE);
+        layout3.setVisibility(View.GONE);
+        lvTweets = v.findViewById(R.id.fragment_stations_main_listview);
 //        userTimeline = new UserTimeline.Builder()
 //                .screenName("IrishRail")
 //                .build();
@@ -111,16 +120,17 @@ public class InfoFragment extends MainFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated....");
+        runDialog();
     }
     @Override
     public  void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        Bundle extras = getArguments();
-        if (extras != null) {
-            info = extras.getString(FragmentUtils.FRAGMENT_INFO);
-            tvInfo.setText(info);
-        }
+//        Bundle extras = getArguments();
+//        if (extras != null) {
+//            info = extras.getString(FragmentUtils.FRAGMENT_INFO);
+//            tvInfo.setText(info);
+//        }
 
     }
 
@@ -152,11 +162,11 @@ public class InfoFragment extends MainFragment {
     }
 
     private void downloadTweets(){
-        runDialog();
+
         tweetList = new ArrayList<>();
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         StatusesService statusesService = twitterApiClient.getStatusesService();
-        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", 20, null, null, false, false, false, false);
+        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", 100, null, null, false, false, false, false);
 //        call.enqueue(new Callback<>() {
 //            @Override
 //            public void success(Result<Tweet> result) {
@@ -177,9 +187,14 @@ public class InfoFragment extends MainFragment {
                 }
                 if(result.data!= null) {
                     Log.d(TAG, "twitter response size: "+result.data.size());
-//                    tweetList = result.data;
+
+                    int count=0;
                     for (Tweet t: result.data){
-                        if(!t.text.contains("@")) tweetList.add(t);
+                        if(!t.text.contains("@")) {
+                            ++count;
+                            tweetList.add(t);
+                            if(count==10) break;
+                        }
                     }
                     loadTweetsList(getActivity(), lvTweets, tweetList);
                 }
@@ -190,7 +205,7 @@ public class InfoFragment extends MainFragment {
                 if(dialog!=null && dialog.isShowing()){
                     dialog.dismiss();
                 }
-                tvInfo.setText(exception.getMessage());
+//                tvInfo.setText(exception.getMessage());
                 exception.printStackTrace();
             }
         });
@@ -268,9 +283,9 @@ public class InfoFragment extends MainFragment {
     }
 
 
-    private void updateDetails(String info){
-        this.info =info;
-        tvInfo.setText(info);
-    }
+//    private void updateDetails(String info){
+//        this.info =info;
+//        tvInfo.setText(info);
+//    }
 
 }

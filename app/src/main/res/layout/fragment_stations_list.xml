@@ -12,10 +12,11 @@
 		/>
 
 	<LinearLayout
+		android:id="@+id/fragme_station_list_top_1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/dialog_margin"
+        android:layout_marginEnd="@dimen/default_margin"
 		android:orientation="horizontal">
 
 		<EditText
@@ -30,16 +31,17 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="end"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/default_margin"
 			android:src="@drawable/ic_cancel"/>
 
 	</LinearLayout>
 
 
 	<LinearLayout
+		android:id="@+id/fragme_station_list_top_2"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/activity_horizontal_margin"
+		android:layout_margin="@dimen/default_margin"
 		android:orientation="horizontal" >
 
 		<LinearLayout
@@ -60,12 +62,13 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:gravity="end"
-				android:layout_marginStart="@dimen/dialog_margin"
+				android:layout_marginStart="@dimen/default_margin"
 				android:src="@drawable/ic_sort_down"/>
 		</LinearLayout>
 
 
 		<LinearLayout
+			android:id="@+id/fragme_station_list_top_3"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1">
@@ -83,10 +86,9 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:gravity="end"
-				android:layout_marginStart="@dimen/dialog_margin"
+				android:layout_marginStart="@dimen/default_margin"
 				android:src="@drawable/ic_sort_down"/>
 		</LinearLayout>
-
 
 	</LinearLayout>
 
@@ -95,7 +97,7 @@
 		android:id="@+id/fragment_stations_main_swipe_refresh_layout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin">
+        android:layout_margin="@dimen/default_margin">
 		<ListView
 			android:id="@+id/fragment_stations_main_listview"
             android:layout_width="match_parent"

@@ -123,6 +123,8 @@ public class StationListFragment extends MainFragment {
     public void onViewStateRestored(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onViewStateRestored(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         restore(savedInstanceState);
     }
 

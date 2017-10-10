@@ -89,88 +89,68 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         this.savedInstanceState=savedInstanceState;
 //        setContentView(R.layout.main_layout);
         //TODO: try layout with drawer and toolbar
+        setContentView(R.layout.drawer_layout);
+        suomi = this;
+        isDualPane = getResources().getBoolean(R.bool.has_two_panes);
+        isTablet = getResources().getBoolean(R.bool.is_tablet);
+        Log.d(TAG, "id landscape layout: "+isDualPane);
 
-//        permissionUtils=new PermissionUtils(this);
-//        permissions.add(android.Manifest.permission.INTERNET);
-//        permissions.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
-//        permissions.add(android.Manifest.permission.ACCESS_WIFI_STATE);
-//
-//        permissionUtils.check_permission(permissions,"dialog context", PERMISSIONS_MULTIPLE_REQUEST );
-        loadFragments(true);
+        isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbar,R.string.open_drawer, R.string.close_drawer){
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+
+                if(item.isChecked()) item.setChecked(false);
+                else item.setChecked(true);
+
+                drawerLayout.closeDrawers();
+                setFragmentFromDrawer(item.getItemId());
+                return true;
+            }
+        });
+        detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
+        detailsView = findViewById(R.id.fragment_station_details_container);
+        if(mainFragmentId.equals(FragmentUtils.FRAGMENT_INFO)) getSupportActionBar().setTitle(getResources().getString(R.string.news));
+        loadFragments(mainFragmentId);
     }
 
-    private void loadFragments(boolean isPermissionGranted){
-
-        if(isPermissionGranted){
-            setContentView(R.layout.drawer_layout);
-            suomi = this;
-//        MainActivity.suomi.finish();
-            isDualPane = getResources().getBoolean(R.bool.has_two_panes);
-            isTablet = getResources().getBoolean(R.bool.is_tablet);
-            Log.d(TAG, "id landscape layout: "+isDualPane);
-
-        /*
-        add toolbar and drawer... and make them work!
-        1. initialization drawer....
-         */
-            isDrawerVisible = getResources().getBoolean(R.bool.mini_drawer_visible);
-
-            Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-            setSupportActionBar(toolbar);
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        getSupportActionBar().setTitle(R.string.test_drawer_main_text);
-            //1.
-            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                    toolbar,R.string.open_drawer, R.string.close_drawer){
-
-                @Override
-                public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    super.onDrawerClosed(drawerView);
-                }
-            };
-            drawerLayout.addDrawerListener(drawerToggle);
-            drawerToggle.syncState();
-
-            navigationView = (NavigationView) findViewById(R.id.main_navigation_view);
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem item) {
-
-////                    if(item.getGroupId() == R.id.menu_group_main){
-//                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_main, (item.getGroupId() == R.id.menu_group_main), true);
-//                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_other, (item.getGroupId() == R.id.menu_group_other), true);
-////                    }else {
-////                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_main, true, true);
-////                        navigationView.getMenu().setGroupCheckable(R.id.menu_group_other, false, true);
-////                    }
-//                    item.setChecked(true);
-                    if(item.isChecked()) item.setChecked(false);
-                    else item.setChecked(true);
-
-                    drawerLayout.closeDrawers();
-                    setFragmentFromDrawer(item.getItemId());
-                    return true;
-                }
-            });
-            detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
-            getSupportActionBar().setTitle(getResources().getString(R.string.news));
+    private void loadFragments(String key){
 
             //SINGLE PANE - PORTRAIT
             if(!isDualPane){
-                Log.d(TAG, "onCreate, PORT, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-                Log.d(TAG, "onCreate, PORT, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
+                Log.d(TAG, "onCreate, PORT, list container NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
+                Log.d(TAG, "onCreate, PORT, details container NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
                 if(detailsFragment!=null){
+                    Log.d(TAG, "1 PORT main fragment NULL: "+(mainFragment==null));
+                    Log.d(TAG, "1 PORT detail fragment NULL: "+(detailsFragment==null));
                     if(isTablet){
-
+                        Log.d(TAG, "2 PORT TAB main fragment NULL: "+(mainFragment==null));
+                        Log.d(TAG, "2 PORT TAB detail fragment NULL: "+(detailsFragment==null));
                         ft = getSupportFragmentManager().beginTransaction();
                         getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         ft.remove(detailsFragment).commit();
@@ -183,24 +163,37 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
                 }else{
                     if(findViewById(R.id.fragment_station_list_container)!=null) {
+                        Log.d(TAG, "3 PORT main fragment NULL: "+(mainFragment==null));
+                        Log.d(TAG, "3 PORT detail fragment NULL: "+(detailsFragment==null));
                         if(savedInstanceState!=null) return; // TODO: check is fragment is savedInstanceState
                         if(mainFragment==null){
+                            Log.d(TAG, "4 PORT main fragment NULL: "+(mainFragment==null));
+                            Log.d(TAG, "4 PORT detail fragment NULL: "+(detailsFragment==null));
                             ft = getSupportFragmentManager().beginTransaction();
-                            mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                            mainFragment = (MainFragment) setMainFragment(key);
                             mainFragment.setStationSelectedListener(this);
                             ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                        }else{
+                            Log.d(TAG, "5 PORT main fragment NULL: "+(mainFragment==null));
+                            Log.d(TAG, "5 PORT detail fragment NULL: "+(detailsFragment==null));
+                            return;
                         }
                     }
+                    Log.d(TAG, "6 PORT main fragment NULL: "+(mainFragment==null));
+                    Log.d(TAG, "6 PORT detail fragment NULL: "+(detailsFragment==null));
                 }
 
                 //DUAL PANE - LANDSCAPE
             }else{
-                detailsView = findViewById(R.id.fragment_station_details_container);
                 if(detailsView!=null) updateViews(detailsView);
-                Log.d(TAG, "onCreate, LAND, list cointainer NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
-                Log.d(TAG, "onCreate, LAND, details cointainer NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
+                Log.d(TAG, "1 main fragment NULL: "+(mainFragment==null));
+                Log.d(TAG, "onCreate, LAND, list container NULL: "+(findViewById(R.id.fragment_station_list_container)==null));
+                Log.d(TAG, "onCreate, LAND, details container NULL: "+(findViewById(R.id.fragment_station_details_container)==null));
                 if(findViewById(R.id.fragment_station_list_container)!=null){
+
                     if(detailsFragment!=null){
+                        Log.d(TAG, "2 LAND main fragment NULL: "+(mainFragment==null));
+                        Log.d(TAG, "2 LAND detail fragment NULL: "+(detailsFragment==null));
                         detailsView.setVisibility(View.VISIBLE);
                         ft = getSupportFragmentManager().beginTransaction();
                         getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -210,26 +203,39 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                         ft.replace(R.id.fragment_station_details_container, detailsFragment, FRAG_DETAILS);
                         ft.addToBackStack(null);
                         ft.commit();
-                        if(mainFragment!=null){
-                            ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
-                                    .commit();
-                        }
+//                        if(mainFragment!=null){
+//                            ft = getSupportFragmentManager().beginTransaction();
+//                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
+//                                    .commit();
+//                        }
                     }else {
+//                        if(savedInstanceState!=null) return;
+                        Log.d(TAG, "3 LAND main fragment NULL: "+(mainFragment==null));
+                        Log.d(TAG, "3 LAND detail fragment NULL: "+(detailsFragment==null));
                         if(mainFragment==null){
+                            Log.d(TAG, "4 LAND detail fragment NULL: "+(detailsFragment==null));
+                            Log.d(TAG, "4 LAND main fragment NULL: "+(mainFragment==null));
                             ft = getSupportFragmentManager().beginTransaction();
-//						listFragment = new StationListFragment();
-                            mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                            mainFragment = (MainFragment) setMainFragment(key);
                             mainFragment.setStationSelectedListener(this);
-                            ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN);
+//                            ft.addToBackStack(null);
+                            ft.commit();
                         }else return;
                     }
                 }else{
+                    Log.d(TAG, "5 LAND detail fragment NULL: "+(detailsFragment==null));
+                    Log.d(TAG, "5 LAND main fragment NULL: "+(mainFragment==null));
+                    Log.d(TAG, "LAND list container is NULL: "+(findViewById(R.id.fragment_station_list_container)!=null));
                     ft = getSupportFragmentManager().beginTransaction();
-                    mainFragment = (MainFragment) setMainFragment(mainFragmentId);
+                    mainFragment = (MainFragment) setMainFragment(key);
                     mainFragment.setStationSelectedListener(this);
-                    ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                    ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN);
+                    ft.addToBackStack(null);
+                    ft.commit();
                 }
+                Log.d(TAG, "6 LAND detail fragment NULL: "+(detailsFragment==null));
+                Log.d(TAG, "6 LAND main fragment NULL: "+(mainFragment==null));
             }
             getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
 
@@ -239,7 +245,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     Log.d(TAG, "onBackStackChanged....");
                 }
             });
-        }
 
     }
 
@@ -288,7 +293,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     }
 
 
-
     private void runAlertDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to exit?")
@@ -306,7 +310,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         AlertDialog alert = builder.create();
         alert.show();
     }
-
 
     @Override
     public void onStationSelected(String id) {
@@ -450,7 +453,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 ft.addToBackStack(null);
                 ft.commit();
             }
-
         }
     }
 
@@ -566,7 +568,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         arg0.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
     }
 
-
     /**
      * for drawer only
      * remove all views and create new fragment
@@ -583,7 +584,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
            ft.commit();
            getSupportFragmentManager().executePendingTransactions();
            detailsFragment=null;
-//           updateViews(detailsView);
+           if (detailsView!=null) updateViews(detailsView);
 
        }else{
            Log.d(TAG, "details fragment is NULL!");
