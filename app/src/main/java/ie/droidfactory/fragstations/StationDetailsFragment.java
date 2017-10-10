@@ -71,12 +71,6 @@ public class StationDetailsFragment extends Fragment {
     }
 
 
-    public void setStationDetails(String id){
-        mId = id;
-        updateDetails(id);
-        Log.w(TAG, "set index from list click: "+id);
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // TODO Auto-generated method stub
@@ -97,10 +91,10 @@ public class StationDetailsFragment extends Fragment {
     }
 
 
-    class PagerAdapter extends FragmentStatePagerAdapter {
+    private class PagerAdapter extends FragmentStatePagerAdapter {
 
         DetailsChilds[] child = DetailsChilds.values();
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
             // TODO Auto-generated constructor stub
         }
@@ -150,51 +144,6 @@ public class StationDetailsFragment extends Fragment {
         }
     }
 
-
-    /**
-     * static pager, not used anymore, will be replace by FragmentStatePagerAdapter
-     * @author kudlaty
-     *
-     */
-    class PagerAdapter_old extends FragmentPagerAdapter {
-
-        DetailsChilds[] child = DetailsChilds.values();
-        public PagerAdapter_old(FragmentManager fm) {
-            super(fm);
-            // TODO Auto-generated constructor stub
-        }
-        @Override
-        public int getCount() {
-            return child.length;
-        }
-
-        @Override
-        public Fragment getItem(int arg0) {
-            Bundle args = new Bundle();
-            args.putInt(FragmentUtils.PARENT_POSITION_KEY, mCurrentPosition);
-            switch(arg0){
-                case 0:
-                    args.putInt(FragmentUtils.CHILD_POSITION_KEY, arg0);
-                    Log.d(TAG, "tab: "+child[0].getFrag_title());
-                    return StationDetailsTimetableFragment.newInstance(args);
-                case 1:
-                    args.putInt(FragmentUtils.CHILD_POSITION_KEY, arg0);
-                    Log.d(TAG, "tab: "+child[1].getFrag_title());
-                    return StationDetailsMapaFragment.newInstance(args);
-                case 2:
-                    args.putInt(FragmentUtils.CHILD_POSITION_KEY, arg0);
-                    Log.d(TAG, "tab: "+child[2].getFrag_title());
-                    return StationDetailsOtherFragment.newInstance(args);
-
-                default: return null;
-            }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return child[position].getFrag_title();
-        }
-    }
 
 }
 

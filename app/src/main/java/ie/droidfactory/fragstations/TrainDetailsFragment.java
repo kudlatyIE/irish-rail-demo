@@ -84,8 +84,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
-        tvInfo = (TextView) view.findViewById(R.id.fragment_train_details_info);
-        lv = (ListView) view.findViewById(R.id.fragment_train_details_listview);
+        tvInfo = view.findViewById(R.id.fragment_train_details_info);
+        lv = view.findViewById(R.id.fragment_train_details_listview);
         swipeRefreshLayout = view.findViewById(R.id.fragment_train_details_swipe_refresh_layout);
     }
 
@@ -120,35 +120,11 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 onRefreshListView();
             }
         });
-
-//        if(lv!=null){
-//            lv.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
-//                    lv.smoothScrollToPosition(trainCurrentPosition);
-//                    lv.setSelection(trainCurrentPosition);
-//                }
-//            });
-            //-------------OR-----------
-//            final Handler handler = new Handler();
-////100ms wait to scroll to item after applying changes
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
-//                    lv.smoothScrollToPosition(trainCurrentPosition);
-//                }}, 2000);
-//        }else Log.d(TAG, "listView is NULL");
-
     }
 
     private void scrollList(int position){
         Log.d(TAG, "scrollList ::: trainCurrentPosition: "+position);
-//        if(lv!=null && position!=0) {
-//            lv.smoothScrollToPosition(position);
-//            lv.setSelection(position);
-//        }
+
         lv.post(new Runnable() {
                 @Override
                 public void run() {
@@ -305,8 +281,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         Holder h;
         ArrayList<TrainDetails> list;
         String timeOrigin;
-
-        private LayoutInflater inflater;
+        LayoutInflater inflater;
 
         MyAdapter(Context c, ArrayList<TrainDetails> list) throws Exception {
             if(list==null){
@@ -319,8 +294,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             this.list=list;
             Log.d(TAG, "for this route stations number: "+list.size());
             this.inflater = LayoutInflater.from(c);
-
         }
+
         @Override
         public int getCount() {
             return list.size();
@@ -342,8 +317,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             if(convertView==null){
                 v = inflater.inflate(R.layout.adapter_train_details, parent, false);
                 h = new Holder();
-                h.tvArrival = (TextView) v.findViewById(R.id.adapter_train_details_arrival);
-                h.tvLocation = (TextView) v.findViewById(R.id.adapter_train_details_location);
+                h.tvArrival = v.findViewById(R.id.adapter_train_details_arrival);
+                h.tvLocation = v.findViewById(R.id.adapter_train_details_location);
                 h.imgTrainMarker = v.findViewById(R.id.adapter_train_details_img_marker);
                 v.setTag(h);
             }else {
@@ -360,31 +335,19 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             h.tvArrival.setText(arrivaArriva);
             h.tvLocation.setText(train.getLocationFullName());
             h.imgTrainMarker.setImageDrawable(getTrainMarker(train, timeOrigin));
-//            setCurrentPosition(train, position);
             return v;
-
         }
-
     }
-
 
     private Drawable getTrainMarker(TrainDetails train, String timeOrigin){
         Log.d(TAG, "getTrainMarker::: stopTYpe: "+train.getStopType());
-//        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()==0)
-//            return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
+
         if(train.getLocationOrder()==1 & !DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1))//train.getDeparture().length()==0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_not);
 
-//        if(train.getLocationType().equals(StationType.TYPE_O.getType()) & train.getDeparture().length()>0)
-//            return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
         if(train.getLocationOrder()==1 & DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1))//train.getDeparture().length()>0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_departed);
-//        if(train.getLocationOrder()>1&& (
-//                train.getLocationType().equals(StationType.TYPE_S.getType())
-//                        || train.getLocationType().equals(StationType.TYPE_C.getType())
-////                || train.getLocationType().equals(StationType.TYPE_T.getType())
-//        ) & train.getArrival().length()==0 &(DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1)))
-//            return getResources().getDrawable(R.drawable.ic_train_marker_arrived);
+
         if(train.getLocationOrder()>1&&(
                     train.getLocationType().equals(StationType.TYPE_S.getType())
                 || train.getLocationType().equals(StationType.TYPE_C.getType())
@@ -405,7 +368,7 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         return getResources().getDrawable(R.drawable.ic_train_marker_empty);
     }
     private class Holder{
-        TextView tvArrival, tvLocation; //, tvDeparture;
+        TextView tvArrival, tvLocation;
         ImageView imgTrainMarker;
     }
 

@@ -72,13 +72,10 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         fragment.setArguments(args);
         return fragment;
     }
-    private enum FRAGMENT{CREATE, REFRESH};
-
     private final static String TAG = AllStationsMapFragment.class.getSimpleName();
     private final static String TAG_FULL_MAP="fragment_full_map";
     private SupportMapFragment mapFragment;
     private GoogleMap map;
-//    private double myLat=0, myLo=0;
     private LatLng myLocation=null;
 
     @Override
@@ -150,8 +147,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
             @Override
             public boolean onMarkerClick(Marker arg0) {
-//                Toast.makeText(getActivity(), "click station"+arg0.getSnippet()+":\n"+RailSingleton.getStationMap().
-//                        get(arg0.getSnippet()).getStationDesc(), Toast.LENGTH_SHORT).show();
+
                 Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
                 stationCallback.onStationSelected(arg0.getSnippet());
                 return false;

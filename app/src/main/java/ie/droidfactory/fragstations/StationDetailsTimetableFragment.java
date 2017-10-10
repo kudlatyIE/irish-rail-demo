@@ -46,9 +46,7 @@ public class StationDetailsTimetableFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
             if(done){
                 timetableList = RailSingleton.getTimetableList();
-//                StationDetails.TimetableDestinationDown compare = new StationDetails
-//                        .TimetableDestinationDown();
-//                Collections.sort(timetableList, compare);
+
                 sortTimetable(Sort.TIME_UP, timetableList);
                 adapter = new MyAdapter(getActivity(), R.layout.adapter_station_timetable, timetableList);
                 lv.setAdapter(adapter);
@@ -58,7 +56,6 @@ public class StationDetailsTimetableFragment extends Fragment {
     };
 
     private final static String TAG = StationDetailsTimetableFragment.class.getSimpleName();
-    //	private int mCurrentPosition = -1;
     private String stationId=null;
     private int childPosition = -1;
     private String result="no result", stationCode;
@@ -66,7 +63,7 @@ public class StationDetailsTimetableFragment extends Fragment {
     private TextView tvInfo;
     private EditText editSearch;
     private ImageView imgSortDestination, imgSortTime, imgCancel;
-    private static ListView lv;
+    private ListView lv;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Station station;
     private ProgressDialog dialog;
@@ -109,17 +106,14 @@ public class StationDetailsTimetableFragment extends Fragment {
 
         Bundle extras = getArguments();
         if(extras!=null) {
-//			mCurrentPosition = extras.getInt(FragmentUtils.PARENT_POSITION_KEY);
             stationId = extras.getString(FragmentUtils.PARENT_POSITION_KEY);
             childPosition = extras.getInt(FragmentUtils.CHILD_POSITION_KEY);
             stationCode = extras.getString(FragmentUtils.STATION_CODE);
             Log.d(TAG, "extras:::stationCode: "+stationCode);
         }
-//		if(mCurrentPosition!= -1) updateDetails(mCurrentPosition);
         if(stationId!=null) updateDetails(stationId);
         link = Links.GET_STATION_DATA_BY_STATION_CODE.getRailLink()+stationCode;
         Log.d(TAG, "async link: "+link);
-//        AsyncRail rail = new AsyncRail();
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode
                 .GET_STATION_DETAIL, asyncDone);
         if(!RailSingleton.currentStationCode.equals(stationCode)) rail.execute(link.toString());
@@ -145,13 +139,12 @@ public class StationDetailsTimetableFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s!=null){
-                    filteredList = new ArrayList<StationDetails>();
+                    filteredList = new ArrayList<>();
                     for(StationDetails station: timetableList){
                         if(station.getDestination().toLowerCase().contains(s.toString().toLowerCase())){
                             filteredList.add(station);
                         }
                     }
-//                        stationList = tempList;
                     sortTimetable(sortMode, filteredList);
                     adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, filteredList);
                     lv.setAdapter(adapter);
@@ -257,24 +250,16 @@ public class StationDetailsTimetableFragment extends Fragment {
 //                "\nDetails: "+station.getStationDesc());
     }
 
-
-    public void setStationDetails(String id){
-        stationId = id;
-        updateDetails(id);
-    }
-
     private enum Sort{
         DESTINATION_UP, DESTINATION_DOWN, TIME_UP, TIME_DOWN, UNSORTED;
     }
-
-
 
     private class MyAdapter  extends ArrayAdapter{
 
         private ArrayList<StationDetails> list;
         private LayoutInflater inflater;
         Holder h;
-        public MyAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull
+        MyAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull
                          ArrayList<StationDetails> list){
             super(context, resource, list);
             this.list=list;
@@ -299,8 +284,8 @@ public class StationDetailsTimetableFragment extends Fragment {
             if(convertView==null){
                 v = inflater.inflate(R.layout.adapter_station_timetable, parent, false);
                 h = new Holder();
-                h.tvTrainType = (TextView) v.findViewById(R.id.adapter_station_timetable_text_traintype);
-                h.tvDestination = (TextView) v.findViewById(R.id.adapter_station_timetable_text_destination);
+                h.tvTrainType =  v.findViewById(R.id.adapter_station_timetable_text_traintype);
+                h.tvDestination = v.findViewById(R.id.adapter_station_timetable_text_destination);
                 h.tvTime = v.findViewById(R.id.adapter_station_timetable_text_timeexpected);
                 v.setTag(h);
             }else{
@@ -311,64 +296,6 @@ public class StationDetailsTimetableFragment extends Fragment {
             h.tvTrainType.setText(list.get(position).getTrainType());
             h.tvDestination.setText(list.get(position).getDestination());
             h.tvTime.setText(list.get(position).getDueIn());
-            return v;
-        }
-    }
-
-    private class MyAdapter2 extends BaseAdapter {
-        Holder h;
-        HashMap<String, StationDetails> mMap;
-        ArrayList<SortedObject> sort;
-        private LayoutInflater inflater;
-
-        MyAdapter2(Context c, ArrayList<SortedObject> sort, HashMap<String, StationDetails> map)
-                throws Exception{
-            if(map==null || sort==null){
-                throw new Exception("station list is NULL!");
-            }
-            this.sort=sort;
-            this.mMap=map;
-            this.inflater = LayoutInflater.from(c);
-
-        }
-        @Override
-        public int getCount() {
-            return sort.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return sort.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View v;
-            if(convertView==null) {
-                v = inflater.inflate(R.layout.adapter_station_timetable, parent, false);
-                h = new Holder();
-                h.tvTrainType = (TextView) v.findViewById(R.id.adapter_station_timetable_text_traintype);
-                h.tvDestination = (TextView) v.findViewById(R.id.adapter_station_timetable_text_destination);
-                h.tvTime = (TextView) v.findViewById(R.id.adapter_station_timetable_text_timeexpected);
-                v.setTag(h);
-            }
-            else {
-                v = convertView;
-                h = (Holder) v.getTag();
-            }
-
-            h.tvTrainType.setText(String.format(Locale.ENGLISH,"%d %s", position, mMap.get
-                    (sort.get(position).getKey()).getTrainType()));
-            h.tvDestination.setText(String.format(Locale.ENGLISH,"%s", mMap.get(sort.get(position).getKey())
-                    .getDestination()));
-            h.tvTime.setText(String.format(Locale.ENGLISH,"%d %s", sort.get(position)
-                    .getValueDecimal(),"min"));
-
             return v;
         }
     }

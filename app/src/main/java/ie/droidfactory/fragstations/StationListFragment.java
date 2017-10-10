@@ -82,12 +82,12 @@ public class StationListFragment extends MainFragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_stations_list, container,false);
-        tvInfo = (TextView) v.findViewById(R.id.fragment_stations_main_text_info);
-        editSearch = (EditText) v.findViewById(R.id.fragment_stations_main_edit_search);
+        tvInfo = v.findViewById(R.id.fragment_stations_main_text_info);
+        editSearch = v.findViewById(R.id.fragment_stations_main_edit_search);
         imgCancel = v.findViewById(R.id.fragment_stations_main_img_cancel);
         imgSortDistance = v.findViewById(R.id.fragment_stations_main_img_sort_distance);
         imgSortName = v.findViewById(R.id.fragment_stations_main_img_sort_station_name);
-        lv = (ListView) v.findViewById(R.id.fragment_stations_main_listview);
+        lv = v.findViewById(R.id.fragment_stations_main_listview);
         swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
         return v;
     }
@@ -291,7 +291,7 @@ public class StationListFragment extends MainFragment {
         ArrayList<Station> stations;
         private LayoutInflater inflater;
         Holder h;
-        public MyAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Station> objects) {
+        MyAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull ArrayList<Station> objects) {
             super(context, resource, objects);
             this.stations=objects;
             this.inflater = LayoutInflater.from(context);
@@ -316,8 +316,8 @@ public class StationListFragment extends MainFragment {
             if(convertView==null){
                 v = inflater.inflate(R.layout.adapter_stations, parent, false);
                 h = new Holder();
-                h.tvStationId = (TextView) v.findViewById(R.id.adapter_stations_text_station_id);
-                h.tvStationName = (TextView) v.findViewById(R.id.adapter_stations_text_station_name);
+                h.tvStationId = v.findViewById(R.id.adapter_stations_text_station_id);
+                h.tvStationName = v.findViewById(R.id.adapter_stations_text_station_name);
                 v.setTag(h);
             }else{
                 v = convertView;
@@ -329,8 +329,8 @@ public class StationListFragment extends MainFragment {
         }
     }
 
-    class Holder{
-        TextView tvStationId, tvStationName,  tvDistance;
+    private class Holder{
+        TextView tvStationId, tvStationName;
     }
 
     private class StationFilter extends Filter {
