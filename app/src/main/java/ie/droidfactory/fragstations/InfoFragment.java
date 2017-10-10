@@ -55,7 +55,8 @@ public class InfoFragment extends MainFragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private UserTimeline userTimeline;
     private TweetTimelineListAdapter tweetAdapter;
-    private List<Tweet> tweetList;
+    private TweetAdapter twAdapter;
+    private ArrayList<Tweet> tweetList = null;
     private ProgressDialog dialog;
 
     private final static int maxTweetsSearch = 200;
@@ -105,13 +106,34 @@ public class InfoFragment extends MainFragment {
     public  void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        downloadTweets();
+
+        downloadTweets(tweetList);
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // TODO Auto-generated method stub
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(FragmentUtils.FRAGMENT_TWEETER_LIST, tweetList);
+
+    }
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onViewStateRestored(savedInstanceState);
+        restore(savedInstanceState);
+    }
+
+    public void restore(Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            tweetList = (ArrayList<Tweet>) savedInstanceState.getSerializable(FragmentUtils.FRAGMENT_TWEETER_LIST);
+        }
     }
 
     @Override
@@ -134,12 +156,11 @@ public class InfoFragment extends MainFragment {
         }
     }
 
-    private void downloadTweets(){
-
-        tweetList = new ArrayList<>();
-        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-        StatusesService statusesService = twitterApiClient.getStatusesService();
-        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", maxTweetsSearch, null, null, false, false, false, false);
+    private void downloadTweets(ArrayList<Tweet> list){
+        if(list==null){
+            TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+            StatusesService statusesService = twitterApiClient.getStatusesService();
+            Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", maxTweetsSearch, null, null, false, false, false, false);
 //        call.enqueue(new Callback<>() {
 //            @Override
 //            public void success(Result<Tweet> result) {
@@ -152,35 +173,51 @@ public class InfoFragment extends MainFragment {
 //                exception.printStackTrace();
 //            }
 //        });
-        call.enqueue(new Callback<List<Tweet>>() {
-            @Override
-            public void success(Result<List<Tweet>> result) {
-                swipeRefreshLayout.setRefreshing(false);
-                if(dialog!=null && dialog.isShowing()){
-                    dialog.dismiss();
-                }
-                if(result.data!= null) {
-                    Log.d(TAG, "twitter response size: "+result.data.size());
-
-                    int count=0;
-                    for (Tweet t: result.data){
-                        if(!t.text.contains("@")) {
-                            ++count;
-                            tweetList.add(t);
-                            if(count==10) break;
-                        }
+            call.enqueue(new Callback<List<Tweet>>() {
+                @Override
+                public void success(Result<List<Tweet>> result) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    if(dialog!=null && dialog.isShowing()){
+                        dialog.dismiss();
                     }
-                    loadTweetsList(getActivity(), lvTweets, tweetList);
-                }
+                    if(result.data!= null) {
+                        ArrayList<Tweet> newList = new ArrayList<>();
+                        Log.d(TAG, "twitter response size: "+result.data.size());
 
-            }
-            @Override
-            public void failure(TwitterException exception) {
-                swipeRefreshLayout.setRefreshing(false);
-                if(dialog!=null && dialog.isShowing()){
-                    dialog.dismiss();
+                        int count=0;
+                        for (Tweet t: result.data){
+                            if(!t.text.contains("@")) {
+                                ++count;
+                                newList.add(t);
+                                if(count==10) break;
+                            }
+                        }
+                        tweetList = newList;
+                        loadTweets(newList);
+                    }
                 }
-                exception.printStackTrace();
+                @Override
+                public void failure(TwitterException exception) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    if(dialog!=null && dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+                    exception.printStackTrace();
+                }
+            });
+        }else {
+            loadTweets(list);
+        }
+    }
+
+    private void loadTweets(ArrayList<Tweet> list){
+        twAdapter = new TweetAdapter( list);
+        lvTweets.setAdapter(twAdapter);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
             }
         });
     }
@@ -191,30 +228,19 @@ public class InfoFragment extends MainFragment {
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.show();
     }
-    private void loadTweetsList(Context context, ListView listView, List<Tweet> list){
-        TweetAdapter adapter = new TweetAdapter(context, list);
-        listView.setAdapter(adapter);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
 
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                downloadTweets();
-            }
-        });
-    }
 
     private class TweetAdapter extends BaseAdapter{
 
         Holder h;
         List<Tweet> tweets;
-        LayoutInflater inflater;
+//        LayoutInflater inflater;
         DateFormat df =  new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
         DateFormat sf = new SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH);
 
-        TweetAdapter(Context c, List<Tweet> tweets){
+        TweetAdapter(List<Tweet> tweets){
             this.tweets=tweets;
-            this.inflater = LayoutInflater.from(c);
+//            this.inflater = LayoutInflater.from(c);
         }
         @Override
         public int getCount() {
@@ -236,7 +262,7 @@ public class InfoFragment extends MainFragment {
             View v;
             if(view==null){
                 this.h = new Holder();
-                v = inflater.inflate(R.layout.adapter_twitter, viewGroup,false);
+                v = getActivity().getLayoutInflater().inflate(R.layout.adapter_twitter, viewGroup,false);
                 h.tvTwDate = v.findViewById(R.id.adapter_twitter_text_date);
                 h.tvTwMessage = v.findViewById(R.id.adapter_twitter_text_message);
                 v.setTag(h);
