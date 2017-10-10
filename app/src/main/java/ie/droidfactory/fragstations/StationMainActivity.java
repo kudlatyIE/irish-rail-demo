@@ -31,7 +31,8 @@ import ie.droidfactory.fragstations.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class StationMainActivity extends AppCompatActivity implements RailInterface,
+public class StationMainActivity extends AppCompatActivity implements RailInterface
+        ,
         AllStationsMapFragment.RestartCallback{//}, ActivityCompat.OnRequestPermissionsResultCallback,PermissionResultCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();

@@ -27,6 +27,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import ie.droidfactory.fragstations.httputils.AsyncMode;
+import ie.droidfactory.fragstations.httputils.AsyncStationsList;
+import ie.droidfactory.fragstations.httputils.Links;
 import ie.droidfactory.fragstations.model.RailInterface;
 import ie.droidfactory.fragstations.model.Station;
 import ie.droidfactory.fragstations.utils.FragmentUtils;
@@ -52,6 +55,18 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     }
     private RestartCallback restartCallback;
 
+    private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
+            .AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            if (done) {
+                Log.d(TAG, "onAsyncDone() callback, create map");
+                createMap(RailSingleton.getStationMap());
+            }else {
+                createMap(null);
+            }
+        }
+    };
     public static AllStationsMapFragment newInstance(Bundle args){
         AllStationsMapFragment fragment = new AllStationsMapFragment();
         fragment.setArguments(args);
@@ -68,8 +83,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ){
-        View v = inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
     }
 
     @Override
@@ -80,23 +94,33 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             FragmentManager fm = getFragmentManager();
             mapFragment = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.fragment_details_map_mapa, mapFragment, TAG_FULL_MAP).commit();
-            mapFragment.getMapAsync(new OnMapReadyCallback(){
 
-                @Override
-                public void onMapReady(GoogleMap arg0) {
-                    if(arg0!=null){
-                        map=arg0;
-                        setMap(RailSingleton.getStationMap());
-                    }
-
-                }
-
-            });
+            if(RailSingleton.getStationMap()==null){
+                downloadAllStationList();
+            }else createMap(RailSingleton.getStationMap());
 
         }
     }
+    private void downloadAllStationList(){
+        LocationUtils.getLocation(getActivity());
+        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
+        rail.execute(Links.ALL_STATIONS.getRailLink());
+    }
 
+    private void createMap(final HashMap<String, Station> list){
+        mapFragment.getMapAsync(new OnMapReadyCallback(){
+
+            @Override
+            public void onMapReady(GoogleMap arg0) {
+                if(arg0!=null){
+                    map=arg0;
+                    setMap(list);
+                }
+            }
+        });
+    }
     private void setMap(HashMap<String, Station> list){
+
         getLocation();
         map.getUiSettings().setAllGesturesEnabled(true);
         if(list==null || list.size()==1){

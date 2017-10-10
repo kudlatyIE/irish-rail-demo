@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,36 +52,13 @@ public class InfoFragment extends MainFragment {
     private TextView tvInfo;
     private ListView lvTweets;
     private LinearLayout layout1, layout2, layout3;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private UserTimeline userTimeline;
     private TweetTimelineListAdapter tweetAdapter;
     private List<Tweet> tweetList;
     private ProgressDialog dialog;
 
-    private AsyncStationsList.AsyncDoneCallback asyncStationsListDone = new AsyncStationsList
-            .AsyncDoneCallback() {
-        @Override
-        public void onAsyncDone(boolean done) {
-            Log.d(TAG, "async success: "+done);
-            Log.d(TAG, "async result: "+ RailSingleton.getAsyncResult());
-
-            if(done){
-                //TODO: now download NEWS from twitter
-            }
-        }
-    };
-
-    private AsyncStationsList.AsyncDoneCallback asyncNewsDone = new AsyncStationsList
-            .AsyncDoneCallback() {
-        @Override
-        public void onAsyncDone(boolean done) {
-            Log.d(TAG, "async success: "+done);
-            Log.d(TAG, "async result: "+ RailSingleton.getAsyncResult());
-
-            if(done){
-                //TODO: download NEWS from twitter
-            }
-        }
-    };
+    private final static int maxTweetsSearch = 200;
 
     RailInterface stationCallback;
     public void setStationSelectedListener(RailInterface listener){
@@ -106,6 +84,7 @@ public class InfoFragment extends MainFragment {
         layout2.setVisibility(View.GONE);
         layout3.setVisibility(View.GONE);
         lvTweets = v.findViewById(R.id.fragment_stations_main_listview);
+        swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
 //        userTimeline = new UserTimeline.Builder()
 //                .screenName("IrishRail")
 //                .build();
@@ -126,12 +105,6 @@ public class InfoFragment extends MainFragment {
     public  void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-//        Bundle extras = getArguments();
-//        if (extras != null) {
-//            info = extras.getString(FragmentUtils.FRAGMENT_INFO);
-//            tvInfo.setText(info);
-//        }
-
     }
 
     @Override
@@ -166,7 +139,7 @@ public class InfoFragment extends MainFragment {
         tweetList = new ArrayList<>();
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
         StatusesService statusesService = twitterApiClient.getStatusesService();
-        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", 100, null, null, false, false, false, false);
+        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", maxTweetsSearch, null, null, false, false, false, false);
 //        call.enqueue(new Callback<>() {
 //            @Override
 //            public void success(Result<Tweet> result) {
@@ -182,6 +155,7 @@ public class InfoFragment extends MainFragment {
         call.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void success(Result<List<Tweet>> result) {
+                swipeRefreshLayout.setRefreshing(false);
                 if(dialog!=null && dialog.isShowing()){
                     dialog.dismiss();
                 }
@@ -202,10 +176,10 @@ public class InfoFragment extends MainFragment {
             }
             @Override
             public void failure(TwitterException exception) {
+                swipeRefreshLayout.setRefreshing(false);
                 if(dialog!=null && dialog.isShowing()){
                     dialog.dismiss();
                 }
-//                tvInfo.setText(exception.getMessage());
                 exception.printStackTrace();
             }
         });
@@ -220,6 +194,14 @@ public class InfoFragment extends MainFragment {
     private void loadTweetsList(Context context, ListView listView, List<Tweet> list){
         TweetAdapter adapter = new TweetAdapter(context, list);
         listView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                downloadTweets();
+            }
+        });
     }
 
     private class TweetAdapter extends BaseAdapter{
@@ -275,17 +257,5 @@ public class InfoFragment extends MainFragment {
     private class Holder{
         TextView tvTwDate, tvTwMessage;
     }
-
-    private void downloadAllStationList(){
-        LocationUtils.getLocation(getActivity());
-        AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncStationsListDone);
-        rail.execute(Links.ALL_STATIONS.getRailLink());
-    }
-
-
-//    private void updateDetails(String info){
-//        this.info =info;
-//        tvInfo.setText(info);
-//    }
 
 }
