@@ -129,6 +129,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
 //                "\nchild ID: "+childPosition+
 //                "\nAlias: "+station.getStationAlias()+" ID: "+station.getStationCode()+
 //                "\nDetails: "+station.getStationDesc());
+        tvInfo.setText(station.getStationDesc());
     }
 
 

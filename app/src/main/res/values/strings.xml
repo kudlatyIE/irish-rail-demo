@@ -48,6 +48,8 @@
          <br>
          © 2017
          <br><br>
+         View real time train information and timetables. Shows the position of railway stations and trains.
+         <br>
          It is a demo app and does not have special functionality - is just an example of using fragments and is optimized for tablet as well.
          Real time and locations data come from Irish Rail Realtime API.
          <br>

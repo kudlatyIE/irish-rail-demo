@@ -18,6 +18,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 
 import ie.droidfactory.fragstations.model.RailInterface;
@@ -48,8 +51,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private static String mainFragmentId = FragmentUtils.FRAGMENT_INFO;
     private DrawerLayout drawerLayout;
 
-    public static Activity suomi;
+    public Activity suomi;
     private CustomEndDialog dialog;
+    private AdView mAdView;
 
 
     private Bundle savedInstanceState;
@@ -109,6 +113,8 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         detailsView = findViewById(R.id.fragment_station_details_container);
         if(mainFragmentId.equals(FragmentUtils.FRAGMENT_INFO)) getSupportActionBar().setTitle(getResources().getString(R.string.news));
         loadFragments(mainFragmentId);
+
+
     }
 
     private void loadFragments(String key){
@@ -125,6 +131,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                         ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
                         ft.addToBackStack(null);
                         ft.commit();
+                        getSupportFragmentManager().executePendingTransactions();
                     }
 
                 }else{
@@ -135,6 +142,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                             mainFragment = (MainFragment) setMainFragment(key);
                             mainFragment.setStationSelectedListener(this);
                             ft.add(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN).commit();
+                            getSupportFragmentManager().executePendingTransactions();
                         }else{
                             return;
                         }
@@ -156,6 +164,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                         ft.replace(R.id.fragment_station_details_container, detailsFragment, FRAG_DETAILS);
                         ft.addToBackStack(null);
                         ft.commit();
+                        getSupportFragmentManager().executePendingTransactions();
 //                        if(mainFragment!=null){
 //                            ft = getSupportFragmentManager().beginTransaction();
 //                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
@@ -169,6 +178,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                             ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN);
 //                            ft.addToBackStack(null);
                             ft.commit();
+                            getSupportFragmentManager().executePendingTransactions();
                         }else return;
                     }
                 }else{
@@ -178,6 +188,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN);
                     ft.addToBackStack(null);
                     ft.commit();
+                    getSupportFragmentManager().executePendingTransactions();
                 }
             }
             getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -188,6 +199,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     Log.d(TAG, "onBackStackChanged....");
                 }
             });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
     }
 

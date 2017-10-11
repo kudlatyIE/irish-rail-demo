@@ -51,7 +51,7 @@ public class InfoFragment extends MainFragment {
     private String info = "default nothing";
     private TextView tvInfo;
     private ListView lvTweets;
-    private LinearLayout layout1, layout2, layout3;
+    private LinearLayout layout1, layout2;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UserTimeline userTimeline;
     private TweetTimelineListAdapter tweetAdapter;
@@ -80,10 +80,10 @@ public class InfoFragment extends MainFragment {
         tvInfo.setVisibility(View.GONE);
         layout1 = v.findViewById(R.id.fragme_station_list_top_1);
         layout2 = v.findViewById(R.id.fragme_station_list_top_2);
-        layout3 = v.findViewById(R.id.fragme_station_list_top_3);
+//        layout3 = v.findViewById(R.id.fragme_station_list_heade);
         layout1.setVisibility(View.GONE);
         layout2.setVisibility(View.GONE);
-        layout3.setVisibility(View.GONE);
+//        layout3.setVisibility(View.GONE);
         lvTweets = v.findViewById(R.id.fragment_stations_main_listview);
         swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
 //        userTimeline = new UserTimeline.Builder()

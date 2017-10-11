@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
      >
     
 	<TextView 
         android:id="@+id/fragment_details_timetable_text_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-		android:layout_marginEnd="@dimen/default_margin"
-		android:layout_marginStart="@dimen/default_margin"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="@dimen/default_margin"
+		android:text="@string/app_name"
+		android:textStyle="bold"
 		android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         />
 
 	<LinearLayout
+		android:id="@+id/fragment_details_timetable_layout_top_1"
+		android:layout_below="@+id/fragment_details_timetable_text_info"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/default_margin"
@@ -36,6 +40,8 @@
 
 	</LinearLayout>
 	<LinearLayout
+		android:id="@+id/fragment_details_timetable_layout_top_2"
+		android:layout_below="@+id/fragment_details_timetable_layout_top_1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginEnd="@dimen/default_margin"
@@ -51,9 +57,10 @@
 			/>
 
 		<LinearLayout
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="2">
+			android:id="@+id/fragment_details_timetable_header_destination"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="2">
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -73,6 +80,7 @@
 
 
 		<LinearLayout
+			android:id="@+id/fragment_details_timetable_header_due_in"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1">
@@ -96,6 +104,7 @@
 	<android.support.v4.widget.SwipeRefreshLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/fragment_details_timetable_swipe_refresh_layout"
+		android:layout_below="@+id/fragment_details_timetable_layout_top_2"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="@dimen/activity_horizontal_margin">
@@ -111,7 +120,7 @@
 	</android.support.v4.widget.SwipeRefreshLayout>
 
 	
-</LinearLayout>
+</RelativeLayout>
 
 <!-- 
 

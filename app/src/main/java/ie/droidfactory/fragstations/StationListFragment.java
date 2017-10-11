@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -54,6 +55,7 @@ public class StationListFragment extends MainFragment {
     private TextView tvInfo;
     private EditText editSearch;
     private ImageView imgCancel, imgSortName, imgSortDistance;
+    private LinearLayout llDistance, llName;
     private ArrayList<Station> allStations, stationList, filteredList;
     private HashMap<String, Station> stationHashMap;
     private MyAdapter adapter = null;
@@ -87,6 +89,8 @@ public class StationListFragment extends MainFragment {
         imgCancel = v.findViewById(R.id.fragment_stations_main_img_cancel);
         imgSortDistance = v.findViewById(R.id.fragment_stations_main_img_sort_distance);
         imgSortName = v.findViewById(R.id.fragment_stations_main_img_sort_station_name);
+        llDistance = v.findViewById(R.id.fragment_stations_main_header_distance);
+        llName = v.findViewById(R.id.fragment_stations_main_header_station_name);
         lv = v.findViewById(R.id.fragment_stations_main_listview);
         swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
         return v;
@@ -187,6 +191,8 @@ public class StationListFragment extends MainFragment {
             imgCancel.setOnClickListener(click);
             imgSortDistance.setOnClickListener(click);
             imgSortName.setOnClickListener(click);
+            llName.setOnClickListener(click);
+            llDistance.setOnClickListener(click);
 
             editSearch.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -232,15 +238,16 @@ public class StationListFragment extends MainFragment {
 
     private void sortStation(Sort mode, ArrayList<Station> list){
         Log.d(TAG, "sort mode: "+mode.name());
+        if(list==null) return;
         if(mode==Sort.NAME_UP){
             Station.stationNameDown compare = new Station.stationNameDown();
             Collections.sort(list, compare);
-            imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
+            imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
         }
         if(mode==Sort.NAME_DOWN){
             Station.stationNameUp compare = new Station.stationNameUp();
             Collections.sort(list, compare);
-            imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_up));
+            imgSortName.setImageDrawable(getResources().getDrawable(R.drawable.ic_sort_down));
         }
         if(mode==Sort.DISTANCE_UP){
             Station.distanceDown compare = new Station.distanceDown();
@@ -273,7 +280,17 @@ public class StationListFragment extends MainFragment {
                     else sortMode=Sort.NAME_UP;
                     sortStation(sortMode, temp);
                     break;
+                case R.id.fragment_stations_main_header_station_name:
+                    if(sortMode!=Sort.NAME_DOWN) sortMode=Sort.NAME_DOWN;
+                    else sortMode=Sort.NAME_UP;
+                    sortStation(sortMode, temp);
+                    break;
                 case R.id.fragment_stations_main_img_sort_distance:
+                    if(sortMode!=Sort.DISTANCE_DOWN) sortMode=Sort.DISTANCE_DOWN;
+                    else sortMode=Sort.DISTANCE_UP;
+                    sortStation(sortMode, temp);
+                    break;
+                case R.id.fragment_stations_main_header_distance:
                     if(sortMode!=Sort.DISTANCE_DOWN) sortMode=Sort.DISTANCE_DOWN;
                     else sortMode=Sort.DISTANCE_UP;
                     sortStation(sortMode, temp);

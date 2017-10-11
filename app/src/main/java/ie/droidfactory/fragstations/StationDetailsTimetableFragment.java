@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,6 +64,7 @@ public class StationDetailsTimetableFragment extends Fragment {
     private TextView tvInfo;
     private EditText editSearch;
     private ImageView imgSortDestination, imgSortTime, imgCancel;
+    private LinearLayout llDestination, llDueIn;
     private ListView lv;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Station station;
@@ -94,6 +96,8 @@ public class StationDetailsTimetableFragment extends Fragment {
         imgCancel = view.findViewById(R.id.fragment_details_timetable_img_cancel);
         imgSortDestination = view.findViewById(R.id.fragment_details_timetable_img_sort_destination);
         imgSortTime = view.findViewById(R.id.fragment_details_timetable_img_sort_time);
+        llDestination = view.findViewById(R.id.fragment_details_timetable_header_destination);
+        llDueIn = view.findViewById(R.id.fragment_details_timetable_header_due_in);
         editSearch = view.findViewById(R.id.fragment_details_timetable_edit_search);
         swipeRefreshLayout = view.findViewById(R.id.fragment_details_timetable_swipe_refresh_layout);
 
@@ -130,6 +134,8 @@ public class StationDetailsTimetableFragment extends Fragment {
         imgCancel.setOnClickListener(click);
         imgSortDestination.setOnClickListener(click);
         imgSortTime.setOnClickListener(click);
+        llDueIn.setOnClickListener(click);
+        llDestination.setOnClickListener(click);
 
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -195,7 +201,17 @@ public class StationDetailsTimetableFragment extends Fragment {
                     else sortMode=Sort.DESTINATION_UP;
                     sortTimetable(sortMode, temp);
                     break;
+                case R.id.fragment_details_timetable_header_destination:
+                    if(sortMode!=Sort.DESTINATION_DOWN) sortMode=Sort.DESTINATION_DOWN;
+                    else sortMode=Sort.DESTINATION_UP;
+                    sortTimetable(sortMode, temp);
+                    break;
                 case R.id.fragment_details_timetable_img_sort_time:
+                    if(sortMode!=Sort.TIME_DOWN) sortMode=Sort.TIME_DOWN;
+                    else sortMode=Sort.TIME_UP;
+                    sortTimetable(sortMode, temp);
+                    break;
+                case R.id.fragment_details_timetable_header_due_in:
                     if(sortMode!=Sort.TIME_DOWN) sortMode=Sort.TIME_DOWN;
                     else sortMode=Sort.TIME_UP;
                     sortTimetable(sortMode, temp);
@@ -206,6 +222,7 @@ public class StationDetailsTimetableFragment extends Fragment {
 
     private void sortTimetable(Sort mode, ArrayList<StationDetails> list){
         Log.d(TAG, "sorting timetable by: "+mode.name());
+        if(list==null) return;
         if(mode==Sort.DESTINATION_UP){
             StationDetails.TimetableDestinationDown compare = new StationDetails
                     .TimetableDestinationDown();
@@ -248,6 +265,7 @@ public class StationDetailsTimetableFragment extends Fragment {
 //                "\nchild ID: "+childPosition+
 //                "\nAlias: "+station.getStationAlias()+" ID: "+station.getStationCode()+
 //                "\nDetails: "+station.getStationDesc());
+        tvInfo.setText(station.getStationDesc());
     }
 
     private enum Sort{

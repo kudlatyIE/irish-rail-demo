@@ -45,6 +45,7 @@
 		android:orientation="horizontal" >
 
 		<LinearLayout
+			android:id="@+id/fragment_stations_main_header_distance"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1">
@@ -68,7 +69,7 @@
 
 
 		<LinearLayout
-			android:id="@+id/fragme_station_list_top_3"
+			android:id="@+id/fragment_stations_main_header_station_name"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1">

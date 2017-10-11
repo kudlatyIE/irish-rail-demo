@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.google.android.gms.ads.MobileAds;
 import com.twitter.sdk.android.core.Twitter;
 
 import org.acra.ACRA;
@@ -32,6 +33,7 @@ public class RailApp extends Application{
     public void onCreate(){
         super.onCreate();
         Twitter.initialize(this);
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
     }
 
 }
