@@ -210,7 +210,12 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             }
         }else this.train = RailSingleton.getTrainMap().get(id);
         Log.d(TAG, "train is NULL: "+(train==null));
-        if(msg!=null)tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
+        if(msg!=null){
+            String temp = (msg.replace("\\n", "XXX"));
+            String[] splier = temp.split("XXX");
+            tvInfo.setText(splier[1]);
+//            tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
+        }
     }
 
     private void createDetailsList(FRAGMENT todo){
@@ -326,13 +331,14 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                 h = (Holder) v.getTag();
             }
             TrainDetails train = list.get(position);
-            String arrivaArriva = train.getArrival();
-            if(arrivaArriva.length()==0) {
-                if(train.getLocationOrder()==1){
-                    arrivaArriva = "departure: "+train.getExpectedDeparture();
-                }else arrivaArriva = train.getScheduledArrival();
+            String go;
+
+            if(train.getLocationOrder()==1){
+                go = "departure: "+train.getExpectedDeparture();
+            }else {go = train.getArrival();
+                if(go.length()==0) go = train.getScheduledArrival();
             }
-            h.tvArrival.setText(arrivaArriva);
+            h.tvArrival.setText(go);
             h.tvLocation.setText(train.getLocationFullName());
             h.imgTrainMarker.setImageDrawable(getTrainMarker(train, timeOrigin));
             return v;

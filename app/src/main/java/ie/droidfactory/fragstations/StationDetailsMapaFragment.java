@@ -39,7 +39,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     private LatLng myLocation=null, stationLocation=null;
     //	private int mCurrentPosition = -1;
     private String stationId=null;
-    private int childPosition = -1;
+//    private int childPosition = -1;
     private TextView tvInfo;
     private Station station;
     private GoogleMap map;
@@ -55,15 +55,14 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
-        tvInfo = (TextView) view.findViewById(R.id.fragment_details_mapa_text_info);
+        tvInfo = view.findViewById(R.id.fragment_details_mapa_text_info);
 
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_MAP);
         if(mapFragment==null){
@@ -115,7 +114,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
         Bundle extras = getArguments();
         if(extras!=null) {
             this.stationId = extras.getString(FragmentUtils.PARENT_POSITION_KEY);
-            this.childPosition = extras.getInt(FragmentUtils.CHILD_POSITION_KEY);
+//            this.childPosition = extras.getInt(FragmentUtils.CHILD_POSITION_KEY);
             this.stationLat = extras.getDouble(FragmentUtils.STATION_LAT);
             this.stationLo = extras.getDouble(FragmentUtils.STATION_LONG);
             this.stationLocation = new LatLng(this.stationLat, this.stationLo);
