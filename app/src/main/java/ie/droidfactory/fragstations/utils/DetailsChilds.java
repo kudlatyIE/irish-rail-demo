@@ -4,7 +4,7 @@ package ie.droidfactory.fragstations.utils;
  */
 public enum DetailsChilds {
 	
-	DETAILS_TIMETABLE ("timetable"), DETAILS_MAP ("map"), DETAILS_OTHER ("other");
+	DETAILS_TIMETABLE ("timetable"), DETAILS_MAP ("map");//, DETAILS_OTHER ("other");
 	
 	private String frag_title;
 	
