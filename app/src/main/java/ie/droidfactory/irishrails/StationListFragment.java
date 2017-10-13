@@ -24,13 +24,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
+import ie.droidfactory.irishrails.db.DbRailSource;
 import ie.droidfactory.irishrails.httputils.AsyncMode;
 import ie.droidfactory.irishrails.httputils.AsyncStationsList;
 import ie.droidfactory.irishrails.httputils.Links;
@@ -54,15 +57,17 @@ public class StationListFragment extends MainFragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView tvInfo;
     private EditText editSearch;
-    private ImageView imgCancel, imgSortName, imgSortDistance;
+    private ImageView imgCancel, imgSortName, imgSortDistance, imgShowFav;
     private LinearLayout llDistance, llName;
     private ArrayList<Station> allStations, stationList, filteredList;
+    private List<String> favList;
     private HashMap<String, Station> stationHashMap;
     private MyAdapter adapter = null;
     private StationFilter stationFilter;
     private Location myLocation;
     private double myLat, myLng;
     private Sort sortMode = Sort.UNSORTED;
+    private boolean isShownFav;
 
     private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
             .AsyncDoneCallback() {
@@ -89,6 +94,7 @@ public class StationListFragment extends MainFragment {
         imgCancel = v.findViewById(R.id.fragment_stations_main_img_cancel);
         imgSortDistance = v.findViewById(R.id.fragment_stations_main_img_sort_distance);
         imgSortName = v.findViewById(R.id.fragment_stations_main_img_sort_station_name);
+        imgShowFav = v.findViewById(R.id.fragment_stations_main_img_show_fav);
         llDistance = v.findViewById(R.id.fragment_stations_main_header_distance);
         llName = v.findViewById(R.id.fragment_stations_main_header_station_name);
         lv = v.findViewById(R.id.fragment_stations_main_listview);
@@ -104,7 +110,13 @@ public class StationListFragment extends MainFragment {
 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        getLocation();
+            getLocation();
+        isShownFav = false;
+        DbRailSource dbRailSource = new DbRailSource(getActivity());
+        dbRailSource.open();
+        favList = dbRailSource.getFavoritiesStationIds();
+        dbRailSource.close();
+
         if(savedInstanceState!=null){
             restore(savedInstanceState);
         }
@@ -171,6 +183,7 @@ public class StationListFragment extends MainFragment {
 
         stationList = new ArrayList<>(stationHashMap.values());
         sortStation(Sort.DISTANCE_UP, stationList);
+        allStations = stationList;//used for show/disable fav list
 
         try {
             adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
@@ -193,6 +206,7 @@ public class StationListFragment extends MainFragment {
             imgSortName.setOnClickListener(click);
             llName.setOnClickListener(click);
             llDistance.setOnClickListener(click);
+            imgShowFav.setOnClickListener(click);
 
             editSearch.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -211,7 +225,6 @@ public class StationListFragment extends MainFragment {
                         sortStation(sortMode, filteredList);
                         adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, filteredList);
                         lv.setAdapter(adapter);
-
                     }
                 }
 
@@ -294,6 +307,26 @@ public class StationListFragment extends MainFragment {
                     if(sortMode!=Sort.DISTANCE_DOWN) sortMode=Sort.DISTANCE_DOWN;
                     else sortMode=Sort.DISTANCE_UP;
                     sortStation(sortMode, temp);
+                    break;
+                case R.id.fragment_stations_main_img_show_fav:
+                    if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
+                    else {
+                        if(!isShownFav){
+                            isShownFav=true;
+                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+                            stationList = new ArrayList<>();
+                            for (Station s: allStations){
+                                if (favList.contains(s.getStationCode())) stationList.add(s);
+                            }
+                        }else {
+                            isShownFav = false;
+                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+                            stationList = allStations;
+                        }
+                        //TODO: add new list to adapter here
+                        adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
+                        lv.setAdapter(adapter);
+                    }
                     break;
             }
         }

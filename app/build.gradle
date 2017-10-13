@@ -10,8 +10,8 @@ android {
         applicationId "ie.droidfactory.irishrails"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 8
-        versionName "0.08"
+        versionCode 14
+        versionName "0.14"
     }
     buildTypes {
         release {

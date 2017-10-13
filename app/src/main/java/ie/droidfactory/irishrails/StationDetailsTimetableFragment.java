@@ -140,6 +140,7 @@ public class StationDetailsTimetableFragment extends Fragment {
         imgSortTime.setOnClickListener(click);
         llDueIn.setOnClickListener(click);
         llDestination.setOnClickListener(click);
+        imgFav.setOnClickListener(click);
 
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -221,7 +222,6 @@ public class StationDetailsTimetableFragment extends Fragment {
                     sortTimetable(sortMode, temp);
                     break;
                 case R.id.fragment_details_timetable_img_fav:
-                    Toast.makeText(getActivity(), "fav is coming", Toast.LENGTH_SHORT).show();
                     //TODO: add/remove Fav......
                     updateFavoriteStation(favList, stationId);
                     break;

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,6 +42,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     private String stationId=null;
 //    private int childPosition = -1;
     private TextView tvInfo;
+    private ImageView imgFav;
     private Station station;
     private GoogleMap map;
 
@@ -63,7 +65,8 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfo = view.findViewById(R.id.fragment_details_mapa_text_info);
-
+        imgFav = view.findViewById(R.id.fragment_details_mapa_img_show_fav);
+        imgFav.setVisibility(View.GONE);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_MAP);
         if(mapFragment==null){
             Log.d(TAG, "map NULL - TEST!");

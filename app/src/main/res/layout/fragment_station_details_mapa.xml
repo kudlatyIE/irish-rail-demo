@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/default_margin"
      >
-    <TextView 
+    <TextView
         android:id="@+id/fragment_details_mapa_text_info"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -14,17 +14,36 @@
         android:textStyle="bold"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
         />
+
+    <ImageView
+        android:id="@+id/fragment_details_mapa_img_show_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:src="@drawable/ic_favorit_no"/>
     
     <FrameLayout
         android:id="@+id/fragment_details_map_mapa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_details_mapa_text_info"
+        android:layout_below="@id/fragment_details_mapa_img_show_fav"
         />
 
 </RelativeLayout>
 
-<!-- 
+<!--
+<TextView
+        android:id="@+id/fragment_details_mapa_text_info"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_half_margin"
+        android:textStyle="bold"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        />
 
 <fragment 
         android:id="@+id/fragment_details_mapa_map"

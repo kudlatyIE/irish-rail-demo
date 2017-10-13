@@ -129,7 +129,7 @@ public class DataUtils {
 	 */
 	public static Location getLocation(Context context){
 		Location l= null;
-		LocationManager lm = null;
+		LocationManager lm;
 		MyLocationListener listener = new MyLocationListener();
 
 		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);

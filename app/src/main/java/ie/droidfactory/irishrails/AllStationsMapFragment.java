@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,7 +27,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
+import java.util.List;
 
+import ie.droidfactory.irishrails.db.DbRailSource;
 import ie.droidfactory.irishrails.httputils.AsyncMode;
 import ie.droidfactory.irishrails.httputils.AsyncStationsList;
 import ie.droidfactory.irishrails.httputils.Links;
@@ -78,6 +82,11 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private LatLng myLocation = null;
+//    private HashMap<String, Station> stationMap;
+    private List<String> favList;
+    private ImageView imgFavStation;
+    private TextView tvInfo;
+    private boolean isShownFav;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,6 +97,9 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_MAP);
+        imgFavStation = view.findViewById(R.id.fragment_details_mapa_img_show_fav);
+        tvInfo = view.findViewById(R.id.fragment_details_mapa_text_info);
+        tvInfo.setVisibility(View.GONE);
         if (mapFragment == null) {
             FragmentManager fm = getFragmentManager();
             mapFragment = SupportMapFragment.newInstance();
@@ -98,6 +110,24 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             } else createMap(RailSingleton.getStationMap());
 
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        isShownFav = false;
+        DbRailSource dbRailSource = new DbRailSource(getActivity());
+        dbRailSource.open();
+        favList = dbRailSource.getFavoritiesStationIds();
+        dbRailSource.close();
+
+        imgFavStation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFavStations(isShownFav);
+            }
+        });
     }
 
     private void downloadAllStationList() {
@@ -124,12 +154,32 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         });
     }
 
+
+
+    private void showFavStations(boolean showFav){
+        if(!showFav){
+            HashMap<String, Station> stationMap = new HashMap<>();
+            for (String key: favList){
+                if(RailSingleton.getStationMap().containsKey(key)) stationMap.put(key, RailSingleton.getStationMap().get(key));
+            }
+            Log.d(TAG, "fav list size: "+favList.size());
+            Log.d(TAG, "fav map size: "+stationMap.size());
+            isShownFav=true;
+            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+            createMap(stationMap);
+        }else {
+            isShownFav=false;
+            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+            createMap(RailSingleton.getStationMap());
+        }
+    }
+
     private void setMap(HashMap<String, Station> list) throws Exception {
 
         getLocation();
         map.getUiSettings().setAllGesturesEnabled(true);
+        map.clear();
         if (list == null || list.size() == 1) {
-
             map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
             map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);

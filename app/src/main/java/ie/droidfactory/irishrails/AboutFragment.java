@@ -60,7 +60,7 @@ public class AboutFragment  extends MainFragment {
 //        tvInfo.setText(info);
         tvInfo.setText(Html.fromHtml(getString(R.string.help_about)));
         tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
-        tvVersion.setText(verison);
+        tvVersion.setText("v."+verison);
     }
 
 
