@@ -1,37 +1,68 @@
 {
   "project_info": {
-    "project_number": "1033945533774",
-    "project_id": "railstation-1322"
+    "project_number": "728484660458",
+    "firebase_url": "https://irish-rail-2017-v2.firebaseio.com",
+    "project_id": "irish-rail-2017-v2",
+    "storage_bucket": "irish-rail-2017-v2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1033945533774:android:d862583a57924356",
+        "mobilesdk_app_id": "1:728484660458:android:c53de87c9be6210b",
         "android_client_info": {
-          "package_name": "ie.droidfactory.fragstations"
+          "package_name": "ie.droidfactory.irishrails"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "728484660458-uhet9esu53e88cqp7440sip3oaggj6jt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.droidfactory.irishrails",
+            "certificate_hash": "115ced1fc4cea2a9cf67483fe8f7527ca48d4b4e"
+          }
+        },
+        {
+          "client_id": "728484660458-harn779dj34e20knia2pil2bv4lf6rkd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.droidfactory.irishrails",
+            "certificate_hash": "c9545922b24855f2f8a92d3aacfcb6a1003db4b0"
+          }
+        },
+        {
+          "client_id": "728484660458-90478ri190ekt8k5rffcvho53sj29v9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.droidfactory.irishrails",
+            "certificate_hash": "a13e9c9e3e7456fcdde1b612ba63b626222eadee"
+          }
+        },
+        {
+          "client_id": "728484660458-7ho9npctmuacduepschvh4gje68hgib4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAwY2g3OxwByG0CXpUG7NFhoykyL-0fj3M"
+          "current_key": "AIzaSyDANYHsW7s1s3kixM2bYZUQ9R6JTrC1iwI"
         }
       ],
       "services": {
         "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-78752136-1"
-          }
+          "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "728484660458-7ho9npctmuacduepschvh4gje68hgib4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 2,
-          "test_banner_ad_unit_id": "ca-app-pub-3940256099942544/6300978111",
-          "test_interstitial_ad_unit_id": "ca-app-pub-3940256099942544/1033173712"
+          "status": 2
         }
       }
     }

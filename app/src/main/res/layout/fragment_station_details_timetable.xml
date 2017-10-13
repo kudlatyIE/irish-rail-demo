@@ -11,17 +11,25 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="@dimen/default_margin"
-		android:text="@string/app_name"
 		android:textStyle="bold"
 		android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         />
+	<ImageView
+		android:id="@+id/fragment_details_timetable_img_fav"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginEnd="@dimen/default_margin"
+		android:src="@drawable/ic_favorit_no"
+		/>
 
 	<LinearLayout
 		android:id="@+id/fragment_details_timetable_layout_top_1"
 		android:layout_below="@+id/fragment_details_timetable_text_info"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_margin="@dimen/default_margin"
+		android:layout_marginEnd="@dimen/default_half_margin"
 		android:orientation="horizontal">
 
 		<EditText
@@ -36,6 +44,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="end"
+			android:layout_marginEnd="@dimen/default_half_margin"
 			android:src="@drawable/ic_cancel"/>
 
 	</LinearLayout>
