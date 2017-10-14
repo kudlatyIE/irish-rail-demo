@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.PermissionResultCallback;
 import ie.droidfactory.irishrails.utils.PermissionUtils;
 
@@ -49,7 +50,8 @@ public class MainActivity extends Activity implements
 
     @Override
     public void PermissionGranted(int request_code) {
-        Log.i("PERMISSION","GRANTED");
+        Log.i(TAG, "PERMISSION GRANTED");
+        LocationUtils.getLatLng(this);
         Intent intent = new Intent(this, StationMainActivity.class);
         startActivity(intent);
         finish();
@@ -57,17 +59,17 @@ public class MainActivity extends Activity implements
 
     @Override
     public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
-        Log.i("PERMISSION PARTIALLY","GRANTED");
+        Log.i(TAG, "PERMISSION PARTIALLY GRANTED");
     }
 
     @Override
     public void PermissionDenied(int request_code) {
-        Log.i("PERMISSION","DENIED");
+        Log.i(TAG, "PERMISSION DENIED");
     }
 
     @Override
     public void NeverAskAgain(int request_code) {
-        Log.i("PERMISSION","NEVER ASK AGAIN");
+        Log.i(TAG, "PERMISSION NEVER ASK AGAIN");
     }
 
 }

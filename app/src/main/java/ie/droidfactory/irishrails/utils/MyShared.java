@@ -56,6 +56,7 @@ public class MyShared {
 		settings = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
 		double lat = Double.parseDouble(settings.getString(KEY_LOCATION_LAT,"0"));
 		double lng = Double.parseDouble(settings.getString(KEY_LOCATION_LNG,"0"));
+		Log.d(TAG, "GET LAST LAT: "+lat+" LNG: "+lng);
 		return new LatLng(lat, lng);
 	}
 

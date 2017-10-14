@@ -38,6 +38,7 @@ import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
+import ie.droidfactory.irishrails.utils.MyShared;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
 /**
@@ -154,7 +155,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
                         setMap(list);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -185,7 +185,12 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
     private void setMap(HashMap<String, Station> list) throws Exception {
 
-        getLocation();
+        try{
+            this.myLocation = LocationUtils.getLatLng(getActivity());
+        }catch (NullPointerException e){
+//            this.myLocation = MyShared.getMyLastLocation(getActivity());
+            this.myLocation = RailSingleton.getMyLatLng();
+        }
         map.getUiSettings().setAllGesturesEnabled(true);
         map.clear();
         if (list == null || list.size() == 1) {
@@ -247,10 +252,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         }
     }
 
-    private void getLocation() throws Exception {
-        LocationUtils.getLatLng(getActivity());
-        this.myLocation = RailSingleton.getMyLatLng();
-    }
 
 
 }

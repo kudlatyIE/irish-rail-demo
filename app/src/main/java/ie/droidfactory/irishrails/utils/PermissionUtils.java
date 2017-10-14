@@ -21,8 +21,8 @@ import java.util.Map;
 
 public class PermissionUtils {
 
+    private final static String TAG = PermissionUtils.class.getSimpleName();
     private Activity current_activity;
-
     private PermissionResultCallback permissionResultCallback;
 
 
@@ -54,16 +54,16 @@ public class PermissionUtils {
         if(Build.VERSION.SDK_INT >= 23) {
             if (checkAndRequestPermissions(permissions, request_code)) {
                 permissionResultCallback.PermissionGranted(request_code);
-                Log.i("all permissions", "granted");
-                Log.i("proceed", "to callback");
+                Log.i(TAG, "all permissions granted");
+                Log.i(TAG, "proceed to callback");
             }
         }
         else
         {
             permissionResultCallback.PermissionGranted(request_code);
 
-            Log.i("all permissions", "granted");
-            Log.i("proceed", "to callback");
+            Log.i(TAG, "all permissions granted");
+            Log.i(TAG, "proceed to callback");
         }
 
     }
@@ -123,7 +123,7 @@ public class PermissionUtils {
                             if(ActivityCompat.shouldShowRequestPermissionRationale(current_activity,listPermissionsNeeded.get(i)))
                                 pending_permissions.add(listPermissionsNeeded.get(i));
                             else {
-                                Log.i("Go to settings","and enable permissions");
+                                Log.i(TAG, "Go to settings and enable permissions");
                                 permissionResultCallback.NeverAskAgain(req_code);
                                 Toast.makeText(current_activity, "Go to settings and enable permissions", Toast.LENGTH_LONG).show();
                                 return;
@@ -143,7 +143,7 @@ public class PermissionUtils {
                                                 check_permission(permission_list,dialog_content,req_code);
                                                 break;
                                             case DialogInterface.BUTTON_NEGATIVE:
-                                                Log.i("permisson","not fully given");
+                                                Log.i(TAG, "permisson not fully given");
                                                 if(permission_list.size()==pending_permissions.size())
                                                     permissionResultCallback.PermissionDenied(req_code);
                                                 else
@@ -155,8 +155,8 @@ public class PermissionUtils {
                     }
                     else
                     {
-                        Log.i("all","permissions granted");
-                        Log.i("proceed","to next step");
+                        Log.i(TAG, "all permissions granted");
+                        Log.i(TAG, "proceed to next step");
                         permissionResultCallback.PermissionGranted(req_code);
 
                     }

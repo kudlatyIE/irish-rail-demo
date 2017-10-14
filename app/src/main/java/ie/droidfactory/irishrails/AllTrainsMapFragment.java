@@ -31,6 +31,7 @@ import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Train;
 import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
+import ie.droidfactory.irishrails.utils.MyShared;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
 /**
@@ -105,7 +106,17 @@ public class AllTrainsMapFragment extends MainFragment {
     }
 
     private void setMap(HashMap<String, Train> list){
-        getLocation();
+
+        try{
+            this.myLocation = LocationUtils.getLatLng(getActivity());
+            this.myLo = myLocation.longitude;
+            this.myLat = myLocation.latitude;
+        }catch (NullPointerException e){
+//            myLocation = MyShared.getMyLastLocation(getActivity());
+            myLocation = RailSingleton.getMyLatLng();
+            this.myLo = myLocation.longitude;
+            this.myLat = myLocation.latitude;
+        }
         if(map==null) return;
         map.getUiSettings().setAllGesturesEnabled(true);
         if(list==null || list.size()==1){
@@ -136,7 +147,7 @@ public class AllTrainsMapFragment extends MainFragment {
             @Override
             public boolean onMarkerClick(Marker arg0) {
 
-                Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
+//                Log.d(TAG, "item clicked: "+arg0.getTitle()+" code: "+arg0.getSnippet());
                 stationCallback.onTrainSelected(arg0.getSnippet());
                 return false;
             }
@@ -180,11 +191,7 @@ public class AllTrainsMapFragment extends MainFragment {
     }
 
 
-    private void getLocation(){
-        this.myLocation = LocationUtils.getLatLng(getActivity());
-        this.myLo = myLocation.longitude;
-        this.myLat = myLocation.latitude;
-    }
+
 
 
 }

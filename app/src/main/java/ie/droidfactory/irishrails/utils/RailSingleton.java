@@ -70,10 +70,10 @@ public class RailSingleton {
 
 	public static void setMyLocation(LatLng myLocation) {
 		setMyLatLng(myLocation);
-		Location l = new Location("");
-		l.setLatitude(myLocation.latitude);
-		l.setLongitude(myLocation.longitude);
-		RailSingleton.myLocation = l;
+		Location loc = new Location("");
+		loc.setLatitude(myLocation.latitude);
+		loc.setLongitude(myLocation.longitude);
+		RailSingleton.myLocation = loc;
 //		RailSingleton.myLat = myLocation.latitude;
 //		RailSingleton.myLng = myLocation.longitude;
 	}

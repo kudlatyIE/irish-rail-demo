@@ -24,6 +24,7 @@ import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
 import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
+import ie.droidfactory.irishrails.utils.MyShared;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
 /**
@@ -38,7 +39,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     private SupportMapFragment mapFragment;
     private double myLo=0, myLat=0;
     private double stationLo = 0, stationLat = 0;
-    private LatLng myLocation=null, stationLocation=null;
+    private LatLng stationLocation=null;
     private String stationId=null;
     private TextView tvInfo;
     private ImageView imgFav;
@@ -68,7 +69,6 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
         imgFav.setVisibility(View.GONE);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_MAP);
         if(mapFragment==null){
-            Log.d(TAG, "map NULL - TEST!");
             FragmentManager fm = getFragmentManager();
             mapFragment = SupportMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.fragment_details_map_mapa, mapFragment).commit();
@@ -88,9 +88,16 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     }
 
     private void setMap(){
-        if(stationLocation==null){
-            getLocation();
-            this.stationLocation = this.myLocation;
+
+        try{
+            if(stationLocation==null) stationLocation = LocationUtils.getLatLng(getActivity());
+            this.myLo = stationLocation.longitude;
+            this.myLat = stationLocation.latitude;
+        }catch (NullPointerException e){
+//            stationLocation = MyShared.getMyLastLocation(getActivity());
+            stationLocation = RailSingleton.getMyLatLng();
+            this.myLo = stationLocation.longitude;
+            this.myLat = stationLocation.latitude;
         }
         map.getUiSettings().setAllGesturesEnabled(true);
         map.addMarker(new MarkerOptions().position(stationLocation).title
@@ -140,15 +147,6 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     }
 
 
-    /**
-     * set current location
-     */
-    private void getLocation() throws SecurityException{
-        LocationUtils.getLatLng(getActivity());
-        this.myLo = RailSingleton.getMyLatLng().longitude;
-        this.myLat = RailSingleton.getMyLatLng().latitude;
-        this.myLocation = RailSingleton.getMyLatLng();
-    }
 }
 
 
