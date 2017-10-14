@@ -58,25 +58,7 @@ public class Station implements Serializable {
 		return location;
 	}
 
-	public static class StationCompare implements Comparator<Station> {
-
-		private List<Comparator<Station>> compareList = new ArrayList<Comparator<Station>>();
-		private int result =0;
-		public void add(int i, Comparator<Station> arg){
-			compareList.add(1,arg);
-		}
-
-		@Override
-		public int compare(Station o1, Station o2) {
-			for (int i=0; i<compareList.size();i++){
-				result = compareList.get(i).compare(o1, o2);
-				if (result!=0) return result;
-			}
-			return 0;
-		}
-	}
-
-	/**
+		/**
 	 * sorting A-Z
 	 */
 	public static class stationNameUp implements Comparator<Station>{

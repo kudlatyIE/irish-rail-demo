@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -57,7 +58,7 @@ public class InfoFragment extends MainFragment {
 
     private final static int maxTweetsSearch = 200;
 
-    RailInterface stationCallback;
+    RailInterface tweetCallback;
     public void setStationSelectedListener(RailInterface listener){
         stationCallback = listener;
     }
@@ -72,23 +73,16 @@ public class InfoFragment extends MainFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_stations_list, container, false);
-        tvInfo = (TextView) v.findViewById(R.id.fragment_stations_main_text_info);
+        tvInfo = v.findViewById(R.id.fragment_stations_main_text_info);
         tvInfo.setVisibility(View.GONE);
         layout1 = v.findViewById(R.id.fragme_station_list_top_1);
         layout2 = v.findViewById(R.id.fragme_station_list_top_2);
-//        layout3 = v.findViewById(R.id.fragme_station_list_heade);
         layout1.setVisibility(View.GONE);
         layout2.setVisibility(View.GONE);
 //        layout3.setVisibility(View.GONE);
         lvTweets = v.findViewById(R.id.fragment_stations_main_listview);
         swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
-//        userTimeline = new UserTimeline.Builder()
-//                .screenName("IrishRail")
-//                .build();
-//        tweetAdapter = new TweetTimelineListAdapter.Builder(getActivity())
-//                .setTimeline(userTimeline)
-//                .build();
-//        lvTweets.setAdapter(tweetAdapter);
+
         return v;
     }
 
@@ -96,13 +90,12 @@ public class InfoFragment extends MainFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated....");
-        runDialog();
+
     }
     @Override
     public  void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-
     }
 
     @Override
@@ -137,7 +130,7 @@ public class InfoFragment extends MainFragment {
         // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
-            stationCallback = (RailInterface) activity;
+            tweetCallback = (RailInterface) activity;
         }catch(ClassCastException e){
             throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
                     "implemented...");
@@ -154,21 +147,11 @@ public class InfoFragment extends MainFragment {
 
     private void downloadTweets(ArrayList<CustomTweets> list){
         if(list==null){
+            runDialog();
             TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
             StatusesService statusesService = twitterApiClient.getStatusesService();
             Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", maxTweetsSearch, null, null, false, false, false, false);
-//        call.enqueue(new Callback<>() {
-//            @Override
-//            public void success(Result<Tweet> result) {
-//                //Do something with result
-//                Log.d(TAG, "tweets: \n"+result.data.text);
-//            }
-//
-//            public void failure(TwitterException exception) {
-//                tvInfo.setText(exception.getMessage());
-//                exception.printStackTrace();
-//            }
-//        });
+
             call.enqueue(new Callback<List<Tweet>>() {
                 @Override
                 public void success(Result<List<Tweet>> result) {
@@ -177,8 +160,7 @@ public class InfoFragment extends MainFragment {
                         dialog.dismiss();
                     }
                     if(result.data!= null) {
-//                        ArrayList<Tweet> newList = new ArrayList<>();
-                        customTweetsArrayList = new ArrayList<CustomTweets>();
+                        customTweetsArrayList = new ArrayList<>();
                         Log.d(TAG, "twitter response size: "+result.data.size());
 
                         int count=0;
@@ -190,8 +172,6 @@ public class InfoFragment extends MainFragment {
                                 if(count==10) break;
                             }
                         }
-//                        tweetList = newList;
-//                        loadTweets(newList);
                         loadTweets(customTweetsArrayList);
                     }
                 }
@@ -209,8 +189,7 @@ public class InfoFragment extends MainFragment {
         }
     }
 
-//    private void loadTweets(ArrayList<Tweet> list){
-    private void loadTweets(ArrayList<CustomTweets> list){
+    private void loadTweets(final ArrayList<CustomTweets> list){
         twAdapter = new TweetAdapter(list);
         lvTweets.setAdapter(twAdapter);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -220,11 +199,24 @@ public class InfoFragment extends MainFragment {
                 swipeRefreshLayout.setRefreshing(true);
             }
         });
+        //        String urlRegex = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
+        final String urlRegex = "https://";
+
+        lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(list.get(i).getMessage().contains(urlRegex)){
+                    String url = list.get(i).getMessage().substring(list.get(i).getMessage().indexOf(urlRegex), list.get(i).getMessage().length());
+                    Log.d(TAG, "twitter url: "+url);
+                    tweetCallback.onTweetSelected(url);
+                }
+            }
+        });
     }
     private void runDialog(){
         dialog = new ProgressDialog(getActivity());
         dialog.setMessage("loading news...");
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.show();
     }
@@ -233,15 +225,12 @@ public class InfoFragment extends MainFragment {
     private class TweetAdapter extends BaseAdapter{
 
         Holder h;
-//        List<Tweet> tweets;
         List<CustomTweets> customTweetsList;
-//        LayoutInflater inflater;
         DateFormat df =  new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
         DateFormat sf = new SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH);
 
         TweetAdapter(List<CustomTweets> tweets){
             this.customTweetsList=tweets;
-//            this.inflater = LayoutInflater.from(c);
         }
         @Override
         public int getCount() {

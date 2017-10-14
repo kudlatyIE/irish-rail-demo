@@ -5,5 +5,6 @@ package ie.droidfactory.irishrails.model;
 public interface RailInterface {
 	public void onStationSelected(String stationId);
 	public void onTrainSelected(String trainId);
-	public void onStationSelectedFromTrain(String stationId);
+	public void onTweetSelected(String tweetUrl);
+
 }

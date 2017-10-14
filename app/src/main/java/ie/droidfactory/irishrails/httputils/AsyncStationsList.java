@@ -27,19 +27,14 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 
     private final static String TAG = AsyncStationsList.class.getSimpleName();
 	private Context context;
-//	private TextView tvResult;
 	private ProgressDialog dialog;
 	private String result="";
 	private AsyncMode mode;
-	private Links link;
-//	private AsyncTaskResultCallback asyncTaskResultCallback;
 
 	public AsyncStationsList(Context context , AsyncMode mode , AsyncDoneCallback callback /*, TextView tvResult */){
 		this.context=context;
-//		this.tvResult=tvResult;
 		this.mode=mode;
         this.asyncDoneCallback = callback;
-//		this.asyncTaskResultCallback = (AsyncTaskResultCallback) context;
         Log.d(TAG, "async :: MODE: "+mode.toString());
     }
 	
@@ -63,53 +58,11 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 		
 	}
 
-//	@Override
-//	protected void onPostExecute(String res) {
-//		// TODO Auto-generated method stub
-//		super.onPostExecute(res);
-//		try{
-//			if(dialog!=null && dialog.isShowing()) dialog.dismiss();
-//
-//			if(link==Links.ALL_STATIONS){
-//				HashMap<String, Station> list = new HashMap<>();
-//				list = Parser.parseAllStationsMap(res);
-//				RailSingleton.setStationMap(list);
-//				MyShared.setStationsMap(context, res);
-//				result = "stations number: "+list.size();
-//			}
-//
-//			if(link==Links.GET_ALL_TRAINS){
-//				HashMap<String, Train> list;
-//				list = Parser.parseRunningTrains(res);
-//				RailSingleton.setTrainMap(list);
-//				result = "trains number: "+list.size();
-//			}
-//			if (link == Links.GET_TRAIN_DETAILS) {
-//				HashMap<Integer, TrainDetails> list;
-//				list = Parser.parseTrainDetails(res);
-//				RailSingleton.setTrainDetailsMap(list);
-//				result = "on route stations number: "+list.size();
-//			}
-//
-//
-//
-//		}catch(Exception ex){
-//			ex.printStackTrace();
-//			result = ex.getMessage();
-//			asyncTaskResultCallback.asyncDone(false);
-//		}
-//		Log.d(TAG, "async result:\n"+result);
-//		RailSingleton.setAsyncResult(result);
-//		asyncTaskResultCallback.asyncDone(true);
-////        tvResult.setText(result);
-//	}
-
 	@Override
 	protected void onPostExecute(String res) {
 		// TODO Auto-generated method stub
 		super.onPostExecute(res);
-		boolean success = false;
-//		Log.d(TAG, "XML:\n"+res);
+		boolean success ;
 		if(dialog!=null && dialog.isShowing()) dialog.dismiss();
 		try{
 
@@ -146,7 +99,6 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 			result = ex.getMessage();
 			success=false;
 		}
-//		asyncTaskResultCallback.asyncDone(success);
 		asyncDoneCallback.onAsyncDone(success);
 		RailSingleton.setAsyncResult(result);
 	}

@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -117,10 +118,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         isShownFav = false;
-        DbRailSource dbRailSource = new DbRailSource(getActivity());
-        dbRailSource.open();
-        favList = dbRailSource.getFavoritiesStationIds();
-        dbRailSource.close();
+//        favList = getFavList();
 
         imgFavStation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +126,15 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
                 showFavStations(isShownFav);
             }
         });
+    }
+
+    private List<String> getFavList(){
+        List<String> list = new ArrayList<>();
+        DbRailSource dbRailSource = new DbRailSource(getActivity());
+        dbRailSource.open();
+        list = dbRailSource.getFavoritiesStationIds();
+        dbRailSource.close();
+        return list;
     }
 
     private void downloadAllStationList() {
@@ -157,6 +164,8 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
 
     private void showFavStations(boolean showFav){
+        favList = getFavList();
+        if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
         if(!showFav){
             HashMap<String, Station> stationMap = new HashMap<>();
             for (String key: favList){
@@ -239,33 +248,8 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     }
 
     private void getLocation() throws Exception {
-        Location l = null;
-        LocationManager lm;
-        MyLocationListener listener = new MyLocationListener();
-
-        try {
-            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    throw new Exception("location permission not granted");
-
-                }
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            lm.removeUpdates(listener);
-            if(l!=null){
-                this.myLocation = new LatLng(l.getLatitude(), l.getLongitude());
-                Log.d(TAG, "current lat, long: "+l.getLatitude()+", "+l.getLongitude());
-            }
-        }catch (NullPointerException e){
-            Log.d(TAG, "capture location problem");
-        }
+        LocationUtils.getLatLng(getActivity());
+        this.myLocation = RailSingleton.getMyLatLng();
     }
 
 

@@ -47,8 +47,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             if (done) {
                 if(trainCode!= null) updateDetails(trainCode, msg);
                 trainDetailsList = RailSingleton.getTrainDetailsList();
-                Log.d(TAG, "onAsyncDone() callback, create map");
-                Log.d(TAG, "onAsyncDone() callback, map size: "+trainDetailsList.size());
                 TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
                 Collections.sort(trainDetailsList, compareUp);
                 createDetailsList(FRAGMENT.CREATE);
@@ -82,7 +80,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfo = view.findViewById(R.id.fragment_train_details_info);
         lv = view.findViewById(R.id.fragment_train_details_listview);
@@ -92,7 +89,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
 
         Bundle extras = getArguments();
@@ -102,12 +98,9 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             lng = extras.getDouble(FragmentUtils.STATION_LONG);
             trainDirection = extras.getString(FragmentUtils.TRAIN_DESCRIPTION);
             msg = extras.getString(FragmentUtils.TRAIN_MSG);
-            Log.d(TAG, "from bundle: trainCode: "+trainCode+", direction: "+trainDirection+"\nLAT:"
-            +lat+" LNG:" + lng);
         }
         if(RailSingleton.getTimetable()!=null){
             if(trainCode!= null) updateDetails(trainCode, msg);
-//            Log.d(TAG, "onCreate() get map from singleton size: "+RailSingleton.getTrainDetailsList().size());
             createDetailsList(FRAGMENT.CREATE);
         }else{
             onRefreshListView();
@@ -123,12 +116,10 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     }
 
     private void scrollList(int position){
-        Log.d(TAG, "scrollList ::: trainCurrentPosition: "+position);
 
         lv.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "runnable ::: trainCurrentPosition: "+trainCurrentPosition);
                     lv.smoothScrollToPosition(trainCurrentPosition);
                     lv.setSelection(trainCurrentPosition);
                 }
@@ -148,7 +139,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // TODO Auto-generated method stub
         super.onSaveInstanceState(outState);
         outState.putString(FragmentUtils.STATION_CODE, trainCode);
         outState.putDouble(FragmentUtils.MY_LAT, lat);
@@ -156,7 +146,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     }
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onViewStateRestored(savedInstanceState);
         restore(savedInstanceState);
     }
@@ -175,25 +164,20 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             for(int i =0; i<list.size(); i++) {
                 if (list.get(i).getDeparture().length() > 0) {
                     stationDeparted = list.get(i).getLocationCode();
-                    Log.d(TAG, "order: " + i + " ::::: " + list.get(i).getLocationCode()+" passed position:::::: " + i);
                 }
                 try{
                     if(stationDeparted!=null){
                         if(list.get(i+1).getDeparture().length()==0){
                             this.trainCurrentPosition = i;
-                            Log.d(TAG, "found train current position:::::: "+i);
                             stop=true;
                             return;
                         }
                     }
                 }catch (ArrayIndexOutOfBoundsException e){
                     this.trainCurrentPosition = i;
-                    Log.d(TAG, "found train current position:::::: "+i);
                     stop=true;
                 }
             }
-
-
     }
 
     private void updateDetails(String id, String msg){
@@ -214,24 +198,20 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             String temp = (msg.replace("\\n", "XXX"));
             String[] splier = temp.split("XXX");
             tvInfo.setText(splier[1]);
-//            tvInfo.setText(msg.replace("\\n", System.getProperty("line.separator")));
         }
     }
 
     private void createDetailsList(FRAGMENT todo){
-//        updateDetails(trainCode, msg);
         if(lv==null) return;
         if(todo==FRAGMENT.CREATE){
             if(RailSingleton.getTrainDetailsList()!=null){
                 trainDetailsList = RailSingleton.getTrainDetailsList();
-//                if(trainDetailsList==null){
-//                    Toast.makeText(getActivity(), "train detail list is NULL!", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+
                 TrainDetails.TranLocationOrderCompareUp compareUp = new TrainDetails.TranLocationOrderCompareUp();
                 Collections.sort(trainDetailsList, compareUp);
                 setCurrentPosition(trainDetailsList);
                 try {
+//                    updateDetails();
                     adapter = new MyAdapter(getActivity(), trainDetailsList);
                     lv.setAdapter(adapter);
                     lv.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -251,8 +231,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            //TODO: is complicate on landscape tablet - kepp it for next time.
-//                            stationFromTrainCallback.onStationSelectedFromTrain(trainDetailsList.get(position).getLocationCode());
                             String time;
                             if(trainDetailsList.get(position).getArrival().length()>0) time = "\ntrain arrived at "+trainDetailsList.get(position).getArrival();
                             else time="\ntrain is expected at "+trainDetailsList.get(position).getScheduledArrival();
@@ -266,11 +244,8 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
         }
     }
 
-
-
     @Override
     public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
         super.onAttach(activity);
         try{
             stationFromTrainCallback = (RailInterface) activity;
@@ -278,7 +253,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
             throw new ClassCastException(activity.toString()+ "OnStationFromTrainSelected " +
                     "Listener is not implemented...");
         }
-        Log.d(TAG, "onAttach end...");
     }
 
     private class MyAdapter extends BaseAdapter{
@@ -346,7 +320,6 @@ public class TrainDetailsFragment extends MainFragment /*implements AsyncTaskRes
     }
 
     private Drawable getTrainMarker(TrainDetails train, String timeOrigin){
-        Log.d(TAG, "getTrainMarker::: stopTYpe: "+train.getStopType());
 
         if(train.getLocationOrder()==1 & !DataUtils.compareTrainDateNow(train.getTrainDate(), timeOrigin, train.getExpectedDeparture(), 1))//train.getDeparture().length()==0)
             return getResources().getDrawable(R.drawable.ic_train_marker_start_not);

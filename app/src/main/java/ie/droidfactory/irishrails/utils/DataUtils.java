@@ -23,8 +23,6 @@ public class DataUtils {
 
 	private final static String TAG = DataUtils.class.getSimpleName();
 	
-	public final static int SORT_AZ = 0, SORT_ZA=1, SORT_DISTANCE=3;
-	
 	/**
 	 * sorting timatable by dueIn - num of minutes till the train will arrive here
 	 * @param list
@@ -103,11 +101,7 @@ public class DataUtils {
             Date origin  = format.parse(date+" "+tOrigin);
 			Date next  = format.parse(date+" "+timeNext);
             if(next.before(origin)){
-//                now.add(Calendar.HOUR, 24);
-//				DateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
-//				Date dateNow = new Date();
-//				dateNow = df.parse(df.format(dateNow));
-//				next = format.parse(dateNow.toString()+" "+next);
+
 				Calendar cNext= Calendar.getInstance();
 				cNext.setTime(next);
 				cNext.add(Calendar.HOUR, 24);
@@ -123,31 +117,5 @@ public class DataUtils {
 		}
 	}
 
-
-	/**
-	 * get current location
-	 */
-	public static Location getLocation(Context context){
-		Location l= null;
-		LocationManager lm;
-		MyLocationListener listener = new MyLocationListener();
-
-		lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-			l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		}
-		if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-			l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-
-
-		if(l!=null){
-			Log.d(TAG, "current lat, long: "+l.getLatitude()+", "+l.getLongitude());
-		}
-		lm.removeUpdates(listener);
-		return l;
-	}
 
 }

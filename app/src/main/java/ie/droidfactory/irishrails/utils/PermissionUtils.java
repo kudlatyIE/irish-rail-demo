@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class PermissionUtils {
 
-    private Context context;
     private Activity current_activity;
 
     private PermissionResultCallback permissionResultCallback;
@@ -32,11 +31,8 @@ public class PermissionUtils {
     private String dialog_content="";
     private int req_code;
 
-    public PermissionUtils(Context context)
-    {
-        this.context=context;
+    public PermissionUtils(Context context) {
         this.current_activity= (Activity) context;
-
         permissionResultCallback= (PermissionResultCallback) context;
     }
 

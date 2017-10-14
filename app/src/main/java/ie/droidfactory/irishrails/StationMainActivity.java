@@ -2,6 +2,9 @@ package ie.droidfactory.irishrails;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,14 +18,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import org.w3c.dom.Text;
+
 import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.model.Train;
+import ie.droidfactory.irishrails.utils.BitmapHelper;
 import ie.droidfactory.irishrails.utils.CustomEndDialog;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
 import ie.droidfactory.irishrails.utils.RailSingleton;
@@ -46,7 +54,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private FragmentTransaction ft;
     private static String mainFragmentId = FragmentUtils.FRAGMENT_INFO;
     private DrawerLayout drawerLayout;
-
+    private LinearLayout drawerHeader;
+    private boolean isHeaderImageExist = false;
+    private TextView tvTitle;
     public Activity suomi;
     private CustomEndDialog dialog;
     private AdView mAdView;
@@ -68,7 +78,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
 
-
+        int headerImageId = getResources().getIdentifier("img_drawer_header_v2", "raw","ie.droidfactory.irishrails");
+        Log.d(TAG, "real IMG detect res: "+headerImageId);
+        if(headerImageId!=0) isHeaderImageExist=true;
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,6 +108,21 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+                tvTitle = findViewById(R.id.drawer_header_text_info);
+                tvTitle.setVisibility(View.GONE);
+                if(isHeaderImageExist){
+                    drawerHeader = findViewById(R.id.drawer_header_layout_main);
+                    int headerHeight = drawerHeader.getHeight();
+                    int headerWidth = drawerHeader.getWidth();
+                    Bitmap res = BitmapFactory.decodeResource(getResources(), R.raw.img_drawer_header_v2);
+                    int resW = res.getWidth();
+                    int resH = res.getHeight();
+                    double ratio = resH/headerHeight;
+                    headerWidth = (int) (resW*ratio);
+                    Bitmap btmNew = BitmapHelper.decodeResource(suomi, R.raw.img_drawer_header_v2, headerWidth, headerHeight);
+                    BitmapDrawable ob = new BitmapDrawable(btmNew);
+                    drawerHeader.setBackgroundDrawable(ob);
+                }
 
                 if(item.isChecked()) item.setChecked(false);
                 else item.setChecked(true);
@@ -124,10 +151,15 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                         ft.remove(detailsFragment).commit();
                         getSupportFragmentManager().executePendingTransactions();
                         ft = getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
-                        ft.addToBackStack(null);
-                        ft.commit();
-                        getSupportFragmentManager().executePendingTransactions();
+                        if(detailsFragment==null){
+//                            Log.d(TAG, "whoa! details fragment is NULL!");
+                            return;
+                        }else {
+                            ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
+                            ft.addToBackStack(null);
+                            ft.commit();
+                            getSupportFragmentManager().executePendingTransactions();
+                        }
                     }
 
                 }else{
@@ -161,11 +193,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                         ft.addToBackStack(null);
                         ft.commit();
                         getSupportFragmentManager().executePendingTransactions();
-//                        if(mainFragment!=null){
-//                            ft = getSupportFragmentManager().beginTransaction();
-//                            ft.replace(R.id.fragment_station_list_container, mainFragment, FRAG_MAIN)
-//                                    .commit();
-//                        }
                     }else {
                         if(mainFragment==null){
                             ft = getSupportFragmentManager().beginTransaction();
@@ -192,7 +219,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 @Override
                 public void onBackStackChanged() {
                     updateViews(detailsView);
-                    Log.d(TAG, "onBackStackChanged....");
                 }
             });
         mAdView = findViewById(R.id.adView);
@@ -201,24 +227,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        Log.d(TAG, "onBackPresed invoked...");
-//        if(!MainFragment.handleBackPressed(getSupportFragmentManager())){
-//            super.onBackPressed();
-//        }else {
-//            dialog = new CustomEndDialog(this);
-//            dialog.show();
-//        }
-//    }
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "onBackPressed() call...............");
         if (onBackPressedListener != null)
             onBackPressedListener.doBack();
         if(isDualPane){
             if( detailsFragment!=null){
-                Log.d(TAG, "onBackPressed(): details fragment is not null!");
                 ft = getSupportFragmentManager().beginTransaction();
                 getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 ft.remove(detailsFragment);
@@ -228,15 +242,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 updateViews(detailsView);
 
             }else{
-                Log.d(TAG, "onBackPressed(): details fragment is NULL!");
-//                super.onBackPressed();
-                dialog = new CustomEndDialog(this);//, killListener);
+                dialog = new CustomEndDialog(this);
                 dialog.show();
             }
         }else {
-//            if(detailsFragment!=null && detailsFragment.isVisible()) super.onBackPressed();
             if(mainFragment!=null && mainFragment.isVisible()){
-                dialog = new CustomEndDialog(this);//, killListener);
+                dialog = new CustomEndDialog(this);
                 dialog.show();
             }else {
                 updateViews(detailsView);
@@ -246,23 +257,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     }
 
 
-    private void runAlertDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to exit?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
 
     @Override
     public void onStationSelected(String id) {
@@ -278,10 +272,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
             this.mId=id;
-            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
 
             detailsFragment = new StationDetailsFragment();
             Bundle args = new Bundle();
@@ -299,12 +289,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             //LANDSCAPE - DUAL PANE MODE
         }else{
             detailsView = findViewById(R.id.fragment_station_details_container);
-            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
             if(!detailsView.isShown()){
-                Log.w(TAG, "details view is GONE, restore view....");
                 detailsView.setVisibility(View.VISIBLE);
             }
             detailsFragment = new StationDetailsFragment();
@@ -317,13 +302,13 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             ft = getSupportFragmentManager().beginTransaction();
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
-                if(id==mId) return;
-                else {
+//                if(id.equals(mId)) return;
+//                else {
                     ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                     mId=id;
                     ft.addToBackStack(null);
                     ft.commit();
-                }
+//                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=id;
@@ -351,10 +336,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
             this.mId=trainId;
-            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
 
             detailsFragment = new TrainDetailsFragment();
             Bundle args = new Bundle();
@@ -370,14 +351,9 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             ft.addToBackStack(null);
             ft.commit();
 
-//			}
             //LANDSCAPE - DUAL PANE MODE
         }else{
             detailsView = findViewById(R.id.fragment_station_details_container);
-            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
             if(!detailsView.isShown()){
                 Log.w(TAG, "details view is GONE, restore view....");
                 detailsView.setVisibility(View.VISIBLE);
@@ -389,17 +365,18 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
             args.putDouble(FragmentUtils.STATION_LAT, lat);
             args.putDouble(FragmentUtils.STATION_LONG, lo);
             args.putString(FragmentUtils.TRAIN_DESCRIPTION, direction);
+            args.putString(FragmentUtils.TRAIN_MSG, msg);
             detailsFragment.setArguments(args);
             ft = getSupportFragmentManager().beginTransaction();
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
-                if(trainId==mId) return;
-                else {
+//                if(trainId.equals(mId)) return;
+//                else {
                     ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                     mId=trainId;
                     ft.addToBackStack(null);
                     ft.commit();
-                }
+//                }
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
                 mId=trainId;
@@ -410,91 +387,53 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     }
 
     @Override
-    public void onStationSelectedFromTrain(String stationId) {
-        RailSingleton.resetTimetable();
-        Station station = RailSingleton.getStationMap().get(stationId);
-        try{
-            stationCode = station.getStationCode();
-        }catch(NullPointerException e){
-            //TODO: load extra data for this station, now just return null
-            Toast.makeText(getApplicationContext(), "it is just a technical station",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        double lat = station.getStationLatitude();
-        double lo = station.getStationLongitude();
-
-        Log.d(TAG, "station selected on list: "+stationId+" code: "+stationCode);
+    public void onTweetSelected(String tweetUrl) {
+        Log.d(TAG, "tweet selected from list: "+tweetUrl);
         detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
         FragmentTransaction ft;
-        Fragment currentFragment;
         if(!isDualPane){//PORTRAIT - SINGLE PANE MDE
-            //remove preview view
-            this.mId=stationId;
-            Log.d(TAG, "click PORT, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "click PORT, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
+            this.mId=tweetUrl;
 
-            detailsFragment = new StationDetailsFragment();
+            detailsFragment = new InfoDetailsFragment();
             Bundle args = new Bundle();
-            args.putString(FragmentUtils.PARENT_POSITION_KEY, stationId);
-            args.putString(FragmentUtils.STATION_CODE, stationCode);
-            args.putDouble(FragmentUtils.STATION_LAT, lat);
-            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            args.putString(FragmentUtils.FRAGMENT_TWEETER_URL, tweetUrl);
             detailsFragment.setArguments(args);
             ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_station_list_container, detailsFragment, FRAG_DETAILS);
-
             ft.addToBackStack(null);
             ft.commit();
 
-//			}
             //LANDSCAPE - DUAL PANE MODE
         }else{
             detailsView = findViewById(R.id.fragment_station_details_container);
-            Log.d(TAG, "click LAND, list container NULL: "+(findViewById(R.id
-                    .fragment_station_list_container)==null));
-            Log.d(TAG, "LAND, details container NULL: "+(findViewById(R.id
-                    .fragment_station_details_container)==null));
             if(!detailsView.isShown()){
                 Log.w(TAG, "details view is GONE, restore view....");
                 detailsView.setVisibility(View.VISIBLE);
             }
-            detailsFragment = new StationDetailsFragment();
+            detailsFragment = new InfoDetailsFragment();
             Bundle args = new Bundle();
-            args.putString(FragmentUtils.PARENT_POSITION_KEY, stationId);
-            args.putString(FragmentUtils.STATION_CODE, stationCode);
-            args.putDouble(FragmentUtils.STATION_LAT, lat);
-            args.putDouble(FragmentUtils.STATION_LONG, lo);
+            args.putString(FragmentUtils.FRAGMENT_TWEETER_URL, tweetUrl);
             detailsFragment.setArguments(args);
             ft = getSupportFragmentManager().beginTransaction();
             if(detailsFragment!=null) {
                 //TODO: dont reload the same details fragment if exist
-                if(stationId==mId) return;
-                else {
-                    ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-                    if((currentFragment = getSupportFragmentManager().findFragmentById(R.id
-                            .fragment_station_details_container))!=null){
-                        ft.hide(currentFragment);
-                    }
-                    mId=stationId;
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+
+                ft.replace(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
+                mId=tweetUrl;
+                ft.addToBackStack(null);
+                ft.commit();
+
             }else {
                 ft.add(R.id.fragment_station_details_container, detailsFragment,FRAG_DETAILS);
-                if((currentFragment = getSupportFragmentManager().findFragmentById(R.id
-                        .fragment_station_list_container))!=null){
-                    ft.hide(currentFragment);
-                }
-                mId=stationId;
+                mId=tweetUrl;
                 ft.addToBackStack(null);
                 ft.commit();
             }
-
         }
     }
+
+
+
 
     private void updateViews(View detail){
         if(isDualPane){
@@ -516,7 +455,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
 
     @Override
     protected void onSaveInstanceState(Bundle arg0) {
-        // TODO Auto-generated method stub
         super.onSaveInstanceState(arg0);
         arg0.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
     }
@@ -530,7 +468,6 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
        if(key == null) return;
        //clean fragment containers
        if( detailsFragment!=null){
-           Log.d(TAG, "details fragment is not null!");
            ft = getSupportFragmentManager().beginTransaction();
            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
            ft.remove(detailsFragment);
@@ -539,10 +476,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
            detailsFragment=null;
            if (detailsView!=null) updateViews(detailsView);
 
-       }else{
-           Log.d(TAG, "details fragment is NULL!");
-           }
-           //and clean main fragment
+       }
        if(mainFragment!=null){
            ft = getSupportFragmentManager().beginTransaction();
            getSupportFragmentManager().popBackStackImmediate(null, FragmentManager
@@ -551,11 +485,8 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
            ft.commit();
            getSupportFragmentManager().executePendingTransactions();
            mainFragment=null;
-       }else{
-              Log.d(TAG, "main fragment is NULL!");
-          }
+       }
        //create new fragment and display in empty main view
-       Log.d(TAG, "createFragment::::key: "+key);
        ft = getSupportFragmentManager().beginTransaction();
        ft.disallowAddToBackStack();
        ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

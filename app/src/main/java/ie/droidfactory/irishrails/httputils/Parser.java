@@ -33,9 +33,6 @@ public class Parser {
 	private static XmlKeyHolder h;
 	private final static int STATION_ID_LIMIT = 1000;//filtering service stations
 
-	
-
-	
 	public static HashMap<String, Station> parseAllStationsMap(Context ac, String myXml){
 		HashMap<String, Station> stations  = new HashMap<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -84,69 +81,8 @@ public class Parser {
 	}
 
 
-//    public static HashMap<String,StationDetails> parseTimetableForStation(String myXml) throws
-//            Exception{
-//		HashMap<String, StationDetails> timetable  = new HashMap<>();
-//		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//		h= new XmlKeyHolder();
-//		try {
-//			DocumentBuilder builder = factory.newDocumentBuilder();
-//			Document doc = builder.parse(new ByteArrayInputStream(myXml.getBytes()));
-//			doc.getDocumentElement().normalize();
-//			NodeList list = doc.getElementsByTagName(h.OBJECT_STATION_DATA);
-//			Log.d(TAG, "timetable size: "+list.getLength());
-//			if(list.getLength()>0){
-//				for(int i=0;i<list.getLength();i++){
-//					Node node = list.item(i);
-//					if(node.getNodeType()==Node.ELEMENT_NODE){
-//						Element e = (Element) node;
-//						String serverTime = e.getElementsByTagName(h.SERVER_TIME).item(0).getTextContent();
-//						String trainCode = e.getElementsByTagName(h.STATION_TRAIN_CODE).item(0)
-//								.getTextContent();
-//
-//						String stationFullName = e.getElementsByTagName(h.STATION_FULL_NAME).item(0).getTextContent();
-//						String stationCode = e.getElementsByTagName(h.STATION_CODE_DETAILS).item(0).getTextContent();
-//						String queryTime = e.getElementsByTagName(h.QUERY_TIME).item(0).getTextContent();
-//						String trainDate = e.getElementsByTagName(h.STATION_TRAIN_DATE).item(0)
-//								.getTextContent();
-//						String origin = e.getElementsByTagName(h.ORIGIN).item(0).getTextContent();
-//						String destination = e.getElementsByTagName(h.DESTINATION).item(0).getTextContent();
-//						String originTime = e.getElementsByTagName(h.ORIGIN_TIME).item(0).getTextContent();
-//						String destinationTime = e.getElementsByTagName(h.DESTINATION_TIME).item(0).getTextContent();
-//						String status = e.getElementsByTagName(h.STATION_TRAIN_STATUS).item(0)
-//								.getTextContent();
-//						String lastLocation = e.getElementsByTagName(h.LAST_LOCATION).item(0).getTextContent();
-//						String dueIn = e.getElementsByTagName(h.DUE_IN).item(0).getTextContent();
-//						String late = e.getElementsByTagName(h.LATE).item(0).getTextContent();
-//						String expArrival = e.getElementsByTagName(h.EXP_ARRIVAL).item(0).getTextContent();
-//						String expDepart = e.getElementsByTagName(h.EXP_DEPART).item(0).getTextContent();
-//						String schArrival = e.getElementsByTagName(h.SCHEDULE_ARRIVAL).item(0).getTextContent();
-//						String schDepart = e.getElementsByTagName(h.SCHEDULE_DEPART).item(0).getTextContent();
-//						String direction = e.getElementsByTagName(h.DIRECTION).item(0).getTextContent();
-//						String trainType = e.getElementsByTagName(h.TRAIN_TYPE).item(0).getTextContent();
-//						String locationType = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
-//
-//						timetable.put(trainCode, new StationDetails(serverTime, trainCode,
-//                                stationFullName, stationCode, queryTime, trainDate,
-//								origin, destination, originTime, destinationTime, status, lastLocation, dueIn,
-//								late, expArrival, expDepart, schArrival, schDepart, direction, trainType, locationType));
-//					}
-//				}
-//			}else{
-//				throw new Exception(h.errNoData);
-//			}
-//
-//		} catch (SAXException | IOException | ParserConfigurationException e) {
-//			e.printStackTrace();
-//			throw new Exception(e.getMessage());
-//		}
-//
-//		return timetable;
-//	}
-
 	public static ArrayList<StationDetails> parseTimetableForStation(String myXml) throws
 			Exception{
-//		HashMap<String, StationDetails> timetable  = new HashMap<>();
 		ArrayList<StationDetails> timetable = new ArrayList<>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		h= new XmlKeyHolder();
@@ -248,7 +184,6 @@ public class Parser {
 
         } catch (SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
-//            trains.put(null,Train.makeTrain(null,e.getMessage()));
             throw new Exception(e.getMessage());
         }
         return trains;
@@ -294,9 +229,6 @@ public class Parser {
 								.getTextContent();
 						String expDepart = e.getElementsByTagName(h.TD_EXPECTED_DEPARTURE).item(0)
 								.getTextContent();
-						//can be null - use try-catch
-						//get data only id Location type !=T (timing point, train not stopping), hm
-						//but sometimes is stopping, WHY?
 						String arrival = h.EMPTY;
 						try{
 							arrival =e.getElementsByTagName(h.TD_ARRIVAL).item(0)
@@ -320,8 +252,6 @@ public class Parser {
 						// until this line
 						String stopType = e.getElementsByTagName(h.TD_STOP_TYPE).item(0)
 								.getTextContent();
-						Log.d(TAG, "order: "+order+" arrivaArriva: "+schArrival+"\n"
-								+" StationName: "+locationName+" locationType: "+locationType);
 						//grab data only if stations is not timing_point type
 						if(!locationType.equals(StationType.TYPE_T.getType())){
 							trainRoute.add(TrainDetails.makeTrainDetails(code,date,locationCode,
@@ -329,18 +259,15 @@ public class Parser {
 									schDepart,expArrival, expDepart, arrival,depart,autoArrival,
 									autoDepart, stopType));
 						}
-//                        Log.w(TAG,trainRoute.get(order).toString());
 					}
 				}
 //                Log.d(TAG, "map size: "+trainRoute.size());
 			}else{
-//                trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData));
 				throw new Exception(h.errNoData);
 			}
 
 		} catch (SAXException | ParserConfigurationException | IOException e) {
 			e.printStackTrace();
-//            trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData))
 			throw new Exception(e.getMessage());
 		}
 		return trainRoute;
@@ -392,9 +319,6 @@ public class Parser {
                                 .getTextContent();
                         String expDepart = e.getElementsByTagName(h.TD_EXPECTED_DEPARTURE).item(0)
                                 .getTextContent();
-                        //can be null - use try-catch
-                    //get data only id Location type !=T (timing point, train not stopping), hm
-                    //but sometimes is stopping, WHY?
                         String arrival = h.EMPTY;
                         try{
                             arrival =e.getElementsByTagName(h.TD_ARRIVAL).item(0)
@@ -426,18 +350,14 @@ public class Parser {
 									schDepart,expArrival, expDepart, arrival,depart,autoArrival,
 									autoDepart, stopType));
 						}
-//                        Log.w(TAG,trainRoute.get(order).toString());
                     }
                 }
 //                Log.d(TAG, "map size: "+trainRoute.size());
-            }else{
-//                trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData));
-                throw new Exception(h.errNoData);
-            }
+            }else throw new Exception(h.errNoData);
+
 
         } catch (SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
-//            trainRoute.put(null,TrainDetails.makeTrainDetails(null,h.errNoData))
             throw new Exception(e.getMessage());
         }
         return trainRoute;

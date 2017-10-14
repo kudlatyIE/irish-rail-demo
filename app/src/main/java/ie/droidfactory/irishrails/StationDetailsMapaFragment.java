@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
+import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
@@ -38,9 +39,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     private double myLo=0, myLat=0;
     private double stationLo = 0, stationLat = 0;
     private LatLng myLocation=null, stationLocation=null;
-    //	private int mCurrentPosition = -1;
     private String stationId=null;
-//    private int childPosition = -1;
     private TextView tvInfo;
     private ImageView imgFav;
     private Station station;
@@ -145,30 +144,11 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
      * set current location
      */
     private void getLocation() throws SecurityException{
-        Location l= null;
-        LocationManager lm = null;
-        MyLocationListener listener = new MyLocationListener();
-
-        lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-            l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-
-        if(l!=null){
-            this.myLo = l.getLongitude();
-            this.myLat = l.getLatitude();
-            this.myLocation = new LatLng(this.myLat, this.myLo);
-        }
-        Log.d(TAG, "current lat, long: "+this.myLat+", "+this.myLo);
-        lm.removeUpdates(listener);
+        LocationUtils.getLatLng(getActivity());
+        this.myLo = RailSingleton.getMyLatLng().longitude;
+        this.myLat = RailSingleton.getMyLatLng().latitude;
+        this.myLocation = RailSingleton.getMyLatLng();
     }
-
-
 }
 
 

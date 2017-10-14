@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +29,7 @@ import ie.droidfactory.irishrails.httputils.AsyncStationsList;
 import ie.droidfactory.irishrails.httputils.Links;
 import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Train;
+import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
@@ -65,11 +67,14 @@ public class AllTrainsMapFragment extends MainFragment {
     private GoogleMap map;
     private double myLat=0, myLo=0;
     private LatLng myLocation=null;
+    private ImageView imgFav;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ){
         View v = inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
+        imgFav = v.findViewById(R.id.fragment_details_mapa_img_show_fav);
+        imgFav.setVisibility(View.GONE);
         return v;
     }
 
@@ -101,6 +106,7 @@ public class AllTrainsMapFragment extends MainFragment {
 
     private void setMap(HashMap<String, Train> list){
         getLocation();
+        if(map==null) return;
         map.getUiSettings().setAllGesturesEnabled(true);
         if(list==null || list.size()==1){
             Log.d(TAG, "my LatLng:"+myLocation.latitude+" :: "+myLocation.longitude);
@@ -155,8 +161,8 @@ public class AllTrainsMapFragment extends MainFragment {
     public void onDestroyView(){
         super.onDestroyView();
         if(map!=null){
-            getActivity().getSupportFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP));
-            map=null;
+//            getActivity().getSupportFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag(TAG_FULL_TRAINS_MAP));
+//            map=null;
             Log.d(TAG, "Nick, you bad boy, do not destroy map anymore!");
         }
     }
@@ -175,33 +181,9 @@ public class AllTrainsMapFragment extends MainFragment {
 
 
     private void getLocation(){
-        Location l= null;
-        LocationManager lm = null;
-        MyLocationListener listener = new MyLocationListener();
-
-        try{
-            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            lm.removeUpdates(listener);
-            if(l!=null){
-                this.myLo = l.getLongitude();
-                this.myLat = l.getLatitude();
-                this.myLocation = new LatLng(l.getLatitude(), l.getLongitude());
-            }
-        }catch (NullPointerException e){
-            Log.d(TAG, "capture location problem");
-            this.myLo = RailSingleton.getMyLatLng().longitude;
-            this.myLat = RailSingleton.getMyLatLng().latitude;
-            this.myLocation = RailSingleton.getMyLatLng();
-        }
-        Log.d(TAG, "current lat, long: "+this.myLat+", "+this.myLo);
+        this.myLocation = LocationUtils.getLatLng(getActivity());
+        this.myLo = myLocation.longitude;
+        this.myLat = myLocation.latitude;
     }
 
 

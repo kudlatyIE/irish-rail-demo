@@ -27,6 +27,7 @@ public class FragmentUtils {
 	public final static String FRAGMENT_STATION_MAP = "station_map";
 	public final static String FRAGMENT_TRAIN_LIST = "train_list";
 	public final static String FRAGMENT_TWEETER_LIST = "tweeter_list";
+	public final static String FRAGMENT_TWEETER_URL = "tweeter_url";
 
 	public final static String FRAGMENT_TRAIN = "train";
 	public final static String TRAIN_MSG = "train_msg";

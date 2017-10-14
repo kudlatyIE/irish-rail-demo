@@ -110,12 +110,9 @@ public class StationListFragment extends MainFragment {
 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            getLocation();
+            LocationUtils.getLatLng(getActivity());
         isShownFav = false;
-        DbRailSource dbRailSource = new DbRailSource(getActivity());
-        dbRailSource.open();
-        favList = dbRailSource.getFavoritiesStationIds();
-        dbRailSource.close();
+        favList = getFavList();
 
         if(savedInstanceState!=null){
             restore(savedInstanceState);
@@ -126,6 +123,16 @@ public class StationListFragment extends MainFragment {
         }else loadStationList();
 
     }
+
+    private List<String> getFavList(){
+        List<String> list = new ArrayList<>();
+        DbRailSource dbRailSource = new DbRailSource(getActivity());
+        dbRailSource.open();
+        list = dbRailSource.getFavoritiesStationIds();
+        dbRailSource.close();
+        return list;
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -177,7 +184,7 @@ public class StationListFragment extends MainFragment {
     }
     private void loadStationList(){
         this.stationHashMap = RailSingleton.getStationMap();
-        this.myLocation = DataUtils.getLocation(getActivity());
+        this.myLocation = LocationUtils.getLocation(getActivity());
         this.myLat = myLocation.getLatitude();
         this.myLng = myLocation.getLongitude();
 
@@ -309,6 +316,7 @@ public class StationListFragment extends MainFragment {
                     sortStation(sortMode, temp);
                     break;
                 case R.id.fragment_stations_main_img_show_fav:
+                    favList = getFavList();
                     if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
                     else {
                         if(!isShownFav){
@@ -405,30 +413,6 @@ public class StationListFragment extends MainFragment {
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             filteredList = (ArrayList<Station>) filterResults.values;
             adapter.notifyDataSetChanged();
-        }
-    }
-    private void getLocation(){
-        Location l= null;
-        LocationManager lm = null;
-        MyLocationListener listener = new MyLocationListener();
-
-        try{
-            lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
-            if(lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-                l = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            lm.removeUpdates(listener);
-            if(l!=null){
-
-                RailSingleton.setMyLocation(new LatLng(l.getLatitude(), l.getLongitude()));
-            }
-        }catch (NullPointerException e){
-            e.printStackTrace();
         }
     }
 

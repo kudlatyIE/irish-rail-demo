@@ -26,8 +26,7 @@ public class RailSingleton {
 	public static String currentStationCode="unknown";
 	private static Location myLocation=null;
 	private static LatLng myLatLng=null;
-	private static double myLat, myLng;
-	private static int timeStampStationDetails;
+//	private static double myLat, myLng;
 	private static String asyncResult; // just for develop test
 
 
@@ -51,9 +50,6 @@ public class RailSingleton {
 		return timetableMap;
 	}
 
-	public static void setTimetable(HashMap<String,StationDetails> timetable) {
-		RailSingleton.timetableMap = timetable;
-	}
 	
 	public static void resetTimetable(){
 		currentStationCode = "unknown";
@@ -78,9 +74,17 @@ public class RailSingleton {
 		l.setLatitude(myLocation.latitude);
 		l.setLongitude(myLocation.longitude);
 		RailSingleton.myLocation = l;
-		RailSingleton.myLat = myLocation.latitude;
-		RailSingleton.myLng = myLocation.longitude;
+//		RailSingleton.myLat = myLocation.latitude;
+//		RailSingleton.myLng = myLocation.longitude;
 	}
+
+//	public static double getMyLat() {
+//		return myLat;
+//	}
+//
+//	public static double getMyLng() {
+//		return myLng;
+//	}
 
 	public static HashMap<String, Train> getTrainMap() {
 		return trainsMap;
@@ -89,14 +93,6 @@ public class RailSingleton {
 	public static void setTrainMap(HashMap<String, Train> trainMap) {
 		RailSingleton.trainsMap = trainMap;
 	}
-//	public static HashMap<Integer, TrainDetails> getTrainDetailsMap() {
-//		return trainDetailsMap;
-//	}
-//
-//	public static void setTrainDetailsMap(HashMap<Integer, TrainDetails> trainDetailsMap) {
-//		RailSingleton.trainDetailsMap = trainDetailsMap;
-//	}
-
 
 	public static ArrayList<TrainDetails> getTrainDetailsList() {
 		return trainDetailsList;
@@ -105,17 +101,6 @@ public class RailSingleton {
 	public static void setTrainDetailsList(ArrayList<TrainDetails> trainDetailsList) {
 		RailSingleton.trainDetailsList = trainDetailsList;
 	}
-
-	public static int getTimeStampStationDetails() {
-		return timeStampStationDetails;
-	}
-
-	public static void setTimeStampStationDetails(int timeStampTrainDetails) {
-		RailSingleton.timeStampStationDetails = timeStampTrainDetails;
-	}
-
-    public static void currentStationCode(String stationId) {
-    }
 
 	public static String getAsyncResult() {
 		return asyncResult;

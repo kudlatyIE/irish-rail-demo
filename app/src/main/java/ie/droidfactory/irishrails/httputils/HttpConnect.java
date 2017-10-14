@@ -11,9 +11,7 @@ import java.net.URL;
  * Created by kudlaty on 02/06/2016.
  */
 public class HttpConnect {
-	
-//	private HttpClient client;
-//	private HttpGet get;
+
 	private final static String TAG = HttpConnect.class.getSimpleName();
 	private static String code = "UTF-8", linkMain = "http://api.irishrail.ie/realtime/realtime.asmx/";
 	private static URL url;
@@ -22,7 +20,7 @@ public class HttpConnect {
 	private static StringBuffer buffer;
 	private static BufferedReader reader;
 	private static int responseCode;
-	private static String result, errMsg="http: shit happen";
+	private static String result;
 	
 	public static String getRailStuff(String request){
 		String line;
@@ -33,7 +31,6 @@ public class HttpConnect {
 			String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
 			String query = Uri.encode(request,ALLOWED_URI_CHARS);
 			link = linkMain+ query;
-//			Log.v("LINKS", "enum link == String link: "+link.equals(link2));
 			Log.v(TAG,"Http link: "+link);
 			url = new URL(link);
 			conn = (HttpURLConnection) url.openConnection();
@@ -42,7 +39,6 @@ public class HttpConnect {
 			Log.v(TAG, "HTTP Response Code: "+responseCode);
 			if (responseCode!=200){
 				input = new InputStreamReader(conn.getErrorStream());
-//				result = errorXml(responseCode,errMsg) ;
 				while((line=reader.readLine())!=null){
 					buffer.append(line+"\n");
 				}

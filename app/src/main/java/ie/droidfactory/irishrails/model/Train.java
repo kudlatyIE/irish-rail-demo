@@ -107,11 +107,11 @@ public class Train {
 
     private String getRoute(String str)  {
         Log.d(TAG, "spliter: "+str);
-
-        String[] split1 = str.split("\n");
-        if(split1[1].contains("-")){
-            return split1[1].substring(split1[1].indexOf("-")+1, split1[1].indexOf("(")).trim();
-        }else return split1[1].trim();
+        String temp = (str.replace("\\n", "XXX"));
+        String[] split = temp.split("XXX");
+        if(split[1].contains("-")){
+            return split[1].substring(split[1].indexOf("-")+1, split[1].indexOf("(")).trim();
+        }else return split[1].trim();
 
     }
 

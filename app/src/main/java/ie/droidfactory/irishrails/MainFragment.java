@@ -20,8 +20,10 @@ public class MainFragment extends Fragment implements RailInterface {
     }
 
     @Override
-    public void onStationSelectedFromTrain(String stationId) {
+    public void onTweetSelected(String tweetUrl) {
+
     }
+
 
     RailInterface stationCallback, trainCallback, stationFromTrainCallback;
 

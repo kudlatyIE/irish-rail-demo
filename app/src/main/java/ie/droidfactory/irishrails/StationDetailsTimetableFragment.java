@@ -58,7 +58,6 @@ public class StationDetailsTimetableFragment extends Fragment {
     private final static String TAG = StationDetailsTimetableFragment.class.getSimpleName();
     private String stationId=null;
     private String result="no result", stationCode;
-    private boolean isFav = false;
     private CharSequence link;
     private TextView tvInfo;
     private EditText editSearch;
@@ -67,12 +66,10 @@ public class StationDetailsTimetableFragment extends Fragment {
     private ListView lv;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Station station;
-    private ProgressDialog dialog;
     private static MyAdapter adapter;
 //    private HashMap<String, StationDetails> timetable = null;
     private static ArrayList<StationDetails> timetableList, filteredList;
     private List<String> favList;
-//    private ArrayList<SortedObject> sortedByDueTime;
     private Sort sortMode = Sort.UNSORTED;
 
     public static StationDetailsTimetableFragment newInstance(Bundle args){

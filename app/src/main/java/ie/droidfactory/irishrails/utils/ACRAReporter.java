@@ -42,8 +42,9 @@ public class ACRAReporter  {
 //               setResDialogOkToast(R.string.toast_crash).
       //TODO: create custom dialog here
               .setReportingInteractionMode(ReportingInteractionMode.DIALOG)
-              .setReportDialogClass(ACRACrashReportDialog.class);
-//               .setMailTo("kudlaty.ie@gmail.com");
+              .setReportDialogClass(ACRACrashReportDialog.class)
+//              .setMailTo("kudlaty.ie@gmail.com")
+               ;
 
        return cb.build();
    }
