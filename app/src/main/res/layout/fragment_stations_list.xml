@@ -31,6 +31,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="end"
+			android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/default_margin"
 			android:src="@drawable/ic_cancel"/>
 		<ImageView
@@ -38,7 +39,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:gravity="end"
-			android:layout_marginEnd="@dimen/default_margin"
+			android:layout_gravity="center_vertical"
+			android:layout_marginStart="@dimen/default_margin"
 			android:src="@drawable/ic_show_favorit_no"/>
 
 

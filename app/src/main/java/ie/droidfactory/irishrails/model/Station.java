@@ -47,7 +47,7 @@ public class Station implements Serializable {
 		this.stationLongitude=longitude;
 		this.stationType=type;
 		this.distance = RailSingleton.getMyLocation().distanceTo(calcLocation(latitude, longitude));
-		Log.d(TAG, name+"\t"+distance);
+//		Log.d(TAG, name+"\t"+distance);
 
 	}
 

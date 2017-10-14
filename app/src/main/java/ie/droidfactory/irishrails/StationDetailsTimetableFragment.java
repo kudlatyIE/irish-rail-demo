@@ -101,6 +101,9 @@ public class StationDetailsTimetableFragment extends Fragment {
         editSearch = view.findViewById(R.id.fragment_details_timetable_edit_search);
         swipeRefreshLayout = view.findViewById(R.id.fragment_details_timetable_swipe_refresh_layout);
 
+        editSearch.setVisibility(View.GONE);
+        imgCancel.setVisibility(View.GONE);
+
     }
 
 
@@ -142,6 +145,7 @@ public class StationDetailsTimetableFragment extends Fragment {
         llDestination.setOnClickListener(click);
         imgFav.setOnClickListener(click);
 
+        //disable search -  is not really useful here
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -159,10 +163,8 @@ public class StationDetailsTimetableFragment extends Fragment {
                     sortTimetable(sortMode, filteredList);
                     adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, filteredList);
                     lv.setAdapter(adapter);
-
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }

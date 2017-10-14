@@ -31,6 +31,7 @@ public class Parser {
 	
 	private final static String TAG = Parser.class.getSimpleName();
 	private static XmlKeyHolder h;
+	private final static int STATION_ID_LIMIT = 1000;//filtering service stations
 
 	
 
@@ -65,7 +66,9 @@ public class Parser {
 							type  = e.getElementsByTagName(h.LOCATION_TYPE).item(0).getTextContent();
 						}catch(Exception e2){}//return default station type
 
-						stations.put(code, Station.makeStation(ac, name, code, id, alias, lat, lon, type));
+						if(Integer.parseInt(id)<STATION_ID_LIMIT){
+							stations.put(code, Station.makeStation(ac, name, code, id, alias, lat, lon, type));
+						}
 					}
 				}
 			}else{

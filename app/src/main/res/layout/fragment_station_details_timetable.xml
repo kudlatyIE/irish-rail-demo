@@ -20,6 +20,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toEndOf="@+id/fragment_details_timetable_text_info"
+		android:layout_alignParentEnd="true"
+		android:layout_marginTop="@dimen/default_half_margin"
 		android:layout_marginEnd="@dimen/default_margin"
 		android:src="@drawable/ic_favorit_no"
 		/>
@@ -53,6 +55,7 @@
 		android:layout_below="@+id/fragment_details_timetable_layout_top_1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/default_margin"
 		android:layout_marginEnd="@dimen/default_margin"
 		android:layout_marginStart="@dimen/default_margin"
 		android:orientation="horizontal" >
