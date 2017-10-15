@@ -57,6 +57,7 @@ public class InfoFragment extends MainFragment {
     private ProgressDialog dialog;
 
     private final static int maxTweetsSearch = 200;
+    private final static String URL_REGEX = "https://";
 
     RailInterface tweetCallback;
     public void setStationSelectedListener(RailInterface listener){
@@ -200,13 +201,13 @@ public class InfoFragment extends MainFragment {
             }
         });
         //        String urlRegex = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
-        final String urlRegex = "https://";
+
 
         lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(list.get(i).getMessage().contains(urlRegex)){
-                    String url = list.get(i).getMessage().substring(list.get(i).getMessage().indexOf(urlRegex), list.get(i).getMessage().length());
+                if(list.get(i).getMessage().contains(URL_REGEX)){
+                    String url = list.get(i).getMessage().substring(list.get(i).getMessage().indexOf(URL_REGEX), list.get(i).getMessage().length());
                     Log.d(TAG, "twitter url: "+url);
                     tweetCallback.onTweetSelected(url);
                 }
@@ -263,7 +264,14 @@ public class InfoFragment extends MainFragment {
             try {
                 Date date = df.parse(customTweetsList.get(i).getDate());
                 h.tvTwDate.setText(sf.format(date));
-                h.tvTwMessage.setText(customTweetsList.get(i).getMessage());
+
+                String msg = customTweetsList.get(i).getMessage().replace("&amp;", "& ");
+                if(msg.contains(URL_REGEX)){
+                    String url = msg.substring(msg.indexOf(URL_REGEX), msg.length());
+                    h.tvTwMessage.setText(msg.replace(url, getString(R.string.info_news_see_more)));
+                }else h.tvTwMessage.setText(msg);
+
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }

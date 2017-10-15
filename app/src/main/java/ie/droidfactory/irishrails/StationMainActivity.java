@@ -517,8 +517,13 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 break;
             case FragmentUtils.FRAGMENT_ABOUT:
                 arg = new Bundle();
-                arg.putString(FragmentUtils.FRAGMENT_ABOUT, "that is about everything!");
+                arg.putString(FragmentUtils.FRAGMENT_ABOUT, null);
                 frag = AboutFragment.newInstance(arg);
+                break;
+            case FragmentUtils.FRAGMENT_HELP:
+                arg = new Bundle();
+                arg.putString(FragmentUtils.FRAGMENT_HELP, null);
+                frag = HelpFragment.newInstance(arg);
                 break;
             default: frag = new StationListFragment();
         }
@@ -570,6 +575,14 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                     create = true;
                 }
                 getSupportActionBar().setTitle(getResources().getString(R.string.about));
+                Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
+                break;
+            case R.id.item_help:
+                if(!mainFragmentId.equals(FragmentUtils.FRAGMENT_HELP)) {
+                    mainFragmentId = FragmentUtils.FRAGMENT_HELP;
+                    create = true;
+                }
+                getSupportActionBar().setTitle(getResources().getString(R.string.help));
                 Log.i(TAG, "setFragmentFromDrawer:::mainFragmentId: "+mainFragmentId);
                 break;
 

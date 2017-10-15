@@ -4,5 +4,5 @@
     <bool name="has_two_panes">true</bool>
     <bool name="is_tablet">true</bool>
     <bool name="mini_drawer_visible">true</bool>
-    <string name="banner_size">LARGE_BANNER</string>
+    <string name="banner_size">SMART_BANNER</string>
 </resources>

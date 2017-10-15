@@ -60,5 +60,19 @@ public class InfoDetailsFragment extends MainFragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(webView!=null) webView.destroy();
 
+    }
 }
+
+//    @Override
+//    public void onBackPressed() {
+//        if (webView.canGoBack()) {
+//            webView.goBack();
+//        } else {
+//            super.onBackPressed(); // maybe you can even change this as needed
+//        }
+//    }

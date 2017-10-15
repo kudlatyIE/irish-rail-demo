@@ -193,7 +193,7 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         }
         map.getUiSettings().setAllGesturesEnabled(true);
         map.clear();
-        if (list == null || list.size() == 1) {
+        if (list == null || list.size() == 0) {
             map.addMarker(new MarkerOptions().position(this.myLocation).title("My Location"));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.myLocation, 12.0f));
             map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);

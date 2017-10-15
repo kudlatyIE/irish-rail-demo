@@ -1,51 +1,27 @@
 {
   "project_info": {
-    "project_number": "728484660458",
-    "firebase_url": "https://irish-rail-2017-v2.firebaseio.com",
-    "project_id": "irish-rail-2017-v2",
-    "storage_bucket": "irish-rail-2017-v2.appspot.com"
+    "project_number": "985111569241",
+    "firebase_url": "https://irish-rail-app-2017.firebaseio.com",
+    "project_id": "irish-rail-app-2017",
+    "storage_bucket": "irish-rail-app-2017.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:728484660458:android:c53de87c9be6210b",
+        "mobilesdk_app_id": "1:985111569241:android:c53de87c9be6210b",
         "android_client_info": {
           "package_name": "ie.droidfactory.irishrails"
         }
       },
       "oauth_client": [
         {
-          "client_id": "728484660458-uhet9esu53e88cqp7440sip3oaggj6jt.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ie.droidfactory.irishrails",
-            "certificate_hash": "115ced1fc4cea2a9cf67483fe8f7527ca48d4b4e"
-          }
-        },
-        {
-          "client_id": "728484660458-harn779dj34e20knia2pil2bv4lf6rkd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ie.droidfactory.irishrails",
-            "certificate_hash": "c9545922b24855f2f8a92d3aacfcb6a1003db4b0"
-          }
-        },
-        {
-          "client_id": "728484660458-90478ri190ekt8k5rffcvho53sj29v9k.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ie.droidfactory.irishrails",
-            "certificate_hash": "a13e9c9e3e7456fcdde1b612ba63b626222eadee"
-          }
-        },
-        {
-          "client_id": "728484660458-7ho9npctmuacduepschvh4gje68hgib4.apps.googleusercontent.com",
+          "client_id": "985111569241-pfermgl345ie1nmbfuj31u38b86a8ibp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDANYHsW7s1s3kixM2bYZUQ9R6JTrC1iwI"
+          "current_key": "AIzaSyCBb3YYi57eHY-u7CH8dTBoMa8jjxE84YU"
         }
       ],
       "services": {
@@ -53,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "728484660458-7ho9npctmuacduepschvh4gje68hgib4.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

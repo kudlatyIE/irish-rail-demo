@@ -21,12 +21,6 @@ public class AboutFragment  extends MainFragment {
     private String verison = "default nothing";
     private TextView tvInfo, tvVersion;
 
-
-    RailInterface stationCallback;
-    public void setStationSelectedListener(RailInterface listener){
-        stationCallback = listener;
-    }
-
     public static AboutFragment newInstance(Bundle args) {
         AboutFragment fragment = new AboutFragment();
         fragment.setArguments(args);
@@ -51,13 +45,9 @@ public class AboutFragment  extends MainFragment {
         // TODO Auto-generated method stub
         super.onStart();
         Log.d(TAG, "onStart....");
-        Bundle extras = getArguments();
-//        if (extras != null) {
-//            info = extras.getString(FragmentUtils.FRAGMENT_ABOUT);
-//        }
+
         verison = BuildConfig.VERSION_NAME;
         Log.d(TAG, "onStart....");
-//        tvInfo.setText(info);
         tvInfo.setText(Html.fromHtml(getString(R.string.help_about)));
         tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvVersion.setText("v."+verison);
@@ -71,17 +61,6 @@ public class AboutFragment  extends MainFragment {
         Log.d(TAG, "onActivityCreated....");
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
-        super.onAttach(activity);
-        try{
-            stationCallback = (RailInterface) activity;
-        }catch(ClassCastException e){
-            throw new ClassCastException(activity.toString()+ "OnStationSelected Listener is not " +
-                    "implemented...");
-        }
-    }
 
 
 }

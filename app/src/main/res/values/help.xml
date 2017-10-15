@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="help_info">Click on the icon to filter only your favorite stations, add / remove stations from the fav list</string>
+
+    <string name="help_show_fav">showing only favorite stations, click to show all</string>
+    <string name="help_hide_fav">showing all stations, click to show only favorite</string>
+    <string name="help_is_fav">station is on fav list, click to remove</string>
+    <string name="help_is_not_fav">station is not on fav list, click to add</string>
+
+</resources>

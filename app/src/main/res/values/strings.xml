@@ -39,8 +39,10 @@
     <string name="stations_map">Stations map</string>
     <string name="fav">Fav</string>
     <string name="about">About</string>
-    <string name="help">help</string>
+    <string name="help">Help</string>
     <string name="eire_rail_app">Irish Rail App</string>
+
+    <string name="info_news_see_more"> - click to see more</string>
 
     <string name="help_about">
         <![CDATA[

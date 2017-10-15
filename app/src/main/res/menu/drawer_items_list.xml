@@ -19,17 +19,18 @@
             android:icon="@drawable/ic_map"
             android:title="@string/stations_map"
             android:checked="true" />
-        <!--<item-->
-            <!--android:id="@+id/item_fav"-->
-            <!--android:icon="@drawable/ic_favorit"-->
-            <!--android:title="@string/fav"-->
-            <!--android:checked="true" />-->
+
         <item
             android:id="@+id/item_train_map"
             android:icon="@drawable/ic_map"
             android:title="@string/trains_map"
             android:checked="true"
             />
+        <item
+            android:id="@+id/item_help"
+            android:icon="@drawable/ic_help"
+            android:title="@string/help"
+            android:checked="true" />
         <item
             android:id="@+id/item_about"
             android:icon="@drawable/ic_about"
