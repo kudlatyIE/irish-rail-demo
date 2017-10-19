@@ -42,3 +42,4 @@ captures/
 
 # Android res
 app/src/main/res/values/developer_storage.xml
+app/google-services.json
