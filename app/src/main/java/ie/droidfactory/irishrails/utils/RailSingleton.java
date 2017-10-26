@@ -28,6 +28,7 @@ public class RailSingleton {
 	private static LatLng myLatLng=null;
 //	private static double myLat, myLng;
 	private static String asyncResult; // just for develop test
+	private static String webStationInfo;
 
 
 	public static HashMap<String, Station> getStationMap() {
@@ -74,17 +75,7 @@ public class RailSingleton {
 		loc.setLatitude(myLocation.latitude);
 		loc.setLongitude(myLocation.longitude);
 		RailSingleton.myLocation = loc;
-//		RailSingleton.myLat = myLocation.latitude;
-//		RailSingleton.myLng = myLocation.longitude;
 	}
-
-//	public static double getMyLat() {
-//		return myLat;
-//	}
-//
-//	public static double getMyLng() {
-//		return myLng;
-//	}
 
 	public static HashMap<String, Train> getTrainMap() {
 		return trainsMap;
@@ -100,6 +91,14 @@ public class RailSingleton {
 
 	public static void setTrainDetailsList(ArrayList<TrainDetails> trainDetailsList) {
 		RailSingleton.trainDetailsList = trainDetailsList;
+	}
+
+	public static String getWebStationInfo() {
+		return webStationInfo;
+	}
+
+	public static void setWebStationInfo(String webStationInfo) {
+		RailSingleton.webStationInfo = webStationInfo;
 	}
 
 	public static String getAsyncResult() {

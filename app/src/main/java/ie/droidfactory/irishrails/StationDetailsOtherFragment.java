@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import ie.droidfactory.irishrails.httputils.AsyncMode;
+import ie.droidfactory.irishrails.httputils.AsyncStationsList;
+import ie.droidfactory.irishrails.model.Cities;
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
 import ie.droidfactory.irishrails.utils.RailSingleton;
@@ -19,10 +22,21 @@ public class StationDetailsOtherFragment extends Fragment {
 
     private final static String TAG = StationDetailsOtherFragment.class.getSimpleName();
     //	private int mCurrentPosition = -1;
-    private String stationId=null;
+    private String stationId;
     private int childPosition = -1;
-    private TextView tvInfo;
+    private TextView tvInfoGeneral, tvInfoParking, tvInfoAccessibility;
     private Station station;
+    private String detailsGeneral, detailsParking, detailsAccess;
+
+    private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList.AsyncDoneCallback() {
+        @Override
+        public void onAsyncDone(boolean done) {
+            if(done){
+                tvInfoGeneral.setText(RailSingleton.getWebStationInfo());
+            }
+
+        }
+    };
 
     public static StationDetailsOtherFragment newInstance(Bundle args){
         StationDetailsOtherFragment fragment = new StationDetailsOtherFragment();
@@ -42,7 +56,9 @@ public class StationDetailsOtherFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
-        tvInfo = (TextView) view.findViewById(R.id.fragment_details_other_text_info);
+        tvInfoGeneral = (TextView) view.findViewById(R.id.fragment_details_other_text_info_general);
+        tvInfoParking = (TextView) view.findViewById(R.id.fragment_details_other_text_info_parking_transport);
+        tvInfoAccessibility = (TextView) view.findViewById(R.id.fragment_details_other_text_info_accessibility);
     }
 
 
@@ -53,8 +69,8 @@ public class StationDetailsOtherFragment extends Fragment {
         Bundle extras = getArguments();
 
         if(extras!=null) {
-            stationId = extras.getString(FragmentUtils.PARENT_POSITION_KEY);
-            childPosition = extras.getInt(FragmentUtils.CHILD_POSITION_KEY);
+            stationId = extras.getString(FragmentUtils.STATION_CODE);
+            Log.d(TAG, "extras station CODE: "+stationId);
         }
         if(stationId!= null) updateDetails(stationId);
     }
@@ -68,6 +84,11 @@ public class StationDetailsOtherFragment extends Fragment {
 
     private void updateDetails(String id){
         this.station = RailSingleton.getStationMap().get(id);
+        Log.d(TAG, "get url: "+Cities.valueOf("_".concat(station.getStationId())).getDetailsUrl());
+        AsyncStationsList rail = new AsyncStationsList(getActivity(),
+                AsyncMode.GET_STATION_INFO_DETAILS, asyncDone);
+        rail.execute(Cities.valueOf("_".concat(station.getStationId())).getDetailsUrl());
+
 //        tvInfo.setText(TAG+" update details for: "+
 //                "\nchild ID: "+childPosition+
 //                "\nAlias: "+station.getStationAlias()+" ID: "+station.getStationCode()+

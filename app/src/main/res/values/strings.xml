@@ -68,5 +68,8 @@
          Nikodem Walicki
          ]]>
     </string>
+    <string name="general_info_not_available">General info not available</string>
+    <string name="parking_and_transport_info_not_available">Parking and transport info not available</string>
+    <string name="accessibility_info_not_available">Accessibility info not available</string>
 
 </resources>

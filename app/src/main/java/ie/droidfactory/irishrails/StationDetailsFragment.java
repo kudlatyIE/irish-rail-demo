@@ -120,13 +120,13 @@ public class StationDetailsFragment extends Fragment {
                     args.putDouble(FragmentUtils.STATION_LONG, lo);
                     Log.d(TAG, "tab: "+child[1].getFrag_title());
                     return StationDetailsMapaFragment.newInstance(args);
-//                case 2:
-//                    mChildPosition = arg0;
-//                    args.putInt(FragmentUtils.CHILD_POSITION_KEY, arg0);
-//                    args.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
-//                    args.putString(FragmentUtils.STATION_CODE, stationCode);
-//                    Log.d(TAG, "tab: "+child[2].getFrag_title());
-//                    return StationDetailsOtherFragment.newInstance(args);
+                case 2:
+                    mChildPosition = arg0;
+                    args.putInt(FragmentUtils.CHILD_POSITION_KEY, arg0);
+                    args.putString(FragmentUtils.PARENT_POSITION_KEY, mId);
+                    args.putString(FragmentUtils.STATION_CODE, stationCode);
+                    Log.d(TAG, "tab: "+child[2].getFrag_title());
+                    return StationDetailsOtherFragment.newInstance(args);
                 default: return null;
             }
         }

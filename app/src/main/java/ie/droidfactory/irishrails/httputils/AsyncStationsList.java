@@ -5,9 +5,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.model.StationDetails;
 import ie.droidfactory.irishrails.model.Train;
@@ -30,18 +35,39 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 	private ProgressDialog dialog;
 	private String result="";
 	private AsyncMode mode;
+//	private String detailsLink;
+	RailInterface tweetCallback;
 
-	public AsyncStationsList(Context context , AsyncMode mode , AsyncDoneCallback callback /*, TextView tvResult */){
+	/**
+	 *
+	 * @param context activity context
+	 * @param mode API rail mode or web mode
+	 * @param callback response callback
+//	 * @param detailsLink web link to station details info
+	 */
+	public AsyncStationsList(Context context , AsyncMode mode , AsyncDoneCallback callback/*, TextView tvResult */){
 		this.context=context;
 		this.mode=mode;
         this.asyncDoneCallback = callback;
+//		this.detailsLink=detailsLink;
         Log.d(TAG, "async :: MODE: "+mode.toString());
     }
 	
 	@Override
 	protected String doInBackground(String... params) {
 //		this.link = params[0];
-		return HttpConnect.getRailStuff(params[0]);
+        Log.d(TAG, "async execute with: "+params[0]);
+		if(mode==AsyncMode.GET_STATION_INFO_DETAILS){
+			String result="async web parser...";
+			try {
+//				Document doc = Jsoup.connect(params[0]).get();
+				result = WebParser.parseGeneralStationDetails(params[0]);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		return result;
+		}else return HttpConnect.getRailStuff(params[0]);
+
 	}
 
 	@Override
@@ -91,6 +117,11 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 				list = Parser.parseTimetableForStation(res);
 				RailSingleton.setTimetableList(list);
 				result = "trains due in number: "+list.size();
+			}
+			if(mode==AsyncMode.GET_STATION_INFO_DETAILS){
+				//TODO: parse web info station details - jsoup
+				result = res;
+                RailSingleton.setWebStationInfo(res);
 			}
 			success=true;
 
