@@ -59,12 +59,14 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
         Log.d(TAG, "async execute with: "+params[0]);
 		if(mode==AsyncMode.GET_STATION_INFO_DETAILS){
 			String result="async web parser...";
-			try {
+			RailSingleton.setInfoMap(WebParser.parseStationDetailsInfo(params[0]));
+//			try {
 //				Document doc = Jsoup.connect(params[0]).get();
-				result = WebParser.parseGeneralStationDetails(params[0]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//				result = WebParser.parseGeneralStationDetails(params[0]);
+
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 		return result;
 		}else return HttpConnect.getRailStuff(params[0]);
 
@@ -120,8 +122,8 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 			}
 			if(mode==AsyncMode.GET_STATION_INFO_DETAILS){
 				//TODO: parse web info station details - jsoup
-				result = res;
-                RailSingleton.setWebStationInfo(res);
+//				result = res;
+//                RailSingleton.setWebStationInfo(res);
 			}
 			success=true;
 

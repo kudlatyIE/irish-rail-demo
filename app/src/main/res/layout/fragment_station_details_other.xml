@@ -14,21 +14,13 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
         android:text="@string/general_info_not_available"
         />
-    <TextView
-        android:layout_margin="@dimen/default_margin"
-        android:id="@+id/fragment_details_other_text_info_parking_transport"
+
+
+    <ExpandableListView
+        android:id="@+id/fragment_details_other_lvExp"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
-        android:text="@string/parking_and_transport_info_not_available"
-        />
-    <TextView
-        android:layout_margin="@dimen/default_margin"
-        android:id="@+id/fragment_details_other_text_info_accessibility"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
-        android:text="@string/accessibility_info_not_available"
+        android:groupIndicator="@drawable/expand_indicator"
         />
 
 </LinearLayout>

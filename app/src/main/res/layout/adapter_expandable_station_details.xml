@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/adapter_expandable_station_detail_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        android:background="@color/colorLight2"
+        android:text="@string/app_name"
+        />
+
+    <TextView
+        android:id="@+id/adapter_expandable_station_detail_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:text="@string/app_name"
+        />
+
+</LinearLayout>
+
+<!--
+
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:layout_marginStart="@dimen/default_margin"
+-->

@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import ie.droidfactory.irishrails.model.Station;
 import ie.droidfactory.irishrails.model.StationDetails;
+import ie.droidfactory.irishrails.model.StationDetailsInfo;
 import ie.droidfactory.irishrails.model.Train;
 import ie.droidfactory.irishrails.model.TrainDetails;
 
@@ -29,6 +30,7 @@ public class RailSingleton {
 //	private static double myLat, myLng;
 	private static String asyncResult; // just for develop test
 	private static String webStationInfo;
+	private static HashMap<String, ArrayList<StationDetailsInfo>> infoMap;
 
 
 	public static HashMap<String, Station> getStationMap() {
@@ -99,6 +101,14 @@ public class RailSingleton {
 
 	public static void setWebStationInfo(String webStationInfo) {
 		RailSingleton.webStationInfo = webStationInfo;
+	}
+
+	public static HashMap<String, ArrayList<StationDetailsInfo>> getInfoMap() {
+		return infoMap;
+	}
+
+	public static void setInfoMap(HashMap<String, ArrayList<StationDetailsInfo>> infoMap) {
+		RailSingleton.infoMap = infoMap;
 	}
 
 	public static String getAsyncResult() {
