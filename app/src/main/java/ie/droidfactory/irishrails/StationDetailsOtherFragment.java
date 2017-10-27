@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -176,11 +177,13 @@ public class StationDetailsOtherFragment extends Fragment {
                 hh = new HolderHeader();
                 v = LayoutInflater.from(context).inflate(R.layout.expandable_list_group, parent, false);
                 hh.tvGroupHeader = v.findViewById(R.id.list_group_listHeader);
+                hh.imgIndicator = v.findViewById(R.id.list_group_indicator);
                 v.setTag(hh);
             }else{
                 v = convertView;
                 hh = (HolderHeader) v.getTag();
             }
+            hh.imgIndicator.setSelected(isExpanded);
             hh.tvGroupHeader.setTypeface(null, Typeface.BOLD);
             hh.tvGroupHeader.setText(headerTitle);
 
@@ -221,6 +224,7 @@ public class StationDetailsOtherFragment extends Fragment {
     }
     private class HolderHeader{
         TextView tvGroupHeader;
+        ImageView imgIndicator;
     }
     private class HolderDetails{
         TextView tvInfoHeader, tvInfoDetails;

@@ -20,7 +20,11 @@
         android:id="@+id/fragment_details_other_lvExp"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:groupIndicator="@drawable/expand_indicator"
+        android:groupIndicator="@null"
         />
 
 </LinearLayout>
+
+<!--
+android:groupIndicator="@drawable/expand_indicator"
+-->
