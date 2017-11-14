@@ -2,6 +2,7 @@ package ie.droidfactory.irishrails;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -77,6 +79,12 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
+
+        if(!isTablet){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        }
 
         int headerImageId = getResources().getIdentifier("img_drawer_header_v2", "raw","ie.droidfactory.irishrails");
         Log.d(TAG, "real IMG detect res: "+headerImageId);
@@ -242,18 +250,40 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
                 updateViews(detailsView);
 
             }else{
-                dialog = new CustomEndDialog(this);
-                dialog.show();
+//                dialog = new CustomEndDialog(this);
+//                dialog.show();
+                exitApp();
             }
         }else {
             if(mainFragment!=null && mainFragment.isVisible()){
-                dialog = new CustomEndDialog(this);
-                dialog.show();
+//                dialog = new CustomEndDialog(this);
+//                dialog.show();
+                exitApp();
             }else {
                 updateViews(detailsView);
                 super.onBackPressed();
             }
         }
+    }
+
+    private void exitApp(){
+        AlertDialog.Builder bld;
+
+        bld = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.CustomHoloDialog));
+
+        bld.setTitle("Exit App");
+        bld.setMessage("Are you sure you want to exit?");
+
+        bld.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { dialog.dismiss(); }
+        });
+        bld.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { finish(); }
+        });
+        bld.setCancelable(true);
+        bld.create().show();
     }
 
 

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -69,13 +71,19 @@ public class AllTrainsMapFragment extends MainFragment {
     private double myLat=0, myLo=0;
     private LatLng myLocation=null;
     private ImageView imgFav;
+    private TextView tvInfo;
+    private FloatingActionButton btnFabFav;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ){
         View v = inflater.inflate(R.layout.fragment_station_details_mapa, container, false);
         imgFav = v.findViewById(R.id.fragment_details_mapa_img_show_fav);
+        tvInfo = v.findViewById(R.id.fragment_details_mapa_text_info);
+        btnFabFav = v.findViewById(R.id.fragment_details_mapa_btn_fab);
+        btnFabFav.setVisibility(View.GONE);
         imgFav.setVisibility(View.GONE);
+        tvInfo.setVisibility(View.GONE);
         return v;
     }
 

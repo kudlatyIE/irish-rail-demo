@@ -3,6 +3,7 @@ package ie.droidfactory.irishrails;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class InfoFragment extends MainFragment {
 //    private ArrayList<Tweet> tweetList = null;
     private ArrayList<CustomTweets> customTweetsArrayList;
     private ProgressDialog dialog;
+    private FloatingActionButton btnFabFav;
 
     private final static int maxTweetsSearch = 200;
     private final static String URL_REGEX = "https://";
@@ -75,7 +77,9 @@ public class InfoFragment extends MainFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_stations_list, container, false);
         tvInfo = v.findViewById(R.id.fragment_stations_main_text_info);
+        btnFabFav = v.findViewById(R.id.fragment_stations_main_btn_fab);
         tvInfo.setVisibility(View.GONE);
+        btnFabFav.setVisibility(View.GONE);
         layout1 = v.findViewById(R.id.fragme_station_list_top_1);
         layout2 = v.findViewById(R.id.fragme_station_list_top_2);
         layout1.setVisibility(View.GONE);

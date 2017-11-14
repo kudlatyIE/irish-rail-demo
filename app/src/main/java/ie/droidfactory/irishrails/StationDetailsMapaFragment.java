@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -43,6 +44,7 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
     private String stationId=null;
     private TextView tvInfo;
     private ImageView imgFav;
+    private FloatingActionButton btnFabFav;
     private Station station;
     private GoogleMap map;
 
@@ -66,6 +68,8 @@ public class StationDetailsMapaFragment extends Fragment {//implements OnMapRead
         super.onViewCreated(view, savedInstanceState);
         tvInfo = view.findViewById(R.id.fragment_details_mapa_text_info);
         imgFav = view.findViewById(R.id.fragment_details_mapa_img_show_fav);
+        btnFabFav = view.findViewById(R.id.fragment_details_mapa_btn_fab);
+        btnFabFav.setVisibility(View.GONE);
         imgFav.setVisibility(View.GONE);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_MAP);
         if(mapFragment==null){

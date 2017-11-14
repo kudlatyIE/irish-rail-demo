@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -58,6 +60,7 @@ public class StationListFragment extends MainFragment {
     private TextView tvInfo;
     private EditText editSearch;
     private ImageView imgCancel, imgSortName, imgSortDistance, imgShowFav;
+    private FloatingActionButton btnFabFav;
     private LinearLayout llDistance, llName;
     private ArrayList<Station> allStations, stationList, filteredList;
     private List<String> favList;
@@ -68,6 +71,9 @@ public class StationListFragment extends MainFragment {
     private double myLat, myLng;
     private Sort sortMode = Sort.UNSORTED;
     private boolean isShownFav;
+    private float dX;
+    private float dY;
+    private int lastAction;
 
     private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
             .AsyncDoneCallback() {
@@ -99,6 +105,9 @@ public class StationListFragment extends MainFragment {
         llName = v.findViewById(R.id.fragment_stations_main_header_station_name);
         lv = v.findViewById(R.id.fragment_stations_main_listview);
         swipeRefreshLayout = v.findViewById(R.id.fragment_stations_main_swipe_refresh_layout);
+        btnFabFav = v.findViewById(R.id.fragment_stations_main_btn_fab);
+
+        imgShowFav.setVisibility(View.GONE);
         return v;
     }
 
@@ -122,6 +131,56 @@ public class StationListFragment extends MainFragment {
             downloadAllStationList();
         }else loadStationList();
 
+        btnFabFav.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+                        lastAction = MotionEvent.ACTION_DOWN;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        view.setY(event.getRawY() + dY);
+                        view.setX(event.getRawX() + dX);
+                        lastAction = MotionEvent.ACTION_MOVE;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (lastAction == MotionEvent.ACTION_DOWN)
+                            showFavStations();
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+
+        });
+
+    }
+
+    private void showFavStations() {
+        favList = getFavList();
+        if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
+        else {
+            if(!isShownFav){
+                isShownFav=true;
+//                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+                btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+                stationList = new ArrayList<>();
+                for (Station s: allStations){
+                    if (favList.contains(s.getStationCode())) stationList.add(s);
+                }
+            }else {
+                isShownFav = false;
+//                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+                btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+                stationList = allStations;
+            }
+            //TODO: add new list to adapter here
+            adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
+            lv.setAdapter(adapter);
+        }
     }
 
     private List<String> getFavList(){
@@ -213,7 +272,10 @@ public class StationListFragment extends MainFragment {
             imgSortName.setOnClickListener(click);
             llName.setOnClickListener(click);
             llDistance.setOnClickListener(click);
-            imgShowFav.setOnClickListener(click);
+//            imgShowFav.setOnClickListener(click);
+            btnFabFav.setOnClickListener(click);
+
+
 
             editSearch.addTextChangedListener(new TextWatcher() {
 
@@ -328,25 +390,28 @@ public class StationListFragment extends MainFragment {
                     sortStation(sortMode, temp);
                     break;
                 case R.id.fragment_stations_main_img_show_fav:
-                    favList = getFavList();
-                    if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
-                    else {
-                        if(!isShownFav){
-                            isShownFav=true;
-                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
-                            stationList = new ArrayList<>();
-                            for (Station s: allStations){
-                                if (favList.contains(s.getStationCode())) stationList.add(s);
-                            }
-                        }else {
-                            isShownFav = false;
-                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
-                            stationList = allStations;
-                        }
-                        //TODO: add new list to adapter here
-                        adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
-                        lv.setAdapter(adapter);
-                    }
+                    showFavStations();
+//                    favList = getFavList();
+//                    if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
+//                    else {
+//                        if(!isShownFav){
+//                            isShownFav=true;
+////                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+//                            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+//                            stationList = new ArrayList<>();
+//                            for (Station s: allStations){
+//                                if (favList.contains(s.getStationCode())) stationList.add(s);
+//                            }
+//                        }else {
+//                            isShownFav = false;
+////                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+//                            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+//                            stationList = allStations;
+//                        }
+//                        //TODO: add new list to adapter here
+//                        adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
+//                        lv.setAdapter(adapter);
+//                    }
                     break;
             }
         }

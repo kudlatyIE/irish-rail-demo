@@ -1,18 +1,23 @@
 package ie.droidfactory.irishrails;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,7 +93,12 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     private List<String> favList;
     private ImageView imgFavStation;
     private TextView tvInfo;
+    private RelativeLayout topBox;
+    private FloatingActionButton btnFabFav;
     private boolean isShownFav;
+    private float dX;
+    private float dY;
+    private int lastAction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,7 +111,10 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentByTag(TAG_FULL_MAP);
         imgFavStation = view.findViewById(R.id.fragment_details_mapa_img_show_fav);
         tvInfo = view.findViewById(R.id.fragment_details_mapa_text_info);
-        tvInfo.setVisibility(View.GONE);
+        btnFabFav = view.findViewById(R.id.fragment_details_mapa_btn_fab);
+        imgFavStation.setVisibility(View.GONE);
+//        tvInfo.setVisibility(View.GONE);
+//        topBox = view.findViewById(R.id.fragment_details_mapa_top_box);
         if (mapFragment == null) {
             FragmentManager fm = getFragmentManager();
             mapFragment = SupportMapFragment.newInstance();
@@ -110,7 +123,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             if (RailSingleton.getStationMap() == null) {
                 downloadAllStationList();
             } else createMap(RailSingleton.getStationMap());
-
         }
     }
 
@@ -118,15 +130,54 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+
         isShownFav = false;
+        tvInfo.setText(R.string.all_stations);
 //        favList = getFavList();
 
-        imgFavStation.setOnClickListener(new View.OnClickListener() {
+        btnFabFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showFavStations(isShownFav);
             }
         });
+
+
+                btnFabFav.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                return false;
+            }
+        });
+
+        btnFabFav.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+                        lastAction = MotionEvent.ACTION_DOWN;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        view.setY(event.getRawY() + dY);
+                        view.setX(event.getRawX() + dX);
+                        lastAction = MotionEvent.ACTION_MOVE;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (lastAction == MotionEvent.ACTION_DOWN)
+                            showFavStations(isShownFav);
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+
+        });
+
+
+
     }
 
     private List<String> getFavList(){
@@ -174,11 +225,15 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             Log.d(TAG, "fav list size: "+favList.size());
             Log.d(TAG, "fav map size: "+stationMap.size());
             isShownFav=true;
-            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+//            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
+            tvInfo.setText(R.string.fav_stations);
             createMap(stationMap);
         }else {
             isShownFav=false;
-            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+//            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
+            tvInfo.setText(R.string.all_stations);
             createMap(RailSingleton.getStationMap());
         }
     }
@@ -188,7 +243,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         try{
             this.myLocation = LocationUtils.getLatLng(getActivity());
         }catch (NullPointerException e){
-//            this.myLocation = MyShared.getMyLastLocation(getActivity());
             this.myLocation = RailSingleton.getMyLatLng();
         }
         map.getUiSettings().setAllGesturesEnabled(true);

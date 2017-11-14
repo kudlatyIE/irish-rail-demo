@@ -2,74 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/default_margin"
-     >
-    <TextView
-        android:id="@+id/fragment_details_mapa_text_info"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/default_margin">
+    <RelativeLayout
+        android:id="@+id/fragment_details_mapa_top_box"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_margin"
-        android:textStyle="bold"
-        android:text="@string/app_name"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-        />
+        >
+        <TextView
+            android:id="@+id/fragment_details_mapa_text_info"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_half_margin"
+            android:layout_marginBottom="@dimen/default_half_margin"
+            android:textStyle="bold"
+            android:text="@string/app_name"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+            />
 
-    <ImageView
-        android:id="@+id/fragment_details_mapa_img_show_fav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/fragment_details_mapa_text_info"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/default_half_margin"
-        android:layout_marginEnd="@dimen/default_margin"
-        android:src="@drawable/ic_favorit_no"
-        />
+        <ImageView
+            android:id="@+id/fragment_details_mapa_img_show_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/fragment_details_mapa_text_info"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/default_half_margin"
+            android:src="@drawable/ic_favorit_no"
+            />
+    </RelativeLayout>
+
     
     <FrameLayout
         android:id="@+id/fragment_details_map_mapa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/fragment_details_mapa_text_info"
+        android:layout_below="@id/fragment_details_mapa_top_box"
         />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fragment_details_mapa_btn_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/default_margin"
+        android:src="@drawable/ic_favorit"
+        android:scaleType="center"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:backgroundTint="@android:color/white"/>
 
 </RelativeLayout>
 
-<!--
-<TextView
-        android:id="@+id/fragment_details_mapa_text_info"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_half_margin"
-        android:textStyle="bold"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
-        />
-
-<fragment 
-        android:id="@+id/fragment_details_mapa_map"
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:layout_below="@id/fragment_details_mapa_text_info"
-    	class="com.google.android.gms.maps.MapFragment" />
-    	
-    	OR
-
-<include layout="@layout/fragment_google_mapa"
-        android:id="@+id/fragment_details_map_mapa"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/fragment_details_mapa_text_info"
-        />
-        
-        OR
-
-<fragment 
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:layout_below="@id/fragment_details_mapa_text_info"
-    	android:id="@+id/fragment_details_mapa_map"
-    	android:name="com.google.android.gms.maps.SupportMapFragment" />
- -->

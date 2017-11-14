@@ -19,7 +19,24 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="CustomHoloDialog" parent="@android:style/Widget.Holo.Light.PopupMenu">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:borderlessButtonStyle">@android:style/Widget.Holo.Button.Borderless</item>
+        <item name="android:buttonBarStyle">@android:style/Holo.ButtonBar.AlertDialog</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
 </resources>
+
+<!--
+dialog style:
+TabWidget
+
+
+-->
 
 
 <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
