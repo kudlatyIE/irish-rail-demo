@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import ie.droidfactory.irishrails.httputils.AsyncMode;
 import ie.droidfactory.irishrails.httputils.AsyncStationsList;
@@ -34,7 +33,7 @@ public class StationDetailsOtherFragment extends Fragment {
 
     private final static String TAG = StationDetailsOtherFragment.class.getSimpleName();
     //	private int mCurrentPosition = -1;
-    private String stationId;
+    private String stationCode, stationId;
     private int childPosition = -1;
     private TextView tvInfoGeneral;
     private Station station;
@@ -49,8 +48,11 @@ public class StationDetailsOtherFragment extends Fragment {
             if(done){
 //                tvInfoGeneral.setText(RailSingleton.getWebStationInfo());
                 infoMap = RailSingleton.getInfoMap();
-                adapter = new ExpandableAdapter(getActivity(), infoMap);
-                expListView.setAdapter(adapter);
+                if (infoMap!=null){
+                    adapter = new ExpandableAdapter(getActivity(), infoMap);
+                    expListView.setAdapter(adapter);
+                }else tvInfoGeneral.setText("station details not available...");
+
             }
         }
     };
@@ -74,6 +76,7 @@ public class StationDetailsOtherFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onViewCreated(view, savedInstanceState);
         tvInfoGeneral = view.findViewById(R.id.fragment_details_other_text_info_general);
+//        tvInfoGeneral.setVisibility(View.GONE);
         expListView = view.findViewById(R.id.fragment_details_other_lvExp);
 
     }
@@ -86,10 +89,12 @@ public class StationDetailsOtherFragment extends Fragment {
         Bundle extras = getArguments();
 
         if(extras!=null) {
-            stationId = extras.getString(FragmentUtils.STATION_CODE);
-            Log.d(TAG, "extras station CODE: "+stationId);
+            stationCode = extras.getString(FragmentUtils.STATION_CODE);
+            stationId = extras.getString(FragmentUtils.PARENT_POSITION_KEY);
+            Log.d(TAG, "extras station CODE: "+ stationCode);
+            tvInfoGeneral.setText(RailSingleton.getStationMap().get(stationId).getStationDesc());
         }
-        if(stationId!= null) updateDetails(stationId);
+        if(stationCode != null) updateDetails(stationCode);
     }
 
     @Override
@@ -114,12 +119,15 @@ public class StationDetailsOtherFragment extends Fragment {
 
 
     public void setStationDetails(String id){
-        stationId = id;
+        stationCode = id;
         updateDetails(id);
     }
 
     private class ExpandableAdapter extends BaseExpandableListAdapter {
-
+        final static  String HOURS="Hours: ", OPENING_HOURS="Opening Hours: ", BOOKING_HOURS="Booking Office Hours: ",
+                STAFF_HOURS="Staff Hours: ", TIMES="Times: ", SUN="Sun ", MON_SAT="Mon-Sat ", HOLIDAYS="Public Holidays";
+        //TODO: lets hardcode a bit
+        String [] keys = {"GENERAL INFORMATION", "PARKING & TRANSPORT LINKS", "ACCESSIBILITY & STATION ACCESS"};
         Context context;
         HolderHeader hh;
         HolderDetails hd;
@@ -131,8 +139,15 @@ public class StationDetailsOtherFragment extends Fragment {
             this.context=context;
 //            this.layoutInflater = LayoutInflater.from(context);
             this.map=map;
-            this.listDataHeader.addAll(map.keySet());
+//            this.listDataHeader.addAll(map.keySet());
+            this.listDataHeader.addAll(Arrays.asList(keys));
         }
+//        List<String> getListDataHeader(HashMap<String, ArrayList<StationDetailsInfo>> map){
+//            List<String> keys = new ArrayList<>();
+//            for(ArrayList<StationDetailsInfo> value: map.values()){
+//            }
+//            return keys;
+//        }
 
         @Override
         public int getGroupCount() {
@@ -195,11 +210,27 @@ public class StationDetailsOtherFragment extends Fragment {
 
             String infoHeader = map.get(listDataHeader.get(groupPosition)).get(childPosition).getInfoHeader();
             String infoDetails = map.get(listDataHeader.get(groupPosition)).get(childPosition).getInfoDetails();
-            if(infoDetails.contains("Hours: ")){
-                StringBuffer sb = new StringBuffer(infoDetails);
-                sb.insert(sb.lastIndexOf("Hours: "), "\n");
-                infoDetails = sb.toString();
-            }
+//TODO: left parsing opening/booking hours because most stations uses own strange format
+//            if(infoDetails.contains(HOURS)){
+//                StringBuilder sb = new StringBuilder(infoDetails);
+//                sb.insert(sb.indexOf(HOURS)+HOURS.length(), "\n");
+//                sb.insert(sb.lastIndexOf(HOURS)+HOURS.length(), "\n");
+//
+//                sb.insert(sb.indexOf(MON_SAT)+MON_SAT.length(), "\n");
+//                sb.insert(sb.lastIndexOf(MON_SAT)+MON_SAT.length(), "\n");
+//                sb.insert(sb.indexOf(SUN)+SUN.length(), "\n");
+//
+//                infoDetails = sb.toString();
+//            }
+//
+//            if(infoDetails.contains(TIMES)){
+//                StringBuilder sb = new StringBuilder(infoDetails);
+//                sb.insert(sb.indexOf(TIMES)+TIMES.length(), "\n");
+//                sb.insert(sb.indexOf(MON_SAT)+MON_SAT.length(), "\n");
+//                sb.insert(sb.indexOf(SUN)+SUN.length(), "\n");
+//
+//                infoDetails = sb.toString();
+//            }
             View v;
             if(convertView==null){
                 hd = new HolderDetails();

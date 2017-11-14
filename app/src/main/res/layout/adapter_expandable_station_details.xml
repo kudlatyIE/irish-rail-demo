@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:layout_margin="@dimen/default_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,18 +9,17 @@
         android:id="@+id/adapter_expandable_station_detail_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+        android:textStyle="bold"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:background="@color/colorLight2"
-        android:text="@string/app_name"
         />
 
     <TextView
         android:id="@+id/adapter_expandable_station_detail_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-        android:text="@string/app_name"
         />
 
 </LinearLayout>

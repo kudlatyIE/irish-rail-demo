@@ -120,7 +120,7 @@ public enum Cities {
     _157    ("", "Ballinasloe", "http://www.irishrail.ie/travel-information/ballinasloe"),
     _50     ("", "Waterford", "http://www.irishrail.ie/travel-information/waterford-plunkett"),
     _174    ("", "Carrick on Shannon", "http://www.irishrail.ie/travel-information/carrickonshannon"),
-    _228    ("", "Belfast Central", "http://www.irishrail.ie/travel-information/belfast-central"),
+    _228    ("", "Belfast Central", null),//"http://www.irishrail.ie/travel-information/belfast-central"
     _44     ("", "Carrick on Suir", "http://www.irishrail.ie/travel-information/carrickonsuir"),
     _33     ("", "Nenagh", "http://www.irishrail.ie/travel-information/nenagh"),
     _158    ("", "Woodlawn", "http://www.irishrail.ie/travel-information/woodlawn"),

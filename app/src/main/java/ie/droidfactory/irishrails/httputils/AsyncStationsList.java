@@ -58,8 +58,9 @@ public class AsyncStationsList extends AsyncTask<String, Void, String> {
 //		this.link = params[0];
         Log.d(TAG, "async execute with: "+params[0]);
 		if(mode==AsyncMode.GET_STATION_INFO_DETAILS){
-			String result="async web parser...";
-			RailSingleton.setInfoMap(WebParser.parseStationDetailsInfo(params[0]));
+			String result="station details not available...";
+			if(params[0]!=null) RailSingleton.setInfoMap(WebParser.parseStationDetailsInfo(params[0]));
+			else RailSingleton.setInfoMap(null);
 //			try {
 //				Document doc = Jsoup.connect(params[0]).get();
 //				result = WebParser.parseGeneralStationDetails(params[0]);

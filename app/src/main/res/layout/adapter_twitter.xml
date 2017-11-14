@@ -10,14 +10,17 @@
         android:layout_marginTop="@dimen/default_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorLight2"
         android:textStyle="bold"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         />
     <TextView
         android:id="@+id/adapter_twitter_text_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"/>
+        android:paddingStart="@dimen/default_margin"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        />
 
 </LinearLayout>
 

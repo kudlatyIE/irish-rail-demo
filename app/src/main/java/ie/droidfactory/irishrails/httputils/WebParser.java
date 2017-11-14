@@ -25,6 +25,7 @@ public class WebParser {
 
     private final static String TAG = WebParser.class.getSimpleName();
     private static String userAgent;// = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
+    private final static int DETAILS_NUMBER = 3;
 
     /**
      * simple parser for test
@@ -51,13 +52,12 @@ public class WebParser {
             Elements eDetails = doc.getElementsByClass("station-detail");
             result = eDetails.select("a[href]").get(0).text().toUpperCase()+":\n";
             Elements deep = eDetails.select("table");
-            Log.d(TAG, "all table list size: "+deep.size());
+//            Log.d(TAG, "all table list size: "+deep.size());
             for (Element row: deep.get(0).select("tr")){
-                Log.d(TAG, "TH: "+row.select("th").text());
-                Log.d(TAG, "TD: "+row.select("td").text());
+//                Log.d(TAG, "TH: "+row.select("th").text());
+//                Log.d(TAG, "TD: "+row.select("td").text());
                 result = result+row.select("th").text()+": "+row.select("td").text()+"\n";
             }
-
             return result;
         }
 
@@ -90,16 +90,17 @@ public class WebParser {
                 details = doc.getElementsByClass("station-detail");
 
                 Elements deep = details.select("table");
-                for(int i=0; i<3; i++){
+                for(int i=0; i<DETAILS_NUMBER; i++){
                     list = new ArrayList<>();
                     section = details.select("a[href=\"#\"]").get(i).text().toUpperCase();
-                    Log.d(TAG, "all table list size: "+deep.size());
+//                    Log.d(TAG, "all table list size: "+deep.size());
                     for (Element row: deep.get(i).select("tr")){
-                        Log.d(TAG, "TH: "+row.select("th").text());
-                        Log.d(TAG, "TD: "+row.select("td").text());
+//                        Log.d(TAG, "TH: "+row.select("th").text());
+//                        Log.d(TAG, "TD: "+row.select("td").text());
                         list.add(new StationDetailsInfo(result+row.select("th").text(), row.select("td").text()));
 
                     }
+                    Log.d(TAG, "section: "+section);
                     map.put(section, list);
                 }
 
@@ -107,9 +108,6 @@ public class WebParser {
                 e.printStackTrace();
                 map = null;
             }
-
-
-
 
             return map;
         }

@@ -216,14 +216,15 @@ public class StationListFragment extends MainFragment {
             imgShowFav.setOnClickListener(click);
 
             editSearch.addTextChangedListener(new TextWatcher() {
+
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    filteredList = new ArrayList<>();
                     if(s!=null){
-                        filteredList = new ArrayList<Station>();
                         for(Station station: stationList){
                             if(station.getStationDesc().toLowerCase().contains(s.toString().toLowerCase())){
                                 filteredList.add(station);
@@ -232,6 +233,17 @@ public class StationListFragment extends MainFragment {
                         sortStation(sortMode, filteredList);
                         adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, filteredList);
                         lv.setAdapter(adapter);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                lv.setItemChecked(position, true);
+                                Log.d(TAG, "item clicked: "+position);
+                                stationCallback.onStationSelected(filteredList.get(position).getStationCode());
+                            }
+
+                        });
                     }
                 }
 
