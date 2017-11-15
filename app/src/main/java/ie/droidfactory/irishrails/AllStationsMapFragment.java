@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import ie.droidfactory.irishrails.httputils.AsyncStationsList;
 import ie.droidfactory.irishrails.httputils.Links;
 import ie.droidfactory.irishrails.model.RailInterface;
 import ie.droidfactory.irishrails.model.Station;
+import ie.droidfactory.irishrails.utils.FragmentUtils;
 import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
 import ie.droidfactory.irishrails.utils.MyShared;
@@ -96,8 +98,9 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
     private RelativeLayout topBox;
     private FloatingActionButton btnFabFav;
     private boolean isShownFav;
-    private float dX;
-    private float dY;
+
+    private float dX, newX;
+    private float dY, newY;
     private int lastAction;
 
     @Override
@@ -126,33 +129,30 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
 
-        isShownFav = false;
         tvInfo.setText(R.string.all_stations);
-//        favList = getFavList();
-
+        favList = getFavList();
+        isShownFav=false;
+        if(savedInstanceState!=null){
+            restore(savedInstanceState);
+        }
         btnFabFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showFavStations(isShownFav);
-            }
-        });
-
-
-                btnFabFav.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
-                return false;
+                Log.d(TAG, "floating action button onClick");
+                showFavStations();
             }
         });
 
         btnFabFav.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                int thersold=0;
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         dX = view.getX() - event.getRawX();
@@ -160,14 +160,27 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
                         lastAction = MotionEvent.ACTION_DOWN;
                         break;
                     case MotionEvent.ACTION_MOVE:
+
+                        newX = view.getX() - event.getRawX();
+                        newY = view.getY() - event.getRawY();
                         view.setY(event.getRawY() + dY);
                         view.setX(event.getRawX() + dX);
                         lastAction = MotionEvent.ACTION_MOVE;
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (lastAction == MotionEvent.ACTION_DOWN)
-                            showFavStations(isShownFav);
-                        break;
+//                        if (lastAction == MotionEvent.ACTION_DOWN)
+//                            showFavStations(isShownFav);
+//                        break;
+                        Log.d(TAG, "FAV acc UP!");
+                        Log.d(TAG, "dx: "+Math.abs(dX-newX));
+                        Log.d(TAG, "dy: "+Math.abs(dY-newY));
+                        if(getActivity().getResources().getBoolean(R.bool.is_tablet)) thersold=0;
+                        else thersold=5;
+
+                        if(lastAction==MotionEvent.ACTION_DOWN || (Math.abs(dX-newX)<=thersold && (Math.abs(dY-newY))<=thersold)){
+                                view.performClick();
+                            return false;
+                        }else return true;
                     default:
                         return false;
                 }
@@ -175,7 +188,6 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             }
 
         });
-
 
 
     }
@@ -214,17 +226,18 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
 
 
 
-    private void showFavStations(boolean showFav){
+    private void showFavStations(){
         favList = getFavList();
         if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
-        if(!showFav){
+        if(!isShownFav){
+            isShownFav=true;
             HashMap<String, Station> stationMap = new HashMap<>();
             for (String key: favList){
                 if(RailSingleton.getStationMap().containsKey(key)) stationMap.put(key, RailSingleton.getStationMap().get(key));
             }
             Log.d(TAG, "fav list size: "+favList.size());
             Log.d(TAG, "fav map size: "+stationMap.size());
-            isShownFav=true;
+
 //            imgFavStation.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
             btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
             tvInfo.setText(R.string.fav_stations);
@@ -303,6 +316,27 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             getActivity().getSupportFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag(TAG_FULL_MAP));
             map = null;
             Log.d(TAG, "Nick, you bad boy, do not destroy map anymore!");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // TODO Auto-generated method stub
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FragmentUtils.FAV_LIST, isShownFav);
+    }
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onViewStateRestored(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        restore(savedInstanceState);
+    }
+
+    public void restore(Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            isShownFav = savedInstanceState.getBoolean(FragmentUtils.FAV_LIST);
         }
     }
 

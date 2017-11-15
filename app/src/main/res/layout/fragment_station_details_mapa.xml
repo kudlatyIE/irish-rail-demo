@@ -50,7 +50,7 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/default_margin"
-        android:src="@drawable/ic_favorit"
+        android:src="@drawable/ic_favorit_no"
         android:scaleType="center"
         app:borderWidth="0dp"
         app:elevation="6dp"

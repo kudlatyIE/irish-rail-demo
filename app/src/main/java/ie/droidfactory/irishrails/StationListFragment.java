@@ -71,8 +71,8 @@ public class StationListFragment extends MainFragment {
     private double myLat, myLng;
     private Sort sortMode = Sort.UNSORTED;
     private boolean isShownFav;
-    private float dX;
-    private float dY;
+    private float dX, newX;
+    private float dY, newY;
     private int lastAction;
 
     private AsyncStationsList.AsyncDoneCallback asyncDone = new AsyncStationsList
@@ -134,6 +134,7 @@ public class StationListFragment extends MainFragment {
         btnFabFav.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                int thersold=0;
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         dX = view.getX() - event.getRawX();
@@ -141,19 +142,31 @@ public class StationListFragment extends MainFragment {
                         lastAction = MotionEvent.ACTION_DOWN;
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        newX = view.getX() - event.getRawX();
+                        newY = view.getY() - event.getRawY();
+
                         view.setY(event.getRawY() + dY);
                         view.setX(event.getRawX() + dX);
                         lastAction = MotionEvent.ACTION_MOVE;
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (lastAction == MotionEvent.ACTION_DOWN)
-                            showFavStations();
-                        break;
+                        Log.d(TAG, "FAV acc UP!");
+                        Log.d(TAG, "dx: "+Math.abs(dX-newX));
+                        Log.d(TAG, "dy: "+Math.abs(dY-newY));
+                        if(getActivity().getResources().getBoolean(R.bool.is_tablet)) thersold=0;
+                        else thersold=5;
+
+                        if(lastAction==MotionEvent.ACTION_DOWN || (Math.abs(dX-newX)<=thersold && (Math.abs(dY-newY))<=thersold)){
+//                                view.performClick();
+                            return false;
+                        }else return true;
+
                     default:
                         return false;
                 }
-                return true;
+                return false;
             }
+
 
         });
 
@@ -200,6 +213,7 @@ public class StationListFragment extends MainFragment {
         outState.putSerializable(FragmentUtils.FRAGMENT_STATION_MAP, stationHashMap);
         outState.putDouble(FragmentUtils.MY_LAT, myLat);
         outState.putDouble(FragmentUtils.MY_LNG, myLng);
+        outState.putBoolean(FragmentUtils.FAV_LIST, isShownFav);
     }
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
@@ -214,6 +228,7 @@ public class StationListFragment extends MainFragment {
         if(savedInstanceState!=null){
             myLat = savedInstanceState.getDouble(FragmentUtils.MY_LAT);
             myLng = savedInstanceState.getDouble(FragmentUtils.MY_LNG);
+            isShownFav = savedInstanceState.getBoolean(FragmentUtils.FAV_LIST);
             myLocation = new Location("");
             myLocation.setLatitude(myLat);
             myLocation.setLongitude(myLng);
@@ -274,8 +289,6 @@ public class StationListFragment extends MainFragment {
             llDistance.setOnClickListener(click);
 //            imgShowFav.setOnClickListener(click);
             btnFabFav.setOnClickListener(click);
-
-
 
             editSearch.addTextChangedListener(new TextWatcher() {
 
@@ -389,29 +402,9 @@ public class StationListFragment extends MainFragment {
                     else sortMode=Sort.DISTANCE_UP;
                     sortStation(sortMode, temp);
                     break;
-                case R.id.fragment_stations_main_img_show_fav:
+                case R.id.fragment_stations_main_btn_fab:
+                    Log.d(TAG, "floating action button onClick");
                     showFavStations();
-//                    favList = getFavList();
-//                    if(favList==null || favList.size()==0) Toast.makeText(getActivity(), "Fav list is empty", Toast.LENGTH_SHORT).show();
-//                    else {
-//                        if(!isShownFav){
-//                            isShownFav=true;
-////                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
-//                            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit));
-//                            stationList = new ArrayList<>();
-//                            for (Station s: allStations){
-//                                if (favList.contains(s.getStationCode())) stationList.add(s);
-//                            }
-//                        }else {
-//                            isShownFav = false;
-////                            imgShowFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
-//                            btnFabFav.setImageDrawable(getResources().getDrawable(R.drawable.ic_show_favorit_no));
-//                            stationList = allStations;
-//                        }
-//                        //TODO: add new list to adapter here
-//                        adapter = new MyAdapter(getActivity(), R.layout.adapter_stations, stationList);
-//                        lv.setAdapter(adapter);
-//                    }
                     break;
             }
         }

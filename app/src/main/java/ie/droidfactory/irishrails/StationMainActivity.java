@@ -2,6 +2,7 @@ package ie.droidfactory.irishrails;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,8 +41,7 @@ import ie.droidfactory.irishrails.utils.RailSingleton;
 /**
  * Created by kudlaty on 02/06/2016.
  */
-public class StationMainActivity extends AppCompatActivity implements RailInterface
-        ,
+public class StationMainActivity extends AppCompatActivity implements RailInterface,
         AllStationsMapFragment.RestartCallback{//}, ActivityCompat.OnRequestPermissionsResultCallback,PermissionResultCallback {
 
     private final static String TAG = StationMainActivity.class.getSimpleName();
@@ -60,6 +60,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
     private boolean isHeaderImageExist = false;
     private TextView tvTitle;
     public Activity suomi;
+    private Intent starterIntent;
     private CustomEndDialog dialog;
     private AdView mAdView;
 
@@ -76,6 +77,7 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         //TODO: try layout with drawer and toolbar
         setContentView(R.layout.drawer_layout);
         suomi = this;
+        starterIntent = getIntent();
         isDualPane = getResources().getBoolean(R.bool.has_two_panes);
         isTablet = getResources().getBoolean(R.bool.is_tablet);
         Log.d(TAG, "id landscape layout: "+isDualPane);
@@ -143,7 +145,14 @@ public class StationMainActivity extends AppCompatActivity implements RailInterf
         detailsFragment = getSupportFragmentManager().findFragmentByTag(FRAG_DETAILS);
         detailsView = findViewById(R.id.fragment_station_details_container);
         if(mainFragmentId.equals(FragmentUtils.FRAGMENT_INFO)) getSupportActionBar().setTitle(getResources().getString(R.string.news));
-        loadFragments(mainFragmentId);
+        try{
+            loadFragments(mainFragmentId);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+//            Intent intent = new Intent(this, StationMainActivity.class);
+            finish();
+            startActivity(starterIntent);
+        }
 
 
     }
