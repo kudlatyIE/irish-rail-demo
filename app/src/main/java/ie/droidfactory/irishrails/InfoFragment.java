@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -35,6 +36,7 @@ import java.util.Locale;
 
 import ie.droidfactory.irishrails.model.CustomTweets;
 import ie.droidfactory.irishrails.model.RailInterface;
+import ie.droidfactory.irishrails.model.TwitterInterface;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
 import retrofit2.Call;
 
@@ -72,6 +74,19 @@ public class InfoFragment extends MainFragment {
         return fragment;
     }
 
+    public TwitterInterface twitterCallback = new TwitterInterface() {
+        @Override
+        public void loadTweets(boolean succes) {
+            if(succes){
+                //TODO: load new tweets list
+                loadTweetList(customTweetsArrayList);
+            }else {
+                //TODO: display error message
+                Toast.makeText(getActivity(), "unable to load news", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -108,7 +123,7 @@ public class InfoFragment extends MainFragment {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
 
-        downloadTweets(customTweetsArrayList);
+        downloadTweets();
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -150,7 +165,42 @@ public class InfoFragment extends MainFragment {
         }
     }
 
-    private void downloadTweets(ArrayList<CustomTweets> list){
+    private void downloadTweets(){
+
+        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+        StatusesService statusesService = twitterApiClient.getStatusesService();
+        Call<List<Tweet>> call = statusesService.userTimeline(null, "IrishRail", maxTweetsSearch, null, null, false, false, false, false);
+
+        call.enqueue(new Callback<List<Tweet>>() {
+            @Override
+            public void success(Result<List<Tweet>> result) {
+                ArrayList<CustomTweets> tempList = new ArrayList<>();
+                if(result.data!= null) {
+                    Log.d(TAG, "twitter response size: "+result.data.size());
+                    int count=0;
+                    for (Tweet t: result.data){
+                        if(!t.text.contains("@")) {
+                            ++count;
+//                                newList.add(t);
+                            tempList.add(new CustomTweets(t.createdAt, t.text));
+                            if(count==10) break;
+                        }
+                    }
+                    customTweetsArrayList = tempList;
+                    twitterCallback.loadTweets(true);
+                }
+
+            }
+            @Override
+            public void failure(TwitterException exception) {
+                exception.printStackTrace();
+                twitterCallback.loadTweets(false);
+            }
+        });
+    }
+
+
+    private void downloadTweetsOld(ArrayList<CustomTweets> list){
         if(list==null){
             runDialog();
             TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
@@ -177,7 +227,7 @@ public class InfoFragment extends MainFragment {
                                 if(count==10) break;
                             }
                         }
-                        loadTweets(customTweetsArrayList);
+                        loadTweetList(customTweetsArrayList);
                     }
                 }
                 @Override
@@ -190,11 +240,15 @@ public class InfoFragment extends MainFragment {
                 }
             });
         }else {
-            loadTweets(list);
+            loadTweetList(list);
         }
     }
 
-    private void loadTweets(final ArrayList<CustomTweets> list){
+    private void loadTweetList(final ArrayList<CustomTweets> list){
+        swipeRefreshLayout.setRefreshing(false);
+        if(dialog!=null && dialog.isShowing()){
+            dialog.dismiss();
+        }
         twAdapter = new TweetAdapter(list);
         lvTweets.setAdapter(twAdapter);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
@@ -202,6 +256,7 @@ public class InfoFragment extends MainFragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
+                downloadTweets();
             }
         });
         //        String urlRegex = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
@@ -230,12 +285,12 @@ public class InfoFragment extends MainFragment {
     private class TweetAdapter extends BaseAdapter{
 
         Holder h;
-        List<CustomTweets> customTweetsList;
+        List<CustomTweets> myTweetsList;
         DateFormat df =  new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
         DateFormat sf = new SimpleDateFormat("dd MMM HH:mm", Locale.ENGLISH);
 
         TweetAdapter(List<CustomTweets> tweets){
-            this.customTweetsList=tweets;
+            this.myTweetsList=tweets;
         }
         @Override
         public int getCount() {
@@ -244,7 +299,7 @@ public class InfoFragment extends MainFragment {
 
         @Override
         public Object getItem(int i) {
-            return customTweetsList.get(i);
+            return myTweetsList.get(i);
         }
 
         @Override
@@ -266,10 +321,10 @@ public class InfoFragment extends MainFragment {
                 h = (Holder) v.getTag();
             }
             try {
-                Date date = df.parse(customTweetsList.get(i).getDate());
+                Date date = df.parse(myTweetsList.get(i).getDate());
                 h.tvTwDate.setText(sf.format(date));
 
-                String msg = customTweetsList.get(i).getMessage().replace("&amp;", "& ");
+                String msg = myTweetsList.get(i).getMessage().replace("&amp;", "& ");
                 if(msg.contains(URL_REGEX)){
                     String url = msg.substring(msg.indexOf(URL_REGEX), msg.length());
                     h.tvTwMessage.setText(msg.replace(url, getString(R.string.info_news_see_more)));

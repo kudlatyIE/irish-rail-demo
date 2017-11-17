@@ -201,8 +201,19 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
         return list;
     }
 
+    private LatLng setLatLng() {
+        LatLng ll = LocationUtils.getLatLng(getActivity());
+        if (ll==null){
+            //TODO: dialog turn on Location - if dismiss get default Dublin location from Shared Pref
+            ll = MyShared.getMyLastLocation(getActivity());
+        }
+        return ll;
+    }
+
     private void downloadAllStationList() {
-        LocationUtils.getLocation(getActivity());
+//        LocationUtils.getLocation(getActivity());
+        setLatLng();
+
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
         rail.execute(Links.ALL_STATIONS.getRailLink());
     }
@@ -257,6 +268,10 @@ public class AllStationsMapFragment extends MainFragment {//implements AsyncStat
             this.myLocation = LocationUtils.getLatLng(getActivity());
         }catch (NullPointerException e){
             this.myLocation = RailSingleton.getMyLatLng();
+            if ((myLocation==null)){
+                Toast.makeText(getActivity(), "unable to get location", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         map.getUiSettings().setAllGesturesEnabled(true);
         map.clear();

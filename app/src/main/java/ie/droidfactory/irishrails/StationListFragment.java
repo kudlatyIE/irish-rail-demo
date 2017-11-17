@@ -45,6 +45,7 @@ import ie.droidfactory.irishrails.utils.DataUtils;
 import ie.droidfactory.irishrails.utils.FragmentUtils;
 import ie.droidfactory.irishrails.utils.LocationUtils;
 import ie.droidfactory.irishrails.utils.MyLocationListener;
+import ie.droidfactory.irishrails.utils.MyShared;
 import ie.droidfactory.irishrails.utils.RailSingleton;
 
 /**
@@ -67,7 +68,8 @@ public class StationListFragment extends MainFragment {
     private HashMap<String, Station> stationHashMap;
     private MyAdapter adapter = null;
     private StationFilter stationFilter;
-    private Location myLocation;
+//    private Location myLocation;
+    private LatLng latLng;
     private double myLat, myLng;
     private Sort sortMode = Sort.UNSORTED;
     private boolean isShownFav;
@@ -119,7 +121,8 @@ public class StationListFragment extends MainFragment {
 
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            LocationUtils.getLatLng(getActivity());
+
+        latLng = setLatLng();
         isShownFav = false;
         favList = getFavList();
 
@@ -170,6 +173,16 @@ public class StationListFragment extends MainFragment {
 
         });
 
+    }
+
+    private LatLng setLatLng() {
+        LatLng ll = LocationUtils.getLatLng(getActivity());
+        if (ll==null){
+            Log.d(TAG, "load default Dublin location or last known..");
+            //TODO: dialog turn on Location - if dismiss get default Dublin location from Shared Pref
+            ll = MyShared.getMyLastLocation(getActivity());
+        }
+        return ll;
     }
 
     private void showFavStations() {
@@ -229,9 +242,9 @@ public class StationListFragment extends MainFragment {
             myLat = savedInstanceState.getDouble(FragmentUtils.MY_LAT);
             myLng = savedInstanceState.getDouble(FragmentUtils.MY_LNG);
             isShownFav = savedInstanceState.getBoolean(FragmentUtils.FAV_LIST);
-            myLocation = new Location("");
-            myLocation.setLatitude(myLat);
-            myLocation.setLongitude(myLng);
+//            myLocation = new Location("");
+//            myLocation.setLatitude(myLat);
+//            myLocation.setLongitude(myLng);
             RailSingleton.setMyLocation(new LatLng(myLat, myLng));
             stationHashMap = (HashMap<String, Station>) savedInstanceState.getSerializable(FragmentUtils.FRAGMENT_STATION_MAP);
         }
@@ -252,15 +265,18 @@ public class StationListFragment extends MainFragment {
         Log.d(TAG, "onAttach end...");
     }
     private void downloadAllStationList(){
-        LocationUtils.getLocation(getActivity());
+//        LocationUtils.getLocation(getActivity());
         AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
         rail.execute(Links.ALL_STATIONS.getRailLink());
     }
     private void loadStationList(){
         this.stationHashMap = RailSingleton.getStationMap();
-        this.myLocation = LocationUtils.getLocation(getActivity());
-        this.myLat = myLocation.getLatitude();
-        this.myLng = myLocation.getLongitude();
+//        this.myLocation = LocationUtils.getLocation(getActivity());
+//        this.myLat = myLocation.getLatitude();
+//        this.myLng = myLocation.getLongitude();
+        this.latLng = setLatLng();
+        this.myLat = latLng.latitude;
+        this.myLng = latLng.longitude;
 
         stationList = new ArrayList<>(stationHashMap.values());
         sortStation(Sort.DISTANCE_UP, stationList);
@@ -336,7 +352,7 @@ public class StationListFragment extends MainFragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                LocationUtils.getLocation(getActivity());
+                setLatLng();
                 AsyncStationsList rail = new AsyncStationsList(getActivity(), AsyncMode.GET_ALL_STATIONS, asyncDone);
                 rail.execute(Links.ALL_STATIONS.getRailLink());
             }

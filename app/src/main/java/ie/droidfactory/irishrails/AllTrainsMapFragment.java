@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -117,13 +118,22 @@ public class AllTrainsMapFragment extends MainFragment {
 
         try{
             this.myLocation = LocationUtils.getLatLng(getActivity());
+            if(myLocation==null){
+                this.myLocation=MyShared.getMyLastLocation(getActivity());
+                //TODO: alert to enable Location
+            }
             this.myLo = myLocation.longitude;
             this.myLat = myLocation.latitude;
         }catch (NullPointerException e){
 //            myLocation = MyShared.getMyLastLocation(getActivity());
             myLocation = RailSingleton.getMyLatLng();
-            this.myLo = myLocation.longitude;
-            this.myLat = myLocation.latitude;
+            if(myLocation!=null){
+                this.myLo = myLocation.longitude;
+                this.myLat = myLocation.latitude;
+            }else {
+                Toast.makeText(getActivity(), "unable to get location", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         if(map==null) return;
         map.getUiSettings().setAllGesturesEnabled(true);

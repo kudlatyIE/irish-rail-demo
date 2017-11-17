@@ -73,5 +73,11 @@
     <string name="accessibility_info_not_available">Accessibility info not available</string>
     <string name="fav_stations">Fav stations</string>
     <string name="all_stations">All stations</string>
+    <string name="gps_network_not_enabled">
+         Location on phone is DISABLED
+        \nDistances to objects can be calculated incorrectly.
+        \nPlease go to settings and turn ON location service.
+        </string>
+    <string name="open_location_settings">open location settings</string>
 
 </resources>

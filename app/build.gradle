@@ -10,8 +10,8 @@ android {
         applicationId "ie.droidfactory.irishrails"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 27
-        versionName "0.27"
+        versionCode 29
+        versionName "0.29"
     }
     buildTypes {
         release {
@@ -33,6 +33,7 @@ dependencies {
     compile 'com.twitter.sdk.android:twitter-core:3.1.1'
     compile 'com.twitter.sdk.android:tweet-ui:3.1.1'
     compile 'com.google.android.gms:play-services-ads:11.6.0'
+    compile "com.google.android.gms:play-services-location:11.6.0"
     compile 'ch.acra:acra:4.8.5'
     compile 'org.jsoup:jsoup:1.10.3'
 }
